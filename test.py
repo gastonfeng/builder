@@ -12,7 +12,7 @@ from mywork.tools.odoo import odoo
 modulename = 'builder'
 
 BUILD_NUMBER = open('build.info').read().strip()
-urls = 'http://www.kaikong.com.cn/odoo/%s%s.zip' % (modulename, str(BUILD_NUMBER))
+urls = 'http://kaikong.com.cn/odoo/%s%s.zip' % (modulename, str(BUILD_NUMBER))
 
 try:
     zipname = modulename + str(BUILD_NUMBER) + '.zip'
@@ -53,7 +53,7 @@ try:
     woniu.create_test_db()
     # 本模块依赖software模块,由于不是系统模块,新系统找不到模块文件(数据库删除时会清除模块),需要先安装
     swver = open('../odoo_software/build.info').read().strip()
-    zipurl = 'http://www.kaikong.com.cn/odoo/software%s.zip' % str(swver)
+    zipurl = 'http://kaikong.com.cn/odoo/software%s.zip' % str(swver)
     woniu.install_from_urls('software', zipurl)
     woniu.install_from_urls(modulename, urls)
     logging.info('test ok')
