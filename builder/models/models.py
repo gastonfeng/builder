@@ -7,11 +7,11 @@ from openerp import models, fields, api, _
 class IrModel(models.Model):
     _name = 'builder.ir.model'
     _description = "Models"
-    product_template_id = fields.Many2one('kaikong.software.product.template', ondelete='set null', string=u'软件产品模版', )
     _order = 'sequence, model'
 
     _rec_name = 'model'
 
+    product_template_id = fields.Many2one('kaikong.software.product.template', ondelete='set null', string=u'软件产品模版', )
     sequence = fields.Integer('Sequence')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True, select=1, ondelete='cascade')
     name = fields.Char('Description', required=True)
