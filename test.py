@@ -22,6 +22,10 @@ try:
     logging.info('test with woniu66')
     woniu = odoo('www.woniu66.com', '8808')
     woniu.create_test_db()
+    # 本模块依赖software模块,由于不是系统模块,新系统找不到模块文件(数据库删除时会清除模块),需要先安装
+    swver = open('../odoo_software/build.info').read().strip()
+    zipurl = 'http://app.woniu66.com/odoo/software%s.zip' % str(swver)
+    woniu.install_from_urls('software', zipurl)
     woniu.install_from_urls(modulename, urls)
     logging.info('test ok')
 

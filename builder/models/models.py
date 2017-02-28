@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collections import defaultdict
 
 from openerp import models, fields, api, _
@@ -6,6 +7,7 @@ from openerp import models, fields, api, _
 class IrModel(models.Model):
     _name = 'builder.ir.model'
     _description = "Models"
+    product_template_id = fields.Many2one('kaikong.software.product.template', ondelete='set null', string=u'软件产品模版', )
     _order = 'sequence, model'
 
     _rec_name = 'model'
@@ -320,3 +322,12 @@ class InheritsModel(models.Model):
     def _compute_field_display(self):
         self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name
 
+
+class KaikongSoftwareProductTemplate(models.Model):
+    _name = 'kaikong.software.product.template'
+    _inherit = [
+        'kaikong.software.product.template',
+
+    ]
+    _description = u'软件产品模版'
+    builder_ir_model_ids = fields.One2many('builder.ir.model', 'product_template_id', string='Models', )
