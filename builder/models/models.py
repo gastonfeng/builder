@@ -323,8 +323,7 @@ class InheritsModel(models.Model):
         self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name
 
 
-class KaikongSoftwareProductTemplate(models.Model):
-    _name = 'kaikong.software.product.template'
+class BuilderProductTemplate(models.Model):
     _inherit = [
         'kaikong.software.product.template',
 
