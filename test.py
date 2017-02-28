@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 
 import sys
+import zipfile
+from ftplib import FTP
 
 logging.basicConfig(level=logging.INFO)
 from mywork.tools.odoo import odoo
@@ -9,9 +12,35 @@ from mywork.tools.odoo import odoo
 modulename = 'builder'
 
 BUILD_NUMBER = open('build.info').read().strip()
-urls = 'http://app.woniu66.com/odoo/%s%s.zip' % (modulename, str(BUILD_NUMBER))
+urls = 'http://www.kaikong.com.cn/odoo/%s%s.zip' % (modulename, str(BUILD_NUMBER))
 
 try:
+    zipname = modulename + str(BUILD_NUMBER) + '.zip'
+    f = zipfile.ZipFile(zipname, 'w', zipfile.ZIP_DEFLATED)
+    startdir = "."
+    for dirpath, dirnames, filenames in os.walk(startdir):
+        l = len(dirpath)
+        if l > 4:
+            d = dirpath[2]
+        if l > 4 and d == '.':
+            continue
+        for filename in filenames:
+            if filename == zipname:
+                continue
+            f.write(os.path.join(dirpath, filename))
+    f.close()
+
+    ftp = FTP()
+    ftp.connect('kaikong.gotoftp4.com', '21')
+    ftp.login('kaikong', 'gaston701125')
+    ftp.cwd('wwwroot/odoo')
+    bufsize = 1024
+    file_handler = open(zipname, 'rb')
+    ftp.storbinary('STOR %s' % os.path.basename(zipname), file_handler, bufsize)
+    ftp.set_debuglevel(0)
+    file_handler.close()
+    ftp.quit()
+
     logging.info('->kaikong')
     lohost = odoo('localhost', '8888', 'kaikong', 'kaikong@kaikong.com.cn', '41701015')
     logging.info(lohost.ver())
