@@ -1,15 +1,15 @@
-from base64 import decodestring
+# coding=utf-8
+import mimetypes
+import os
 import re
+from base64 import decodestring
 from string import Template
 from types import MethodType
-import os
-import mimetypes
-import string
 
 from openerp import models, fields, api, _, tools
+
 from .utils import simple_selection
 from .utils.formats import json
-
 
 MODULE_EXPORTER_RE = re.compile('_export_\w[\w_]+')
 
@@ -30,6 +30,13 @@ def get_module_importers(model):
     ]
 
 
+class BuilderProductTemplate(models.Model):
+    _inherit = [
+        'kaikong.software.product',
+    ]
+    _description = u'软件产品'
+    #builder_ir_model_ids = fields.One2many('builder.ir.model', 'product_id', string='Models', )
+
 class Module(models.Model):
     _name = 'builder.ir.module.module'
 
@@ -47,6 +54,7 @@ class Module(models.Model):
     maintainer = fields.Char('Maintainer')
     contributors = fields.Text('Contributors')
     website = fields.Char("Website")
+    product_id = fields.Many2one('kaikong.software.product', ondelete='set null', string=u'软件产品', )
 
     version = fields.Char('Version', default='0.1')
     mirror = fields.Text('CodeMirror')

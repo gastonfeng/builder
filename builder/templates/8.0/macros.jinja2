@@ -129,8 +129,8 @@ class {{ class_name }}({% if model.osv_memory %}models.TransientModel{% else %}m
     {% if model.name -%}
     _description = '{{ model.name }}'{% else %}_description = _(_doc_)
     {% endif %}
-    {% for field in model.field_ids -%}
-    {{ builder_ir_model_field(field) }}
+    {% for field in range(0,model.field_ids|length) -%}
+        {{ builder_ir_model_field(model.field_ids[field]) }}
     {%- endfor %}
     {% for method_name, fields in model.compute_field_methods.items() -%}
     {{ builder_ir_model_field_compute(method_name, fields) }}

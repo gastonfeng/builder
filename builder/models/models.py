@@ -11,7 +11,6 @@ class IrModel(models.Model):
 
     _rec_name = 'model'
 
-    product_template_id = fields.Many2one('kaikong.software.product.template', ondelete='set null', string=u'软件产品模版', )
     sequence = fields.Integer('Sequence')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True, select=1, ondelete='cascade')
     name = fields.Char('Description', required=True)
@@ -323,10 +322,3 @@ class InheritsModel(models.Model):
         self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name
 
 
-class BuilderProductTemplate(models.Model):
-    _inherit = [
-        'kaikong.software.product.template',
-
-    ]
-    _description = u'软件产品模版'
-    builder_ir_model_ids = fields.One2many('builder.ir.model', 'product_template_id', string='Models', )
