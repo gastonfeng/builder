@@ -1,0 +1,49 @@
+{%- extends 'xml/base.xml.jinja2' %}
+
+{# generate builder.ir.ui.view #}
+{% macro builder_ir_ui_view(model) %}
+    <record model="ir.ui.view" id="view_id_{{ model.name }}">
+        <field name="name">{{ model.name }}</field>
+        <field name="model">{{ model.name }}</field>
+        {% if view.type == 'tree' and view.field_parent_id %}
+            <field name="field_parent">{{ view.field_parent_id.name }}</field>
+        {% endif -%}
+        {% if view.priority %}
+            <field name="priority" eval="{{ view.priority }}"/>{% endif %}
+        {% if view.inherit_view %}
+            <field name="inherit_id" ref="{{ view.inherit_view_ref }}"/>
+        {% endif %}
+        <field name="arch" type="xml">
+            {%- if view.inherit_view -%}
+                {% for change in view.inherit_change_ids %}
+                    {{ builder_ir_ui_view_inherit_change(change) }}
+                {% endfor %}
+            {%- else -%}
+                {% set view_gen = view.subclass_model|dot2dashed %}
+                {% set instance = view.get_instance().0 %}
+                {%- if view.type == 'form' -%}
+                    {{ builder_views_form(instance)|indent(8) }}
+                {%- elif view.type == 'calendar' -%}
+                    {{ builder_views_calendar(instance)|indent(8) }}
+                {%- elif view.type == 'gantt' -%}
+                    {{ builder_views_gantt(instance)|indent(8) }}
+                {%- elif view.type == 'graph' -%}
+                    {{ builder_views_graph(instance)|indent(8) }}
+                {%- elif view.type == 'kanban' -%}
+                    {{ builder_views_kanban(instance)|indent(8) }}
+                {%- elif view.type == 'search' -%}
+                    {{ builder_views_search(instance)|indent(8) }}
+                {%- elif view.type == 'tree' -%}
+                    {{ builder_views_tree(instance)|indent(8) }}
+                {% endif -%}
+            {% endif %}
+        </field>
+    </record>
+{% endmacro %}
+
+
+{% block content %}
+    {% for model in models %}
+        {{ macros.builder_ir_ui_view(view) }}
+    {% endfor %}
+{% endblock %}

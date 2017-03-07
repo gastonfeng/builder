@@ -1,5 +1,5 @@
-from collections import defaultdict
 import base64
+from collections import defaultdict
 
 from openerp import models, api
 
@@ -73,6 +73,10 @@ class GeneratorV8(models.TransientModel):
                 'models/models.py.jinja2',
                 {'models': [model for model in module.model_ids if model.define]}
             )
+
+            # 从模型导出视图
+            # module_data.append('views/views_model.xml')
+            # zip_file.write_template('views/views_model.xml','view/views_model.xml.jinja2',{'models': [model for model in module.model_ids if model.define]})
 
         for model in module.model_ids:
             if not model.demo_records:
