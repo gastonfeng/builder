@@ -1,8 +1,3 @@
-import posixpath
-import zipfile
-from StringIO import StringIO
-
-
 def groups_attribute(groups):
     return 'groups="{list}"'.format(list=','.join([i.real_xml_id for i in groups])) if len(groups) else ''
 
@@ -10,7 +5,7 @@ def groups_attribute(groups):
 def field_options(options):
     opts = []
     for op in options:
-        opts.append((op.value, op.name))
+        opts.append((unicode(op.value), unicode(op.name)))
     return repr(opts)
 
 

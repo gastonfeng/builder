@@ -265,7 +265,7 @@ class {{ class_name }}({% if model.osv_memory %}models.TransientModel{% else %}m
         {%- if field.related %} related='{{ field.related }}',{%- endif -%}
         {%- if field.groups %} groups='{{ field.groups }}',{%- endif -%}
         {%- if field.selection %} selection={{ field.selection }},{%- endif -%}
-        {%- if field.option_ids %} selection={{ field.option_ids|field_options }},{%- endif -%}
+        {%- if field.option_ids %} selection=u"{{ field.option_ids|field_options }}",{%- endif -%}
         {%- if field.allow_compute -%} compute='{{ field.compute_method_name }}',{%- endif -%}
         {%- if field.allow_inverse -%} inverse='{{ field.inverse_method_name }}',{%- endif -%}
         {%- if field.allow_search -%} search='{{ field.search_method_name }}',{%- endif -%}
@@ -629,7 +629,7 @@ class {{ class_name }}({% if model.osv_memory %}models.TransientModel{% else %}m
             <field name="context">{{ action.context }}</field>
             {% endif -%}
             {% if action.view_id -%}
-            <field name="view_ids" ref="{{ action.view_id.real_xml_id }}"/>
+                <field name="view_id" ref="{{ action.view_id.real_xml_id }}"/>
             {% endif -%}
             {% if action.view_mode -%}
             <field name="view_mode">{{ action.view_mode }}</field>
