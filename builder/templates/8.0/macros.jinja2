@@ -257,7 +257,7 @@ class {{ class_name }}({% if model.osv_memory %}models.TransientModel{% else %}m
         {%- if field.ttype == 'float' -%} {% if field.decimal_digits and field.decimal_precision %} digits=({{field.decimal_digits}}, {{field.decimal_precision}}),{% endif %}{%- endif -%}
         {%- if field.required %} required=True,{%- endif -%}
         {%- if field.readonly %} readonly=True,{%- endif -%}
-        {%- if field.field_description %} string='{{ field.field_description }}',{% endif -%} {# This should be removed??? #}
+        {%- if field.field_description %} string=u'{{ field.field_description }}',{% endif -%} {# This should be removed??? #}
         {%- if field.string %} string=u'{{ field.string }}',{%- endif -%}
         {%- if field.help %} help='''{{ field.help }}''',{%- endif -%}
         {%- if field.index %} index=True,{%- endif -%}

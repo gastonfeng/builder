@@ -5,7 +5,7 @@ def groups_attribute(groups):
 def field_options(options):
     opts = []
     for op in options:
-        opts.append(('u' + op.value.decode("unicode-escape"), 'u' + op.name.decode("unicode-escape")))
+        opts.append(('u' + op.value.encode("unicode-escape").decode("unicode-escape"), 'u' + op.name.encode("unicode-escape").decode("unicode-escape")))
     return repr(opts)
 
 
