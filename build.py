@@ -41,27 +41,94 @@ try:
 ##############################################################################
 
 {
-    'name': '设备数据采集模块',
+    'name': 'Module Builder',
     'version': '%s',
-    'depends': [],
-    'author': 'gastonfeng',
-    "website" : "http://www.woniu66.com",
-    "category" : "指定行业应用",
-    "licence" : "AGPL-3",
-    "description": """
-设备数据采集模块
-====================================
-设备数据采集模块
-                    """,
-    "data" : [
-        'views/views.xml',
-        'views/actions.xml',
+    'category': 'Programming',
+    'summary': 'Build your modules right inside Odoo',
+    'description': """
+This module aims to help in the development of new modules
+=======================================================================================
+
+""",
+    'author': 'Soluciones Moebius',
+    #"license": "AGPL-3",
+    'website': 'http://www.solucionesmoebius.com/',
+    'depends': ['web', 'web_diagram', 'website','software'],
+    'data': [
+        # 'security/base_security.xml',
+        # 'security/ir.model.access.csv',
+
+        'data/oe.css.classes.yml',
+        'wizard/module_generate_view.xml',
+        'wizard/model_lookup_wizard_view.xml',
+        'wizard/menu_lookup_wizard_view.xml',
+        'wizard/action_lookup_wizard_view.xml',
+        'wizard/website_asset_bulk_add_view.xml',
+        'wizard/website_media_item_bulk_add_view.xml',
+        'wizard/website_page_import_view.xml',
+        'wizard/model_access_generate_wizard_view.xml',
+        'wizard/demo_creator_wizard_view.xml',
+
+        'views/views/base_view.xml',
+        'views/views/calendar_view.xml',
+        'views/views/form_view.xml',
+        'views/views/gantt_view.xml',
+        'views/views/graph_view.xml',
+        'views/views/kanban_view.xml',
+        'views/views/search_view.xml',
+        'views/views/tree_view.xml',
+        'views/views/selector_view.xml',
+        'views/website_view.xml',
+
+        'views/demo/char_views.xml',
+        'views/demo/name_views.xml',
+        'views/demo/email_views.xml',
+        'views/demo/autoincrement_views.xml',
+        'views/demo/selection_views.xml',
+        'views/demo/normal_views.xml',
+        'views/demo/custom_list_views.xml',
+        'views/demo/m2o_views.xml',
+        'views/demo/m2m_views.xml',
+        'views/demo/date_views.xml',
+        'views/demo/binary_views.xml',
+
+        'wizard/module_data_import_view.xml',
+        'wizard/module_import_view.xml',
+        'wizard/module_export_view.xml',
+        'wizard/model_import_view.xml',
+        'wizard/group_import_view.xml',
+
+        'views/menu_view.xml',
+        'views/module_view.xml',
+        'views/field_view.xml',
+        'views/model_view.xml',
+        'views/res_config_model_view.xml',
+        'views/action_view.xml',
+        'views/data_view.xml',
+        'views/security_view.xml',
+        'views/cron_view.xml',
+        'views/workflow_view.xml',
         'views/menu.xml',
-        ],
-    "demo" : [],
-    "installable": True,
-    'auto_install': True,
+
+        'views/backend_assets.xml',
+        'views/snippet_templates.xml',
+        'views/designer/website_page_designer.xml',
+        'views/designer/designer_snippets.xml',
+
+        'security/ir.model.access.csv',
+    ],
+    'test': [
+        'test/test_demo.yml',
+    ],
+    'images': [
+        'static/description/module_info.png',
+        'static/description/designer.png',
+    ],
+    #'qweb': [],
+     # 'qweb': ['static/src/xml/templates.xml'],
+    'installable': True,
     'application': True,
+    'auto_install': False,
 }
 ''' % ver
 
@@ -115,6 +182,7 @@ try:
     logging.info('test ok')
 
     odoo_centos.install_from_urls(modulename, urls)
+    woniu66.install_from_urls(modulename, urls)
 
     # shutil.copyfile(zipname, 'z:/download/odoo_app/builder.zip')
     # shutil.copyfile('build.info', 'z:/download/odoo_app/builder_build')

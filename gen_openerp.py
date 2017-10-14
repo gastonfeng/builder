@@ -123,6 +123,3 @@ f = os.path.join(os.path.abspath(os.path.curdir), 'builder/__openerp__.py')
 stream = file(f, 'w')
 stream.write(erp)
 stream.close()
-
-ff=file('ver_hardware.py','w')
-ff.write('ver_hardware= "8.0.%s"\n'%ver)
