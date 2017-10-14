@@ -6,7 +6,8 @@
 	url = ssh://kaikong@192.168.31.10/home/git/odoo-robot-framework.git
 [submodule "odoo_doc"]
 	path = odoo_doc
-	url = https://git.gitbook.com/gastonfeng/odoo_doc.git
+	url = ssh://kaikong@192.168.31.10/home/git/odoo_doc.git
 [submodule "builder"]
 	path = builder
 	url = https://github.com/gastonfeng/builder.git
+	branch = 10.0
