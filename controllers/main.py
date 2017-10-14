@@ -1,6 +1,5 @@
-from openerp.addons.web import http
-from openerp.addons.web.controllers.main import content_disposition
-from openerp.addons.web.http import request
+from odoo import http
+from odoo.http import request, content_disposition
 
 
 class MainController(http.Controller):

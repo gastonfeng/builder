@@ -1,6 +1,6 @@
 import types
 from openerp import api
-from openerp.osv import fields as fields_old
+from openerp import fields as fields_old
 
 
 def simple_selection(model, value_field, label_field=None, domain=None):

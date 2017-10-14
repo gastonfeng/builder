@@ -37,7 +37,7 @@ class Module(models.Model):
     def _get_categories(self):
         return [(c.name, c.name) for c in self.env['ir.module.category'].search([])]
 
-    name = fields.Char("Technical Name", required=True, select=True)
+    name = fields.Char("Technical Name", required=True, index=True)
     category_id = fields.Selection(simple_selection('ir.module.category', 'name') , 'Category')
     shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
