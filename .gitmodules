@@ -7,6 +7,6 @@
 [submodule "odoo_doc"]
 	path = odoo_doc
 	url = https://git.gitbook.com/gastonfeng/odoo_doc.git
-[submodule "builder_github"]
-	path = builder_github
-	url = https://github.com/slmoebius/builder.git
+[submodule "builder"]
+	path = builder
+	url = https://github.com/gastonfeng/builder.git
