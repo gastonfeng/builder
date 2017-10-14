@@ -5,7 +5,7 @@ import sys
 import zipfile
 from ftplib import FTP
 
-from mywork.resources.odoo_kaikong import odoo_centos
+from mywork.resources.odoo_kaikong import odoo_centos, odoo_woniu66
 
 logging.basicConfig(level=logging.INFO)
 from mywork.tools.odoo import odoo
@@ -182,7 +182,7 @@ This module aims to help in the development of new modules
     logging.info('test ok')
 
     odoo_centos.install_from_urls(modulename, urls)
-    woniu66.install_from_urls(modulename, urls)
+    odoo_woniu66.install_from_urls(modulename, urls)
 
     # shutil.copyfile(zipname, 'z:/download/odoo_app/builder.zip')
     # shutil.copyfile('build.info', 'z:/download/odoo_app/builder_build')
