@@ -1,3 +1,12 @@
 [submodule "mywork"]
 	path = mywork
-	url = z:\\git\\mywork.git
+	url = ssh://kaikong@192.168.31.10/home/git/mywork.git
+[submodule "odoo-robot-framework"]
+	path = odoo-robot-framework
+	url = ssh://kaikong@192.168.31.10/home/git/odoo-robot-framework.git
+[submodule "odoo_doc"]
+	path = odoo_doc
+	url = https://git.gitbook.com/gastonfeng/odoo_doc.git
+[submodule "builder_github"]
+	path = builder_github
+	url = https://github.com/slmoebius/builder.git
