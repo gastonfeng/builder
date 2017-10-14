@@ -1,0 +1,9 @@
+[submodule "mywork"]
+	path = mywork
+	url = ssh://kaikong@192.168.31.10/home/git/mywork.git
+[submodule "odoo-robot-framework"]
+	path = odoo-robot-framework
+	url = ssh://kaikong@192.168.31.10/home/git/odoo-robot-framework.git
+[submodule "odoo_doc"]
+	path = odoo_doc
+	url = ssh://kaikong@192.168.31.10/home/git/odoo_doc.git

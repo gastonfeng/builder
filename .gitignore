@@ -1,1 +1,6 @@
 *.pyc
+/.idea/
+*.zip
+/log.html
+/output.xml
+/report.html
