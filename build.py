@@ -168,17 +168,17 @@ This module aims to help in the development of new modules
     file_handler.close()
     ftp.quit()
 
+    logging.info('test with new db')
+    woniu = odoo('localhost', '8069')
+    woniu.create_test_db()
+    woniu.install_from_urls(modulename, urls)
+    logging.info('test ok')
+
     logging.info('test with full')
     lohost = odoo('localhost', '8069', 'odoo10', 'gastonfeng@gmail.com', 'gaston701125')
     logging.info(lohost.ver())
     lohost.toLogin()
     lohost.install_from_urls(modulename, urls)
-    logging.info('test ok')
-
-    logging.info('test with new db')
-    woniu = odoo('localhost', '8069')
-    woniu.create_test_db()
-    woniu.install_from_urls(modulename, urls)
     logging.info('test ok')
 
     odoo_centos.install_from_urls(modulename, urls)
