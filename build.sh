@@ -3,8 +3,6 @@ yum install rsync python-setuptools -y
 python -V
 rm *.zip -rf
 easy_install odoorpc
+chmod 600 rsyncd.password
 rm -rf /var/log/odoo/odoo-server.log
 python build.py
-cat /var/log/odoo/odoo-server.log
-chmod 600 rsyncd.password
-rsync -avzP --password-file=rsyncd.password builder*.zip rsync://kaikong@www.woniu66.com:/server01/app/odoo

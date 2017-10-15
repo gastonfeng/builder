@@ -186,6 +186,8 @@ This module aims to help in the development of new modules
 
     # shutil.copyfile(zipname, 'z:/download/odoo_app/builder.zip')
     # shutil.copyfile('build.info', 'z:/download/odoo_app/builder_build')
+    cmd = "rsync -avzP --password-file=rsyncd.password builder*.zip rsync://kaikong@www.woniu66.com:/server01/app/odoo"
+    os.subprocess.call(cmd, shell=True)
     logging.info('finished.')
     sys.exit(0)
 except Exception, e:
