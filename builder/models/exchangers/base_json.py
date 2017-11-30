@@ -1,7 +1,6 @@
-from collections import defaultdict
 import json
-from psycopg2._psycopg import IntegrityError
-from openerp.exceptions import except_orm
+from collections import defaultdict
+
 from openerp import models, api
 
 
@@ -15,10 +14,10 @@ class OdooBuilderTranslator(object):
             obj_id = obj._model._name, obj.id
             if obj.id and obj_id not in self.seen_models and obj._model._name.startswith('builder.'):
                 self.seen_models.add(obj_id)
-                for name, column in obj._model._columns.items():
+                for name, column in obj._model._fields.items():
                     if name in ['id', 'write_uid', 'write_date', 'create_date', 'create_uid']:
                         continue
-                    if column._type in ['function'] or getattr(column, '_fnct', False) or not getattr(column, 'store', True):
+                    if column._type in ['function'] or not getattr(column, 'store', True):
                         continue
                     if column._type in ['char', 'boolean', 'integer', 'text', 'html', 'float', 'date', 'datetime', 'selection', 'binary']:
                         instance[name] = getattr(obj, name)
@@ -47,11 +46,11 @@ class OdooBuilderTranslator(object):
 
 
 def model_required_attributes(model):
-    columns = model._columns
+    columns = model._fields
     return {
         name
         for name, column in columns.items()
-        if getattr(column, 'required', False) and getattr(column, 'store', True) and not getattr(column, '_fnct', False)
+        if getattr(column, 'required', False) and getattr(column, 'store', True)
     }
 
 
@@ -102,7 +101,14 @@ class OdooBuilderLoader(object):
 
                 if required_attributes.issubset(set(data.keys())) and not missing:
                     obj = model.create({
-                        key: value if not isinstance(value, dict) else '{model},{id}'.format(model=value['@model'], id=self.seen_models.get((value['@model'], value['@id']))) if model._columns[key]._type == 'reference' else self.seen_models.get((value['@model'], value['@id']))
+                        key: value if not isinstance(value, dict) else '{model},{id}'.format(model=value['@model'],
+                                                                                             id=self.seen_models.get((
+                                                                                                                     value[
+                                                                                                                         '@model'],
+                                                                                                                     value[
+                                                                                                                         '@id']))) if
+                        model._fields[key]._type == 'reference' else self.seen_models.get(
+                            (value['@model'], value['@id']))
                         for key, value in data.items()
                         if not isinstance(value, list)
                     })
@@ -121,7 +127,7 @@ class OdooBuilderLoader(object):
                 id_str = data['@id']
                 model = self.env[model_str]
                 obj = self.seen_models[model_str, id_str]
-                columns = model._columns
+                columns = model._fields
                 for attr in data.keys():
                     if attr in columns:
                         if columns[attr]._type == 'many2many':

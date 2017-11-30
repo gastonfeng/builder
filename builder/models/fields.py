@@ -1,11 +1,9 @@
 import logging
 import types
 
-from .utils import get_field_types
-
-from openerp.exceptions import except_orm
-from openerp import models, api, fields, _
 from openerp import fields  as fields_old
+from openerp import models, api, fields, _
+from openerp.exceptions import except_orm
 
 __author__ = 'one'
 
@@ -41,8 +39,8 @@ class IrFields(models.Model):
         r= sorted([
             (k, k) for k, v in fields_old.__dict__.iteritems()
             if type(v) == types.TypeType and \
-            #issubclass(v, fields_old._column) and \
-            #v != fields_old._column and \
+               # issubclass(v, fields_old._fields) and \
+               # v != fields_old._fields and \
             #not v._deprecated and \
             # not issubclass(v, fields_old.function)])
             #not issubclass(v, fields_old.function) and \
