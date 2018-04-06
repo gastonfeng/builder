@@ -7,3 +7,6 @@
 [submodule "odoo_doc"]
 	path = odoo_doc
 	url = ssh://kaikong@192.168.31.10/home/git/odoo_doc.git
+[submodule "qtbase"]
+	path = qtbase
+	url = ../qtbase.git

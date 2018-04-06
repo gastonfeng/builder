@@ -21,7 +21,7 @@
 
 {
     'name': 'Module Builder',
-    'version': '1.10',
+    'version': '1.0',
     'category': 'Programming',
     'summary': 'Build your modules right inside Odoo',
     'description': """
