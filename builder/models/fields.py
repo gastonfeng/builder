@@ -1,9 +1,8 @@
 import logging
-import types
 
-from openerp import fields  as fields_old
-from openerp import models, api, fields, _
-from openerp.exceptions import except_orm
+from odoo import models, api, fields, _
+from odoo.exceptions import except_orm
+from .utils import get_field_types
 
 __author__ = 'one'
 
@@ -29,29 +28,8 @@ class IrFields(models.Model):
     _order = 'model_id, position asc'
     _description = 'Fields'
     _rec_name = 'name'
-    @api.model
-    def _get_fields_type_selection(self):
-        context = {}
-        # Avoid too many nested `if`s below, as RedHat's Python 2.6
-        # break on it. See bug 939653.
-        for i in fields_old.__dict__.iteritems():
-            print i
-        r= sorted([
-            (k, k) for k, v in fields_old.__dict__.iteritems()
-            if type(v) == types.TypeType and \
-               # issubclass(v, fields_old._fields) and \
-               # v != fields_old._fields and \
-            #not v._deprecated and \
-            # not issubclass(v, fields_old.function)])
-            #not issubclass(v, fields_old.function) and \
-            (not context.get('from_diagram', False) or (
-                context.get('from_diagram', False) and (k in ['one2many', 'many2one', 'many2many'])))
 
-        ])
-        print r
-        return r
-
-    model_id = fields.Many2one('builder.ir.model', 'Model', index=1, ondelete='cascade')
+    model_id = fields.Many2one('builder.ir.model', 'Model', select=1, ondelete='cascade')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', related='model_id.module_id')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
                                               string='States Field')
@@ -81,7 +59,7 @@ class IrFields(models.Model):
 
     field_description = fields.Char('Field Label')
     related = fields.Char('Related')
-    ttype = fields.Selection(_get_fields_type_selection, string='Field Type', required=True)
+    ttype = fields.Selection(get_field_types, 'Field Type', required=True)
     relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')],
                                       'Field Type', compute='_compute_relation_ttype',
                                       fnct_inv='_relation_type_set_inverse', store=False, search=True)
