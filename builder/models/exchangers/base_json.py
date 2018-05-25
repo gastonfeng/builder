@@ -17,12 +17,13 @@ class OdooBuilderTranslator(object):
                 for name, column in obj._model._fields.items():
                     if name in ['id', 'write_uid', 'write_date', 'create_date', 'create_uid']:
                         continue
-                    if column._type in ['function'] or not getattr(column, 'store', True):
+                    if column.type in ['function'] or not getattr(column, 'store', True):
                         continue
-                    if column._type in ['char', 'boolean', 'integer', 'text', 'html', 'float', 'date', 'datetime', 'selection', 'binary']:
+                    if column.type in ['char', 'boolean', 'integer', 'text', 'html', 'float', 'date', 'datetime',
+                                       'selection', 'binary']:
                         instance[name] = getattr(obj, name)
                     else:
-                        instance[name] = getattr(self, 'handle_model_{type}'.format(type=column._type))(obj, name)
+                        instance[name] = getattr(self, 'handle_model_{type}'.format(type=column.type))(obj, name)
             return instance if obj.id else False
         return obj
 
@@ -107,7 +108,7 @@ class OdooBuilderLoader(object):
                                                                                                                          '@model'],
                                                                                                                      value[
                                                                                                                          '@id']))) if
-                        model._fields[key]._type == 'reference' else self.seen_models.get(
+                        model._fields[key].type == 'reference' else self.seen_models.get(
                             (value['@model'], value['@id']))
                         for key, value in data.items()
                         if not isinstance(value, list)
@@ -130,7 +131,7 @@ class OdooBuilderLoader(object):
                 columns = model._fields
                 for attr in data.keys():
                     if attr in columns:
-                        if columns[attr]._type == 'many2many':
+                        if columns[attr].type == 'many2many':
                             obj.write({
                                 attr: [[6, False, [self.get_object(item).id for item in data[attr]]]]
                             })
