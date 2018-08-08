@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, tools, _
+from openerp import models, fields, api, _
 from openerp.osv import osv
 MENU_ITEM_SEPARATOR = "/"
 
@@ -51,11 +51,11 @@ class IrUiMenu(models.Model):
             'all_menu_ids': [i.id for i in menu_roots],
         }
 
-    def _get_full_name(self, cr, uid, ids, name=None, args=None, context=None):
+    def _get_full_name(self, ids, name=None, args=None, context=None):
         if context is None:
             context = {}
         res = {}
-        for elmt in self.browse(cr, uid, ids, context=context):
+        for elmt in self.browse(ids, context=context):
             res[elmt.id] = self._get_one_full_name(elmt)
         return res
 

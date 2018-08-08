@@ -241,6 +241,8 @@ class IrFields(models.Model):
                     self.relation_many2many_relation = "{module}_{model1}_{model2}_rel".format(
                         module=self.model_id.module_id.name, model1=snake_case(self.model_id.model),
                         model2=snake_case(self.relation_model_id.model))
+                    _logger.info('relation_many2many_relation=%s' % self.relation_many2many_relation)
+
             else:
                 self.field_description = _('Parent') if self.ttype.endswith('2one') else _('Children')
                 self.name = 'parent_id' if self.ttype.endswith('2one') else 'child_ids'
@@ -260,6 +262,7 @@ class IrFields(models.Model):
                     self.relation_many2many_relation = "{module}_{model1}_{model2}_rel".format(
                         module=self.model_id.module_id.name, model1=snake_case(self.model_id.model),
                         model2=snake_case(self.relation_model_id.model))
+                    _logger.info('relation_many2many_relation=%s' % self.relation_many2many_relation)
 
     @api.model
     def _get_default_ttype(self):

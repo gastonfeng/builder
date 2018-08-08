@@ -1,5 +1,5 @@
-from openerp import models, fields, api
-from openerp.api import Environment
+from odoo import models, fields, api
+from odoo.api import Environment
 
 __author__ = 'deimos'
 

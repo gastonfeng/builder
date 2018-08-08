@@ -3,9 +3,8 @@ from odoo import fields
 __author__ = 'one'
 
 # from openerp import models, api, fields, _
-from openerp.osv import osv
-from openerp import SUPERUSER_ID
-from openerp import _, api
+from odoo.osv import osv
+from odoo import _, api
 
 
 class Groups(osv.osv):
@@ -14,9 +13,9 @@ class Groups(osv.osv):
     _rec_name = 'full_name'
     _order = 'sequence, name'
 
-    def _get_full_name(self, cr, uid, ids, field, arg, context=None):
+    def _get_full_name(self, ids, field, arg, context=None):
         res = {}
-        for g in self.browse(cr, uid, ids, context):
+        for g in self.browse(ids, context):
             if (g.category_type == 'system') and g.category_id:
                 res[g.id] = '%s / %s' % (g.category_id.name, g.name)
             elif (g.category_type == 'system') and g.category_ref:
@@ -27,20 +26,20 @@ class Groups(osv.osv):
                 res[g.id] = g.name
         return res
 
-    def _get_trans_implied(self, cr, uid, ids, field, arg, context=None):
+    def _get_trans_implied(self, ids, field, arg, context=None):
         "computes the transitive closure of relation implied_ids"
         memo = {}  # use a memo for performance and cycle avoidance
 
         def computed_set(g):
             if g not in memo:
-                raise
+                raise Exception()
                 # memo[g] = cset(g.implied_ids)
                 for h in g.implied_ids:
                     computed_set(h).subsetof(memo[g])
             return memo[g]
 
         res = {}
-        for g in self.browse(cr, SUPERUSER_ID, ids, context):
+        for g in self.browse(ids, context):
             res[g.id] = map(int, computed_set(g))
         return res
 
