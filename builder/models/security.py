@@ -13,9 +13,10 @@ class Groups(osv.osv):
     _rec_name = 'full_name'
     _order = 'sequence, name'
 
-    def _get_full_name(self, ids, field, arg, context=None):
+    @api.one
+    def _get_full_name(self):
         res = {}
-        for g in self.browse(ids, context):
+        for g in self:
             if (g.category_type == 'system') and g.category_id:
                 res[g.id] = '%s / %s' % (g.category_id.name, g.name)
             elif (g.category_type == 'system') and g.category_ref:
@@ -26,7 +27,8 @@ class Groups(osv.osv):
                 res[g.id] = g.name
         return res
 
-    def _get_trans_implied(self, ids, field, arg, context=None):
+    @api.multi
+    def _get_trans_implied(self, ids, context=None):
         "computes the transitive closure of relation implied_ids"
         memo = {}  # use a memo for performance and cycle avoidance
 
@@ -63,7 +65,8 @@ class Groups(osv.osv):
     full_name = fields.Char(compute=_get_full_name, type='char', string='Group Name')
     implied_ids = fields.Many2many('builder.res.groups', 'builder_res_groups_implied_rel', 'gid', 'hid',
                                    string='Inherits', help='Users of this group automatically inherit those groups')
-    trans_implied_ids = fields.Many2many('builder.res.groups',compute=_get_trans_implied, type='many2many', relation='builder.res.groups',
+    trans_implied_ids = fields.Many2many('builder.res.groups', compute=_get_trans_implied, type='many2many',
+                                         relation='builder.res.groups',
                                          string='Transitively inherits')
 
     _sql_constraints = [
