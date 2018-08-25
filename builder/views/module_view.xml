@@ -532,10 +532,11 @@
 
                                         </span>
                                         <span class="visibility">
-                                            <a t-if="!read_only_mode and widget.view.is_action_enabled('delete')"
-                                               type="delete" title="Delete">
-                                                <span class='oe_e' style="line-height: 19%;">[</span>
-                                            </a>
+                                            <!--      <a t-if="!read_only_mode and widget.view.is_action_enabled('delete')"
+                                                     type="delete" title="Delete">
+                                                      <span class='oe_e' style="line-height: 19%;">[</span>
+                                                  </a>
+                                                  -->
                                         </span>
 
                                     </div>
