@@ -21,7 +21,7 @@ class ZipFile(object):
         info = zipfile.ZipInfo(filename)
         info.compress_type = compress_type or self.default_compress_type
         info.external_attr = external_attr or self.default_external_attr
-        self.zip.writestr(info, content)
+        self.zip.writestr(info, bytes(content))
 
     def get_zip(self):
         self.zip.close()
