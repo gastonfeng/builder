@@ -1,6 +1,7 @@
-import random
-from jinja2 import Template
 import re
+
+from jinja2 import Template
+
 __author__ = 'one'
 
 from openerp import models, fields, api, _
@@ -97,7 +98,7 @@ class Pages(models.Model):
     controller_route = fields.Char('Route')
     content = fields.Html('Body', sanitize=False)
 
-    def action_edit_html(self, cr, uid, ids, context=None):
+    def action_edit_html(self, ids, context=None):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
         url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
@@ -240,7 +241,7 @@ class WebsiteSnippet(models.Model):
     def _compute_is_custom_category(self):
         self.is_custom_category = self.category == 'custom'
 
-    def action_edit_html(self, cr, uid, ids, context=None):
+    def action_edit_html(self, ids, context=None):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
         url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
