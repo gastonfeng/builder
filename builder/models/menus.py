@@ -177,7 +177,7 @@ class IrUiMenu(models.Model):
     def name_get(self):
         return self.id, self._get_full_name_one()
 
-    def _rec_message(self, cr, uid, ids, context=None):
+    def _rec_message(self, ids, context=None):
         return _('Error ! You can not create recursive Menu.')
 
     @property

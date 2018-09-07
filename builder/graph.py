@@ -1,7 +1,8 @@
 import math
-from openerp.tools import graph
+
 from openerp import tools
 from openerp.osv import osv
+from openerp.tools import graph
 
 __author__ = 'one'
 
@@ -196,7 +197,7 @@ def tree_order(self, node, last=0):
 class view(osv.osv):
     _inherit = 'ir.ui.view'
 
-    def graph_get(self, cr, uid, id, model, node_obj, conn_obj, src_node, des_node, label, scale, context=None):
+    def graph_get(self, id, model, node_obj, conn_obj, src_node, des_node, label, scale, context=None):
         nodes=[]
         nodes_name=[]
         transitions=[]
@@ -227,8 +228,8 @@ class view(osv.osv):
 
         # _Destination_Field = 'from_ids'
         # _Source_Field = 'to_ids'
-        datas = _Model_Obj.read(cr, uid, id, [],context)
-        for a in _Node_Obj.read(cr,uid,datas[_Node_Field],[]):
+        datas = _Model_Obj.read(id, [], context)
+        for a in _Node_Obj.read(datas[_Node_Field], []):
             if a[_Source_Field] or a[_Destination_Field]:
                 nodes_name.append((a['id'],a['name']))
                 nodes.append(a['id'])
@@ -240,7 +241,7 @@ class view(osv.osv):
             else:
                 if not a[_Source_Field]:
                     no_ancester.append(a['id'])
-            for t in _Arrow_Obj.read(cr, uid, a[_Destination_Field], []):
+            for t in _Arrow_Obj.read(a[_Destination_Field], []):
                 if des_node not in t or not t[des_node] or len(t[des_node]) == 0:
                     continue
 

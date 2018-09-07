@@ -59,15 +59,15 @@ class ir_actions_act_window(osv.osv):
     _sequence = 'builder_ir_actions_id_seq'
 
     # @api.constrains('res_model','src_model')
-    def _check_model(self, cr, uid, ids, context=None):
-        for action in self.browse(cr, uid, ids, context):
+    def _check_model(self, ids, context=None):
+        for action in self.browse(ids, context):
             if action.res_model not in self.pool:
                 return False
             if action.src_model and action.src_model not in self.pool:
                 return False
         return True
 
-    def _views_get_fnc(self, cr, uid, ids, name, arg, context=None):
+    def _views_get_fnc(self, ids, name, arg, context=None):
         """Returns an ordered list of the specific view modes that should be
            enabled when displaying the result of this action, along with the
            ID of the specific view to use for each mode, if any were required.
@@ -83,7 +83,7 @@ class ir_actions_act_window(osv.osv):
                     the default one.
         """
         res = {}
-        for act in self.browse(cr, uid, ids):
+        for act in self.browse(ids):
             res[act.id] = [(view.view_id.id, view.view_mode) for view in act.view_ids]
             view_ids_modes = [view.view_mode for view in act.view_ids]
             modes = act.view_mode.split(',')
@@ -96,11 +96,10 @@ class ir_actions_act_window(osv.osv):
                 res[act.id].extend([(False, mode) for mode in missing_modes])
         return res
 
-    def _search_view(self, cr, uid, ids, name, arg, context=None):
+    def _search_view(self, ids, name, arg, context=None):
         res = {}
-        for act in self.browse(cr, uid, ids, context=context):
-            field_get = self.pool[act.res_model].fields_view_get(cr, uid,
-                                                                 act.search_view_id and act.search_view_id.id or False,
+        for act in self.browse(ids, context=context):
+            field_get = self.pool[act.res_model].fields_view_get(act.search_view_id and act.search_view_id.id or False,
                                                                  'search', context=context)
             res[act.id] = str(field_get)
         return res
@@ -173,7 +172,7 @@ class ir_actions_act_window(osv.osv):
             available_view_types = list(set([view.type for view in self.model_id.view_ids]) - {'search'})
             self.view_mode = ','.join(available_view_types)
 
-    def for_xml_id(self, cr, uid, module, xml_id, context=None):
+    def for_xml_id(self, module, xml_id, context=None):
         """ Returns the act_window object created for the provided xml_id
 
         :param module: the module the act_window originates in
@@ -182,6 +181,6 @@ class ir_actions_act_window(osv.osv):
         :return: A read() view of the ir.actions.act_window
         """
         dataobj = self.pool.get('ir.model.data')
-        data_id = dataobj._get_id(cr, SUPERUSER_ID, module, xml_id)
-        res_id = dataobj.browse(cr, uid, data_id, context).res_id
-        return self.read(cr, uid, [res_id], [], context)[0]
+        data_id = dataobj._get_id(SUPERUSER_ID, module, xml_id)
+        res_id = dataobj.browse(data_id, context).res_id
+        return self.read([res_id], [], context)[0]

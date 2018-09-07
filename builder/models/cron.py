@@ -1,13 +1,7 @@
 import logging
-from openerp.addons.base.ir.ir_cron import str2tuple
-import psycopg2
-from datetime import datetime
 
+from openerp.addons.base.ir.ir_cron import str2tuple
 from openerp.osv import osv
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from openerp.tools.safe_eval import safe_eval as eval
-from openerp.tools.translate import _
-from openerp.modules import load_information_from_description_file
 
 from odoo import fields
 
@@ -47,9 +41,9 @@ class ir_cron(osv.osv):
         'active' : 1,
     }
 
-    def _check_args(self, cr, uid, ids, context=None):
+    def _check_args(self, ids, context=None):
         try:
-            for this in self.browse(cr, uid, ids, context):
+            for this in self.browse(ids, context):
                 str2tuple(this.args)
         except Exception:
             return False
@@ -59,9 +53,9 @@ class ir_cron(osv.osv):
         (_check_args, 'Invalid arguments', ['args']),
     ]
 
-    def toggle(self, cr, uid, ids, model, domain, context=None):
-        active = bool(self.pool[model].search_count(cr, uid, domain, context=context))
+    def toggle(self, ids, model, domain, context=None):
+        active = bool(self.pool[model].search_count(domain, context=context))
 
-        return self.try_write(cr, uid, ids, {'active': active}, context=context)
+        return self.try_write(ids, {'active': active}, context=context)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -1,15 +1,14 @@
-from base64 import decodestring
+import mimetypes
+import os
 import re
+from base64 import decodestring
 from string import Template
 from types import MethodType
-import os
-import mimetypes
-import string
 
 from openerp import models, fields, api, _, tools
+
 from .utils import simple_selection
 from .utils.formats import json
-
 
 MODULE_EXPORTER_RE = re.compile('_export_\w[\w_]+')
 
@@ -508,7 +507,7 @@ javascript:(function(){
             },
         }
 
-    def action_edit_description_html(self, cr, uid, ids, context=None):
+    def action_edit_description_html(self, ids, context=None):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
         url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format(id=ids[0], model=self._name)

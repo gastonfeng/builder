@@ -74,17 +74,17 @@ class Groups(osv.osv):
          'The name of the group must be unique within an application!')
     ]
 
-    def copy(self, cr, uid, id, default=None, context=None):
-        group_name = self.read(cr, uid, [id], ['name'])[0]['name']
+    def copy(self, id, default=None, context=None):
+        group_name = self.read([id], ['name'])[0]['name']
         default.update({'name': _('%s (copy)') % group_name})
-        return super(Groups, self).copy(cr, uid, id, default, context)
+        return super(Groups, self).copy(id, default, context)
 
-    def write(self, cr, uid, ids, vals, context=None):
+    def write(self, ids, vals, context=None):
         if 'name' in vals:
             if vals['name'].startswith('-'):
                 raise osv.except_osv(_('Error'),
                                      _('The name of the group can not start with "-"'))
-        res = super(Groups, self).write(cr, uid, ids, vals, context=context)
+        res = super(Groups, self).write(ids, vals, context=context)
         return res
 
     @api.onchange('category_ref')
@@ -128,21 +128,21 @@ class IrRule(osv.osv):
     _name = 'builder.ir.rule'
     _order = 'model_id, name'
 
-    def _get_value(self, cr, uid, ids, field_name, arg, context=None):
+    def _get_value(self, ids, field_name, arg, context=None):
         res = {}
-        for rule in self.browse(cr, uid, ids, context):
+        for rule in self.browse(ids, context):
             if not rule.groups:
                 res[rule.id] = True
             else:
                 res[rule.id] = False
         return res
 
-    def _check_model_obj(self, cr, uid, ids, context=None):
-        return not any(rule.model_id.osv_memory for rule in self.browse(cr, uid, ids, context))
+    def _check_model_obj(self, ids, context=None):
+        return not any(rule.model_id.osv_memory for rule in self.browse(ids, context))
 
-    def _check_model_name(self, cr, uid, ids, context=None):
+    def _check_model_name(self, ids, context=None):
         # Don't allow rules on rules records (this model).
-        return not any(rule.model_id.model == 'ir.rule' for rule in self.browse(cr, uid, ids, context))
+        return not any(rule.model_id.model == 'ir.rule' for rule in self.browse(ids, context))
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     name = fields.Char('Name', index=1)

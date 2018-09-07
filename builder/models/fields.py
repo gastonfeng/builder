@@ -277,8 +277,7 @@ class IrFields(models.Model):
         'name': _get_default_name,
     }
 
-
-    def _check_selection(self, cr, uid, selection, context=None):
+    def _check_selection(self, selection, context=None):
         try:
             selection_list = eval(selection)
         except Exception:
