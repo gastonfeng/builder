@@ -1,3 +1,4 @@
+import datetime
 import posixpath
 import zipfile
 from StringIO import StringIO
@@ -21,7 +22,8 @@ class ZipFile(object):
         info = zipfile.ZipInfo(filename)
         info.compress_type = compress_type or self.default_compress_type
         info.external_attr = external_attr or self.default_external_attr
-        self.zip.writestr(info, bytes(content))
+        info.date_time = datetime.datetime.now().timetuple()
+        self.zip.writestr(info, content)
 
     def get_zip(self):
         self.zip.close()

@@ -98,10 +98,11 @@ class Pages(models.Model):
     controller_route = fields.Char('Route')
     content = fields.Html('Body', sanitize=False)
 
-    def action_edit_html(self, ids, context=None):
-        if not len(ids) == 1:
+    @api.one
+    def action_edit_html(self, context=None):
+        if not len(self.ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
-        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format(id=self.id, model=self._name)
         return {
             'name': _('Edit Template'),
             'type': 'ir.actions.act_url',
@@ -127,7 +128,8 @@ class Theme(models.Model):
     color = fields.Char(string='Color')
     font_name = fields.Char("Font Name")
     font_attr = fields.Char("Font", help="ex: Times New Roman")
-    type = fields.Selection([('layout', 'Layout'),('color', 'Color'), ('font', 'Font'), ('other', 'Other')], string='Type', required=True, default='layout')
+    type = fields.Selection([('layout', 'Layout'), ('color', 'Color'), ('font', 'Font'), ('other', 'Other')],
+                            string='Type', required=True, default='layout')
     item_ids = fields.One2many('builder.website.theme.item', 'theme_id', 'Items', copy=True)
 
 
@@ -159,6 +161,7 @@ class Menu(models.Model):
                 self.url = '/page/website.' + self.page_id.attr_id
             else:
                 self.url = self.page_id.controller_route
+
 
 SNIPPET_TEMPLATE = Template("""
     <xpath expr="//div[@id='snippet_{{ category }}']" position="inside">
@@ -244,7 +247,7 @@ class WebsiteSnippet(models.Model):
     def action_edit_html(self, ids, context=None):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
-        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format (id = ids[0], model=self._name)
+        url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format(id=ids[0], model=self._name)
         return {
             'name': _('Edit Snippet'),
             'type': 'ir.actions.act_url',
@@ -263,8 +266,3 @@ class Module(models.Model):
     website_theme_ids = fields.One2many('builder.website.theme', 'module_id', 'Themes', copy=True)
     website_page_ids = fields.One2many('builder.website.page', 'module_id', 'Pages', copy=True)
     website_snippet_ids = fields.One2many('builder.website.snippet', 'module_id', 'Snippets', copy=True)
-
-
-
-
-
