@@ -41,9 +41,9 @@ class ir_cron(osv.osv):
         'active' : 1,
     }
 
-    def _check_args(self, ids, context=None):
+    def _check_args(self):
         try:
-            for this in self.browse(ids, context):
+            for this in self.browse(self._ids):
                 str2tuple(this.args)
         except Exception:
             return False
