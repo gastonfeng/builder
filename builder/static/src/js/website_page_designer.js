@@ -2,7 +2,7 @@
     'use strict';
     var website = odoo.website;
 
-    website.if_dom_contains('#page_designer', function () {
+    odoo.if_dom_contains('#page_designer', function () {
         website.snippet.BuildingBlock.include({
             _get_snippet_url: function () {
                 //return '/builder/page/snippets';
@@ -10,7 +10,7 @@
             }
         });
 
-        $('.js_template_set').click(function(ev) {
+        $('.js_template_set').click(function (ev) {
             // Copy the template to the body of the email
             //$('#email_designer').show();
             //$('#email_template').hide();
