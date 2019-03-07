@@ -29,7 +29,7 @@ class IrFields(models.Model):
     _description = 'Fields'
     _rec_name = 'name'
 
-    model_id = fields.Many2one('builder.ir.model', 'Model', select=1, ondelete='cascade')
+    model_id = fields.Many2one('builder.ir.model', 'Model', index=True, ondelete='cascade')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', related='model_id.module_id')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
                                               string='States Field')

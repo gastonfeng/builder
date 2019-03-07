@@ -1,4 +1,4 @@
-from StringIO import StringIO
+from io import StringIO
 import simplejson
 import zipfile
 import zlib

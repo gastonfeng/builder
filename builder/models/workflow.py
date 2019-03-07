@@ -32,7 +32,7 @@ class WorkflowActivity(models.Model):
     flow_start = fields.Boolean('Flow Start')
     flow_stop = fields.Boolean('Flow Stop')
     subflow_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Subflow Type')
-    system_subflow_id = fields.Many2one('workflow', 'Subflow')
+    #system_subflow_id = fields.Many2one('workflow', 'Subflow')
     system_subflow_ref = fields.Char('Subflow Ref')
     module_subflow_id = fields.Many2one('builder.workflow', 'Subflow')
     signal_send = fields.Char('Signal (subflow.*)')
@@ -43,26 +43,26 @@ class WorkflowActivity(models.Model):
     diagram_position_y = fields.Integer('Y')
 
     @api.one
-    @api.depends('subflow_type', 'system_subflow_id', 'module_subflow_id')
+    @api.depends('subflow_type',  'module_subflow_id')
     def _compute_has_subflow(self):
-        self.has_subflow = self.subflow_type and (fields.system_subflow_id != False or self.module_subflow_id != False)
+        self.has_subflow = self.subflow_type and ( self.module_subflow_id != False)
 
-    @api.onchange('system_subflow_ref')
-    def onchange_system_subflow_ref(self):
-        self.system_subflow_id = False
-        if self.system_subflow_ref:
-            self.system_subflow_id = self.env['ir.model.data'].xmlid_to_res_id(self.system_subflow_ref)
+#    @api.onchange('system_subflow_ref')
+#    def onchange_system_subflow_ref(self):
+#         self.system_subflow_id = False
+#         if self.system_subflow_ref:
+#             self.system_subflow_id = self.env['ir.model.data'].xmlid_to_res_id(self.system_subflow_ref)
 
-    @api.onchange('system_subflow_id')
-    def onchange_system_subflow_id(self):
-        if self.system_subflow_id:
-            data = self.env['ir.model.data'].search([('model', '=', self._name), ('res_id', '=', self.system_subflow_id.id)])
-            self.system_subflow_ref = "{module}.{id}".format(module=data.module, id=data.name) if data.id else False
+    # @api.onchange('system_subflow_id')
+    # def onchange_system_subflow_id(self):
+    #     if self.system_subflow_id:
+    #         data = self.env['ir.model.data'].search([('model', '=', self._name), ('res_id', '=', self.system_subflow_id.id)])
+    #         self.system_subflow_ref = "{module}.{id}".format(module=data.module, id=data.name) if data.id else False
 
     @api.onchange('subflow_type')
     def onchange_subflow_type(self):
         self.system_subflow_ref = False
-        self.system_subflow_id = False
+        # self.system_subflow_id = False
         self.module_subflow_id = False
 
 

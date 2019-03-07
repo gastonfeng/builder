@@ -1,6 +1,5 @@
 import logging
 
-from openerp.addons.base.ir.ir_cron import str2tuple
 from openerp.osv import osv
 
 from odoo import fields

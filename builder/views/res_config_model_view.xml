@@ -70,11 +70,14 @@
                                                     </group>
                                                 </group>
                                             </page>
-                                            <page string="Groups" attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}">
-                                                <field name="group_ids" domain="[('module_id', '=', module_id)]" attrs="{'required': [('setting_field_type', 'in', ['group'])]}"/>
+                                            <page string="Groups"
+                                                  attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}">
+                                                <field name="module_id" invisible="1"/>
+                                                <field name="group_ids" domain="[('module_id', '=', module_id)]"
+                                                       attrs="{'required': [('setting_field_type', 'in', ['group'])]}"/>
                                             </page>
                                             <page string="Implied Group"
-                                                  attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}" >
+                                                  attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}">
                                                 <group>
                                                     <group string="Implied Group">
                                                         <field name="group_type"/>
@@ -250,10 +253,12 @@
                                 </group>
                             </page>
                             <page string="Groups" attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}">
-                                <field name="group_ids" domain="[('module_id', '=', module_id)]" attrs="{'required': [('setting_field_type', 'in', ['group'])]}"/>
+                                <field name="module_id" invisible="1"/>
+                                <field name="group_ids" domain="[('module_id', '=', module_id)]"
+                                       attrs="{'required': [('setting_field_type', 'in', ['group'])]}"/>
                             </page>
                             <page string="Implied Group"
-                                  attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}" >
+                                  attrs="{'invisible': [('setting_field_type', 'not in', ['group'])]}">
                                 <group>
                                     <group string="Implied Group">
                                         <field name="group_type"/>
@@ -267,7 +272,8 @@
                                     <group></group>
                                 </group>
                             </page>
-                            <page string="Default" attrs="{'invisible': [('setting_field_type', 'not in', ['default'])]}">
+                            <page string="Default"
+                                  attrs="{'invisible': [('setting_field_type', 'not in', ['default'])]}">
                                 <group>
                                     <group>
                                         <field name="default_type"/>

@@ -33,7 +33,7 @@
             <field name="arch" type="xml">
                 <diagram string="Workflow Editor">
                     <node object="builder.workflow.activity" shape="rectangle:has_subflow!=False"
-                          bgcolor="gray:flow_start==True;grey:flow_stop==True" position_x="diagram_position_x" position_y="diagram_position_y">
+                          bgcolor="gray:flow_start==True;grey:flow_stop==True">
                         <field name="name"/>
                         <field name="kind"/>
                         <field name="action"/>
@@ -98,8 +98,8 @@
                                     <group string="Subflow">
                                         <field name="subflow_type"
                                                attrs="{'readonly':[('kind','&lt;&gt;','subflow')]}"/>
-                                        <field name="system_subflow_id"
-                                               attrs="{'readonly':[('kind','&lt;&gt;','subflow')], 'invisible': [('subflow_type', 'not in', ['system'])]}"/>
+                   <!--                     <field name="system_subflow_id"
+                                               attrs="{'readonly':[('kind','&lt;&gt;','subflow')], 'invisible': [('subflow_type', 'not in', ['system'])]}"/>    !-->
                                         <field name="system_subflow_ref"
                                                attrs="{'readonly':[('kind','&lt;&gt;','subflow')], 'invisible': [('subflow_type', 'not in', ['system'])]}"/>
                                         <field name="module_subflow_id"

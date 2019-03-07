@@ -32,7 +32,7 @@ class GeneratorInterface(models.AbstractModel):
                         self._demo_data[filename] = json.loads(open(fullname).read())
                     else:
                         self._demo_data[filename] = open(fullname).read()
-                except Exception, e:
+                except Exception as e:
                     return {}
         return self._demo_data.get(filename, {})
 
