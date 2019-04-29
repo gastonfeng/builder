@@ -1,6 +1,5 @@
-import werkzeug
-from openerp.http import request
-from openerp import http
+from odoo import http
+from odoo.http import request
 
 __author__ = 'deimos'
 
@@ -36,7 +35,9 @@ class BookmarkController(http.Controller):
         if not project:
             return request.not_found()
 
-        xml_id = request.httprequest.form.get('name').lower().replace(' ', '_').replace('.', '_') if request.httprequest.form.get('name') else ''
+        xml_id = request.httprequest.form.get('name').lower().replace(' ', '_').replace('.',
+                                                                                        '_') if request.httprequest.form.get(
+            'name') else ''
 
         request.env['builder.website.snippet'].create({
             'module_id': project.id,

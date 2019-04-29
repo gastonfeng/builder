@@ -1,9 +1,6 @@
-import random
-import string
-
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class DateGenerator(models.Model):

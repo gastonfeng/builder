@@ -1,6 +1,7 @@
 import json
-from ..utils.zip import ZipFile, ModuleZipFile
-from openerp import models, api, fields, _
+
+from odoo import models, api
+from ..utils.zip import ZipFile
 
 
 class ExchangerBase(models.TransientModel):

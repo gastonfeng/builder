@@ -1,6 +1,5 @@
+from odoo import models, fields, api
 from ..fields import snake_case
-from openerp import models, fields, api, _
-from .base import FIELD_WIDGETS_ALL
 
 __author__ = 'one'
 
@@ -60,13 +59,12 @@ class GanttView(models.Model):
     def action_save(self):
         return {'type': 'ir.actions.act_window_close'}
 
-
     @api.onchange('model_id')
     def _onchange_model_id(self):
         self.name = self.model_id.name
         self.xml_id = "view_{snake}_gantt".format(snake=snake_case(self.model_id.model))
-        self.model_inherit_type = self.model_id.inherit_type  #shouldn`t be doing that
-        self.model_name = self.model_id.model  #shouldn`t be doing that
+        self.model_inherit_type = self.model_id.inherit_type  # shouldn`t be doing that
+        self.model_name = self.model_id.model  # shouldn`t be doing that
 
 
 class GanttField(models.Model):

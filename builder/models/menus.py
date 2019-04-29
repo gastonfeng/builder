@@ -20,8 +20,9 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
-from openerp.osv import osv
+from odoo import fields, api, _
+from odoo import models
+
 MENU_ITEM_SEPARATOR = "/"
 
 
@@ -51,19 +52,19 @@ class IrUiMenu(models.Model):
             'all_menu_ids': [i.id for i in menu_roots],
         }
 
-    def _get_full_name(self, ids, name=None, args=None, context=None):
+    def _get_full_name(self, name=None, args=None):
         if context is None:
             context = {}
         res = {}
-        for elmt in self.browse(ids, context=context):
+        for elmt in self.browse(ids):
             res[elmt.id] = self._get_one_full_name(elmt)
         return res
 
     def _get_one_full_name(self, elmt, level=6):
-        if level<=0:
+        if level <= 0:
             return '...'
         if elmt.parent_id:
-            parent_path = self._get_one_full_name(elmt.parent_id, level-1) + MENU_ITEM_SEPARATOR
+            parent_path = self._get_one_full_name(elmt.parent_id, level - 1) + MENU_ITEM_SEPARATOR
         else:
             parent_path = ''
         return parent_path + elmt.name
@@ -77,7 +78,8 @@ class IrUiMenu(models.Model):
     @api.onchange('parent_menu_id')
     def onchange_parent_menu_id(self):
         if self.parent_menu_id:
-            data = self.env['ir.model.data'].search([('model', '=', 'ir.ui.menu'), ('res_id', '=', self.parent_menu_id.id)])
+            data = self.env['ir.model.data'].search(
+                [('model', '=', 'ir.ui.menu'), ('res_id', '=', self.parent_menu_id.id)])
             self.parent_ref = "{module}.{id}".format(module=data.module, id=data.name) if data.id else False
 
     @api.onchange('parent_type')
@@ -104,20 +106,22 @@ class IrUiMenu(models.Model):
     action_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Action Type')
     action_system_ref = fields.Char('Action System Ref')
     action_system = fields.Reference([
-                                    ('ir.actions.report.xml', 'ir.actions.report.xml'),
-                                    ('ir.actions.act_window', 'ir.actions.act_window'),
-                                    ('ir.actions.wizard', 'ir.actions.wizard'),
-                                    ('ir.actions.act_url', 'ir.actions.act_url'),
-                                    ('ir.actions.server', 'ir.actions.server'),
-                                    ('ir.actions.client', 'ir.actions.client'),
+        ('ir.actions.report.xml', 'ir.actions.report.xml'),
+        ('ir.actions.act_window', 'ir.actions.act_window'),
+        ('ir.actions.wizard', 'ir.actions.wizard'),
+        ('ir.actions.act_url', 'ir.actions.act_url'),
+        ('ir.actions.server', 'ir.actions.server'),
+        ('ir.actions.client', 'ir.actions.client'),
     ], 'System Action')
 
     action_module = fields.Reference([
-                                    ('builder.ir.actions.act_window', 'Window'),
-                                    # ('builder.ir.actions.act_url', 'URL'),
+        ('builder.ir.actions.act_window', 'Window'),
+        # ('builder.ir.actions.act_url', 'URL'),
     ], 'Module Action')
 
-    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_menu_group_rel', 'menu_id', 'gid', string='Groups', help="If this field is empty, the menu applies to all users. Otherwise, the view applies to the users of those groups only.")
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_menu_group_rel', 'menu_id', 'gid',
+                                 string='Groups',
+                                 help="If this field is empty, the menu applies to all users. Otherwise, the view applies to the users of those groups only.")
 
     @api.onchange('action_system')
     def onchange_action_system(self):
@@ -164,7 +168,7 @@ class IrUiMenu(models.Model):
             return '...'
         parent_path = ''
         if self.parent_id:
-            parent_path = self.parent_id._get_full_name_one(level-1) + MENU_ITEM_SEPARATOR
+            parent_path = self.parent_id._get_full_name_one(level - 1) + MENU_ITEM_SEPARATOR
         elif self.parent_ref:
             if self.parent_menu_id:
                 parent_path = '[{name}]'.format(name=self.parent_menu_id.complete_name) + MENU_ITEM_SEPARATOR
@@ -177,15 +181,16 @@ class IrUiMenu(models.Model):
     def name_get(self):
         return self.id, self._get_full_name_one()
 
-    def _rec_message(self, ids, context=None):
+    def _rec_message(self):
         return _('Error ! You can not create recursive Menu.')
 
     @property
     def real_xml_id(self):
-        return self.xml_id if '.' in self.xml_id else '{module}.{xml_id}'.format(module=self.module_id.name, xml_id=self.xml_id)
+        return self.xml_id if '.' in self.xml_id else '{module}.{xml_id}'.format(module=self.module_id.name,
+                                                                                 xml_id=self.xml_id)
 
     _constraints = [
-        (osv.osv._check_recursion, _rec_message, ['parent_id'])
+        (models.Model._check_recursion, _rec_message, ['parent_id'])
     ]
     _defaults = {
         'sequence': 10,

@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from openerp import models, fields, api, _
+from odoo import models, fields, api, _
 
 
 class IrModel(models.Model):
@@ -21,7 +21,8 @@ class IrModel(models.Model):
     osv_memory = fields.Boolean('Transient',
                                 help="This field specifies whether the model is transient or not (i.e. if records are automatically deleted from the database or not)")
     field_ids = fields.One2many('builder.ir.model.fields', 'model_id', 'Fields', required=True, copy=True)
-    relation_field_ids = fields.One2many('builder.ir.model.fields', 'relation_model_id', 'Referenced By Fields', copy=True)
+    relation_field_ids = fields.One2many('builder.ir.model.fields', 'relation_model_id', 'Referenced By Fields',
+                                         copy=True)
     # inherit_model = fields.Char('Inherit', compute='_compute_inherit_model')
 
     inherit_model_ids = fields.One2many('builder.ir.model.inherit', 'model_id', 'Inherit', copy=True)
@@ -98,6 +99,10 @@ class IrModel(models.Model):
         copy=True
     )
 
+    def write(self, vals):
+        r = super(IrModel, self).write(vals)
+        return r
+
     @property
     def order_string(self):
         return ','.join(['{field} {order}'.format(field=f.name, order=f.order) for f in self.order_field_ids])
@@ -143,7 +148,8 @@ class IrModel(models.Model):
 
     @property
     def define(self):
-        return len(self.method_ids) or len(self.status_bar_button_ids) or len(self.button_ids) or any(not field.is_inherited or field.redefine for field in self.field_ids)
+        return len(self.method_ids) or len(self.status_bar_button_ids) or len(self.button_ids) or any(
+            not field.is_inherited or field.redefine for field in self.field_ids)
 
     @api.one
     def _compute_rec_name_field_id(self):
@@ -319,4 +325,3 @@ class InheritsModel(models.Model):
     @api.depends('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
     def _compute_field_display(self):
         self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name
-

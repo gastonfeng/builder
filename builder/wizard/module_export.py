@@ -1,4 +1,4 @@
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class ModuleImport(models.TransientModel):
@@ -25,6 +25,7 @@ class ModuleImport(models.TransientModel):
         ids = self.env.context.get('active_ids') or [self.env.context.get('active_ids')]
         return {
             'type': 'ir.actions.act_url',
-            'url': '/builder/export/{format}/{ids}'.format(ids=','.join([str(i) for i in ids if i]), format=self.export_type),
+            'url': '/builder/export/{format}/{ids}'.format(ids=','.join([str(i) for i in ids if i]),
+                                                           format=self.export_type),
             'target': 'self'
         }

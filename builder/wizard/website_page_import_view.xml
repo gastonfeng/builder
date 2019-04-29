@@ -10,7 +10,7 @@
                         <field name="module_id" invisible="1"/>
                         <group>
                             <group>
-                                <field name="include_menu" />
+                                <field name="include_menu"/>
                             </group>
                             <group></group>
                         </group>

@@ -8,15 +8,15 @@
                 <form string="Module Import">
                     <group>
                         <group>
-                            <field name="import_type" />
-                            <field name="file" />
+                            <field name="import_type"/>
+                            <field name="file"/>
                         </group>
                         <group>
                             <field name="ignore_version"/>
                         </group>
                     </group>
                     <footer>
-                        <button name="action_import" string="Import Module" type="object" class="oe_highlight" />
+                        <button name="action_import" string="Import Module" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>

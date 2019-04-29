@@ -36,14 +36,14 @@ class Superclass(models.AbstractModel):
     #         view = self.pool.get(record.subclass_model).fields_view_get( view_id, view_type, context=context, toolbar=toolbar, submenu=submenu)
     #     return view
 
-    def get_formview_action(self, id, context=None):
+    def get_formview_action(self, id):
         """
         @return <ir.actions.act_window>
         """
 
         record = self.browse(id)[0]
         if not record.subclass_model:
-            return super(Superclass, self).get_formview_action(id, context=context)
+            return super(Superclass, self).get_formview_action(id)
 
         create_instance = False
         # try:
@@ -57,10 +57,10 @@ class Superclass(models.AbstractModel):
             env[record.subclass_model].create_instance(id[0] if isinstance(id, list) else id)
 
         if self._name == record.subclass_model:
-            view = super(Superclass, self).get_formview_action(id, context=context)
+            view = super(Superclass, self).get_formview_action(id)
         else:
-            view = self.pool.get(record.subclass_model).get_formview_action(record.subclass_id,
-                                                                            context=context)
+            view = self.env[record.subclass_model].get_formview_action(record.subclass_id,
+                                                                       context=context)
         return view
 
     @api.one
@@ -78,28 +78,28 @@ class Superclass(models.AbstractModel):
     @api.multi
     def action_edit(self):
         cr, uid, cxt = self.env.args
-        data = self._model.get_formview_action(cr, uid, self.id, context=cxt)
+        data = self._model.get_formview_action(self.id)
         return data
 
 
 class Subclass(models.AbstractModel):
     _name = 'ir.mixin.polymorphism.subclass'
 
-    def get_formview_id(self, id, context=None):
-        view = self.pool.get('ir.ui.view').search([
+    def get_formview_id(self, id):
+        view = self.env['ir.ui.view'].search([
             ('type', '=', 'form'),
             ('model', '=', self._name)
-        ], context=context)
+        ])
         return view[0] if len(view) else False
 
-    def unlink(self, ids, context=None):
-        records = self.browse(ids, context=context)
+    def unlink(self):
+        records = self.browse(ids)
         parent_ids = {
             model: [rec[field].id for rec in records] for model, field in self._inherits.items()
         }
 
-        res = super(Subclass, self).unlink(ids, context=context)
+        res = super(Subclass, self).unlink(ids)
         if res:
             for model in parent_ids:
-                self.pool.get(model).unlink(parent_ids.get(model, []), context=context)
+                self.env[model].unlink(parent_ids.get(model, []))
         return res

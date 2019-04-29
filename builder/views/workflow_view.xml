@@ -98,8 +98,8 @@
                                     <group string="Subflow">
                                         <field name="subflow_type"
                                                attrs="{'readonly':[('kind','&lt;&gt;','subflow')]}"/>
-                   <!--                     <field name="system_subflow_id"
-                                               attrs="{'readonly':[('kind','&lt;&gt;','subflow')], 'invisible': [('subflow_type', 'not in', ['system'])]}"/>    !-->
+                                        <!--                     <field name="system_subflow_id"
+                                                                    attrs="{'readonly':[('kind','&lt;&gt;','subflow')], 'invisible': [('subflow_type', 'not in', ['system'])]}"/>    !-->
                                         <field name="system_subflow_ref"
                                                attrs="{'readonly':[('kind','&lt;&gt;','subflow')], 'invisible': [('subflow_type', 'not in', ['system'])]}"/>
                                         <field name="module_subflow_id"

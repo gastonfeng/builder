@@ -1,15 +1,17 @@
-from lxml import html
 import lxml.etree as etree
+from lxml import html
+
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class PageImport(models.TransientModel):
     _name = 'builder.website.page.import.wizard'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
-    page_ids = fields.Many2many('ir.ui.view', 'builder_website_page_import_wizard_rel', 'wizard_id', 'view_id', 'Pages', domain="[('type', '=', 'qweb'), ('page', '=', True)]")
+    page_ids = fields.Many2many('ir.ui.view', 'builder_website_page_import_wizard_rel', 'wizard_id', 'view_id', 'Pages',
+                                domain="[('type', '=', 'qweb'), ('page', '=', True)]")
     include_menu = fields.Boolean('Include Menu', default=True)
 
     @api.one
@@ -26,7 +28,7 @@ class PageImport(models.TransientModel):
 
             while page_source.xpath('//t'):
                 for t in page_source.xpath('//t'):
-                    t. getparent().remove(t)
+                    t.getparent().remove(t)
 
             if not current_page.id:
                 new_item = page_item_model.create({

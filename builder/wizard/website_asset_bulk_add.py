@@ -1,13 +1,14 @@
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class ModelImport(models.TransientModel):
     _name = 'builder.website.asset.data.wizard'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
-    data_ids = fields.Many2many('builder.data.file', 'builder_website_asset_data_file_rel', 'wizard_id', 'data_id', 'Files')
+    data_ids = fields.Many2many('builder.data.file', 'builder_website_asset_data_file_rel', 'wizard_id', 'data_id',
+                                'Files')
 
     @api.one
     def action_import(self):
@@ -18,7 +19,8 @@ class ModelImport(models.TransientModel):
         asset_field = self.env.context.get('asset_field', 'file_id')
 
         for data_file in self.data_ids:
-            current_file = self.env[asset_model_name].search([(model_field, '=', model.id), (asset_field, '=', data_file.id)])
+            current_file = self.env[asset_model_name].search(
+                [(model_field, '=', model.id), (asset_field, '=', data_file.id)])
 
             if not current_file.id:
                 new_item = asset_item_model.create(dict(((model_field, model.id), (asset_field, data_file.id))))

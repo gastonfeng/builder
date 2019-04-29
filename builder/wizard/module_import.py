@@ -5,7 +5,7 @@ import json
 __author__ = 'one'
 
 import zipfile
-from openerp import models, api, fields
+from odoo import models, api, fields
 
 
 class ModuleImport(models.TransientModel):
@@ -52,7 +52,8 @@ class ModuleImport(models.TransientModel):
         :type self: ModuleImport
         """
         if self.builder_version != self.file_version and not self.ignore_version:
-            raise ValueError('File version ({fv}) do not match builder version ({bv})'.format(fv=self.file_version, bv=self.builder_version))
+            raise ValueError('File version ({fv}) do not match builder version ({bv})'.format(fv=self.file_version,
+                                                                                              bv=self.builder_version))
 
         file_like_object = io.BytesIO(base64.decodestring(self.file))
         zf = zipfile.ZipFile(file_like_object)

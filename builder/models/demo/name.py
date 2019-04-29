@@ -1,9 +1,8 @@
 import random
-import string
 
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 import re
 
 
@@ -24,17 +23,18 @@ class NameGenerator(models.Model):
     )
 
     name_type = fields.Selection([
-                                     ('Name', 'Alex (any gender)'),
-                                     ('MaleName', 'John (male name)'),
-                                     ('FemaleName', 'Jane (female name)'),
-                                     ('MaleName Surname', 'John Smith'),
-                                     ('FemaleName Surname', 'Jane Smith'),
-                                     ('Title Name Surname', 'Mr. Alex Smith'),
-                                     ('Name Initial. Surname', 'Alex J. Smith'),
-                                     ('Surname', 'Smith (surname)'),
-                                 ], required=True)
+        ('Name', 'Alex (any gender)'),
+        ('MaleName', 'John (male name)'),
+        ('FemaleName', 'Jane (female name)'),
+        ('MaleName Surname', 'John Smith'),
+        ('FemaleName Surname', 'Jane Smith'),
+        ('Title Name Surname', 'Mr. Alex Smith'),
+        ('Name Initial. Surname', 'Alex J. Smith'),
+        ('Surname', 'Smith (surname)'),
+    ], required=True)
 
-    name_type_schema = fields.Char(required=True, help=_("Valid placeholders are : Title, Name, MaleName, FemaleName, Surname, Initial"))
+    name_type_schema = fields.Char(required=True, help=_(
+        "Valid placeholders are : Title, Name, MaleName, FemaleName, Surname, Initial"))
 
     _defaults = {
         'subclass_model': lambda s, c, u, cxt=None: s._name

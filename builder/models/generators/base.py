@@ -1,9 +1,10 @@
-from jinja2 import Environment, FileSystemLoader
 import os
 
+from jinja2 import Environment, FileSystemLoader
+
+from odoo import models, api
 from ..utils.jinja2.utils import groups_attribute, field_options, field_attrs
 from ..utils.zip import ZipFile, ModuleZipFile
-from openerp import models, api
 
 
 class GeneratorBase(models.TransientModel):

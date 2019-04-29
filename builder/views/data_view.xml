@@ -57,7 +57,7 @@
                                                 <page string="Changes">
                                                     <field name="change_ids">
                                                         <tree string="Changes" editable="bottom">
-                                                            <field name="sequence" widget="handle" />
+                                                            <field name="sequence" widget="handle"/>
                                                             <field name="lambda_id"/>
                                                             <field name="parameters"/>
                                                         </tree>
@@ -105,7 +105,8 @@
                     <sheet>
                         <group>
                             <field name="name"/>
-                            <field name="code" widget="ace" widget-t-field-options="{'widget': 'ace', 'mode': 'python'}" />
+                            <field name="code" widget="ace"
+                                   widget-t-field-options="{'widget': 'ace', 'mode': 'python'}"/>
                         </group>
                     </sheet>
                 </form>

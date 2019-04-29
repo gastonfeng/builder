@@ -6,5 +6,5 @@ from odoo import models, fields, api, tools, _
 
 
 {% for model in models -%}
-{{ macros.builder_ir_model(model) }}
+    {{ macros.builder_ir_model(model) }}
 {% endfor -%}

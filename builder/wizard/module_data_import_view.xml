@@ -8,8 +8,8 @@
                 <form string="Module Import">
                     <group>
                         <group>
-                            <field name="path_prefix" />
-                            <field name="file" />
+                            <field name="path_prefix"/>
+                            <field name="file"/>
                         </group>
                         <group>
                         </group>

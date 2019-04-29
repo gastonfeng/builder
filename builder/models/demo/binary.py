@@ -1,9 +1,8 @@
 import random
-import string
 
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class BinaryGenerator(models.Model):
@@ -22,7 +21,8 @@ class BinaryGenerator(models.Model):
         required=True
     )
 
-    file_ids = fields.Many2many('builder.data.file', 'builder_ir_model_demo_generator_binary_files_rel', 'generator_id', 'data_id', 'Files')
+    file_ids = fields.Many2many('builder.data.file', 'builder_ir_model_demo_generator_binary_files_rel', 'generator_id',
+                                'data_id', 'Files')
 
     _defaults = {
         'subclass_model': lambda s, c, u, cxt=None: s._name

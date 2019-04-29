@@ -6,7 +6,6 @@ from .utils import get_field_types
 
 __author__ = 'one'
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -30,7 +29,7 @@ class IrFields(models.Model):
     _rec_name = 'name'
 
     model_id = fields.Many2one('builder.ir.model', 'Model', index=True, ondelete='cascade')
-    module_id = fields.Many2one('builder.ir.module.module', 'Module', related='model_id.module_id')
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True)
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
                                               string='States Field')
 
@@ -83,7 +82,8 @@ class IrFields(models.Model):
     help = fields.Text('Help')
     delegate = fields.Boolean('Delegate', default=True, help=''' set it to ``True`` to make fields of the target model
         accessible from the current model (corresponds to ``_inherits``)''')
-    auto_join = fields.Boolean('Auto Join', help='Whether JOINs are generated upon search through that field (boolean, by default ``False``')
+    auto_join = fields.Boolean('Auto Join',
+                               help='Whether JOINs are generated upon search through that field (boolean, by default ``False``')
     decimal_digits = fields.Char('Decimal Digits', )
     decimal_precision = fields.Char('Decimal Precision')
 
@@ -94,7 +94,8 @@ class IrFields(models.Model):
                               "specified as a Python expression defining a list of triplets. "
                               "For example: [('color','=','red')]")
     selectable = fields.Boolean('Selectable', default=1)
-    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_fields_group_rel', 'field_id', 'group_id', string='Groups')
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_fields_group_rel', 'field_id', 'group_id',
+                                 string='Groups')
     option_ids = fields.One2many('builder.ir.model.fields.option', 'field_id', 'Options', copy=True)
     states_ids = fields.One2many('builder.ir.model.fields.state', 'field_id', 'States', copy=True)
 
@@ -277,7 +278,7 @@ class IrFields(models.Model):
         'name': _get_default_name,
     }
 
-    def _check_selection(self, selection, context=None):
+    def _check_selection(self, selection):
         try:
             selection_list = eval(selection)
         except Exception:

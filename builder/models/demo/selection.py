@@ -2,7 +2,7 @@ import random
 
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class SelectionRandomGenerator(models.Model):

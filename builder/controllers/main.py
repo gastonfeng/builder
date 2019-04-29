@@ -1,12 +1,13 @@
+from odoo.addons.web.controllers.main import content_disposition
+
 from odoo import http
-from odoo.http import request, content_disposition
+from odoo.http import request
 
 
 class MainController(http.Controller):
 
     @http.route('/builder/generate/<string:generator>/<string:modules>', type='http', auth="user")
     def download(self, generator, modules, **kwargs):
-
         generator = request.env[generator]
         modules = request.env['builder.ir.module.module'].search([
             ('id', 'in', modules.split(','))
@@ -29,11 +30,12 @@ class MainController(http.Controller):
             ('id', 'in', modules.split(','))
         ])
 
-        filename = "{name}.{ext}".format(name=modules[0].name if len(modules) == 1 else 'modules', ext=exchanger.get_extension())
+        filename = "{name}.{ext}".format(name=modules[0].name if len(modules) == 1 else 'modules',
+                                         ext=exchanger.get_extension())
 
         file_io = exchanger.get_exported_modules(modules)
 
         return request.make_response(
-                    file_io.getvalue(),
-                    headers=[('Content-Type', 'application/octet-stream'),
-                             ('Content-Disposition', content_disposition(filename))])
+            file_io.getvalue(),
+            headers=[('Content-Type', 'application/octet-stream'),
+                     ('Content-Disposition', content_disposition(filename))])

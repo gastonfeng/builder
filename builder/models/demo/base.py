@@ -3,7 +3,7 @@ import os
 import pickle
 import random
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields, _
 
 
 class GeneratorInterface(models.AbstractModel):
@@ -44,7 +44,7 @@ class Generator(models.Model):
     _order = 'module_id asc, model_id asc'
     _target_type = 'char'
 
-    model_id = fields.Many2one('builder.ir.model','id', ondelete='cascade')
+    model_id = fields.Many2one('builder.ir.model', ondelete='cascade')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', related='model_id.module_id', ondelete='cascade',
                                 store=True)
     type = fields.Char('Type', compute='_compute_type')
@@ -127,7 +127,7 @@ class IrModel(models.Model):
     @api.depends('demo_records', 'model')
     def _compute_demo_xml_id_sample(self):
         tmpl = '{model}_'.format(model=self.model.lower().replace('.', '_')) + '{id}' if self.model else 'model_'
-        self.demo_xml_id_sample = pickle.dumps([tmpl.format(id=i) for i in xrange(self.demo_records)])
+        self.demo_xml_id_sample = pickle.dumps([tmpl.format(id=i) for i in range(self.demo_records)]) if self.demo_records else False
 
     @api.multi
     def demo_xml_id(self, index):

@@ -10,7 +10,7 @@
                            t-attf-href="#{returnUrl}">
                             Go Back
                         </a>
-                        <t t-call="#{field_template}" >
+                        <t t-call="#{field_template}">
                             <t t-set="record" t-value="record"/>
                             <t t-set="model" t-value="model"/>
                             <t t-set="res_id" t-value="res_id"/>
@@ -38,17 +38,21 @@
             <t t-call="website.layout">
                 <div id="wrap" class="container" t-ignore="True">
                     <div id="page_designer" class="mb32">
-                        <a t-if="model == 'builder.website.page'" class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
+                        <a t-if="model == 'builder.website.page'"
+                           class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
                            t-attf-href="/web#return_label=Website&amp;model=builder.ir.module.module&amp;id=#{record.module_id.id}&amp;view_type=form&amp;action=builder.open_module_tree">
                             Back to module
                         </a>
-                        <a t-if="model == 'builder.ir.module.module'" class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
+                        <a t-if="model == 'builder.ir.module.module'"
+                           class="mt16 btn btn-primary pull-right css_editable_mode_hidden"
                            t-attf-href="/web#return_label=Website&amp;model=builder.ir.module.module&amp;id=#{record.id}&amp;view_type=form&amp;action=builder.open_module_tree">
                             Back to module
                         </a>
                         <!-- body fields -->
-                        <div t-if="model == 'builder.website.page'" t-field="record.content" id="page_content" class="o_page_content"/>
-                        <div t-if="model == 'builder.ir.module.module'" t-field="record.description_html" id="page_content" class="o_page_content"/>
+                        <div t-if="model == 'builder.website.page'" t-field="record.content" id="page_content"
+                             class="o_page_content"/>
+                        <div t-if="model == 'builder.ir.module.module'" t-field="record.description_html"
+                             id="page_content" class="o_page_content"/>
                     </div>
                 </div>
             </t>

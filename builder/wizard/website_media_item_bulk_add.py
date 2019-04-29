@@ -1,13 +1,14 @@
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class MediaItemBulkAddWizard(models.TransientModel):
     _name = 'builder.website.media.item.bulk.add.wizard'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
-    data_ids = fields.Many2many('builder.data.file', 'builder_website_media_item_bulk_data_file_rel', 'wizard_id', 'data_id', 'Files')
+    data_ids = fields.Many2many('builder.data.file', 'builder_website_media_item_bulk_data_file_rel', 'wizard_id',
+                                'data_id', 'Files')
 
     @api.one
     def action_import(self):

@@ -1,10 +1,8 @@
 import random
-import string
 
 __author__ = 'one'
 
-from openerp import models, api, fields, _
-import re
+from odoo import models, api, fields
 
 
 class M2oGenerator(models.Model):
@@ -41,6 +39,6 @@ class M2oGenerator(models.Model):
         else:
             if field.relation_model_id:
                 related_demo_count = field.relation_model_id.demo_records
-                return field.relation_model_id.demo_xml_id(random.randint(0, related_demo_count-1))
+                return field.relation_model_id.demo_xml_id(random.randint(0, related_demo_count - 1))
             else:
                 return False

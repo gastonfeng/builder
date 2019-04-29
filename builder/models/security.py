@@ -1,13 +1,10 @@
-from odoo import fields
-
 __author__ = 'one'
 
-# from openerp import models, api, fields, _
-from odoo.osv import osv
 from odoo import _, api
+from odoo import fields, models
 
 
-class Groups(osv.osv):
+class Groups(models.Model):
     _name = "builder.res.groups"
     _description = "Access Groups"
     _rec_name = 'full_name'
@@ -74,17 +71,17 @@ class Groups(osv.osv):
          'The name of the group must be unique within an application!')
     ]
 
-    def copy(self, id, default=None, context=None):
+    def copy(self, id, default=None):
         group_name = self.read([id], ['name'])[0]['name']
         default.update({'name': _('%s (copy)') % group_name})
         return super(Groups, self).copy(id, default, context)
 
-    def write(self, ids, vals, context=None):
+    def write(self, vals):
         if 'name' in vals:
             if vals['name'].startswith('-'):
-                raise osv.except_osv(_('Error'),
-                                     _('The name of the group can not start with "-"'))
-        res = super(Groups, self).write(ids, vals, context=context)
+                raise UserError(_('Error'),
+                                _('The name of the group can not start with "-"'))
+        res = super(Groups, self).write(ids, vals)
         return res
 
     @api.onchange('category_ref')
@@ -106,7 +103,7 @@ class Groups(osv.osv):
                                                                              xml_id=self.xml_id)
 
 
-class IrModelAccess(osv.osv):
+class IrModelAccess(models.Model):
     _name = 'builder.ir.model.access'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -124,11 +121,11 @@ class IrModelAccess(osv.osv):
     #         vals['module_id'] = self.pool['builder.ir.model'].search(cr, uid, [('id', '=', vals['model_id'])])
 
 
-class IrRule(osv.osv):
+class IrRule(models.Model):
     _name = 'builder.ir.rule'
     _order = 'model_id, name'
 
-    def _get_value(self, ids, field_name, arg, context=None):
+    def _get_value(self, field_name, arg):
         res = {}
         for rule in self.browse(ids, context):
             if not rule.groups:
@@ -137,10 +134,10 @@ class IrRule(osv.osv):
                 res[rule.id] = False
         return res
 
-    def _check_model_obj(self, ids, context=None):
+    def _check_model_obj(self):
         return not any(rule.model_id.osv_memory for rule in self.browse(ids, context))
 
-    def _check_model_name(self, ids, context=None):
+    def _check_model_name(self):
         # Don't allow rules on rules records (this model).
         return not any(rule.model_id.model == 'ir.rule' for rule in self.browse(ids, context))
 

@@ -1,6 +1,6 @@
-from ..fields import snake_case
-from openerp import models, fields, api
+from odoo import models, fields, api
 from .base import FIELD_WIDGETS_ALL
+from ..fields import snake_case
 
 __author__ = 'one'
 
@@ -81,5 +81,3 @@ class TreeField(models.Model):
     def _compute_field_type(self):
         if self.field_id:
             self.field_ttype = self.field_id.ttype
-
-

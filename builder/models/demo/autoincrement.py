@@ -1,9 +1,6 @@
-from random import randint, sample
-import openerp
-
 __author__ = 'deimos'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class AutoincrementGenerator(models.Model):

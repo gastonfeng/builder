@@ -1,5 +1,6 @@
 import random
-from openerp import models, api, fields
+
+from odoo import models, api, fields
 
 __author__ = 'one'
 
@@ -31,7 +32,6 @@ class NormalDistributionGenerator(models.Model):
     def get_generator(self, field):
         while True:
             yield self.format_value(field, random.gauss(self.mean, self.stdev))
-
 
     @api.model
     def format_value(self, field, value):

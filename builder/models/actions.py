@@ -1,26 +1,24 @@
-from odoo import fields
-
 __author__ = 'one'
 
-# from openerp import models, api, fields, _
-from openerp.osv import osv
-from openerp import SUPERUSER_ID
-from openerp import api
+from odoo import SUPERUSER_ID
+from odoo import api
+# from odoo import models, api, fields, _
+from odoo import fields, models
 
 
-class actions(osv.osv):
+class actions(models.Model):
     _name = 'builder.ir.actions.actions'
     _table = 'builder_ir_actions'
     _order = 'name'
-    module_id=fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
-    xml_id=fields.Char('XML ID', required=True)
-    name=fields.Char('Name', required=True)
-    type=fields.Char('Action Type', required=True)
-    usage=fields.Char('Action Usage')
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
+    xml_id = fields.Char('XML ID', required=True)
+    name = fields.Char('Name', required=True)
+    type = fields.Char('Action Type', required=True)
+    usage = fields.Char('Action Usage')
 
-    help=fields.Text('Action description',
-                        help='Optional help text for the users with a description of the target view, such as its usage and purpose.',
-                        translate=True)
+    help = fields.Text('Action description',
+                       help='Optional help text for the users with a description of the target view, such as its usage and purpose.',
+                       translate=True)
     _defaults = {
         'usage': lambda *a: False,
     }
@@ -31,16 +29,16 @@ class actions(osv.osv):
                                                                                  xml_id=self.xml_id)
 
 
-class ir_actions_act_url(osv.osv):
+class ir_actions_act_url(models.Model):
     _name = 'builder.ir.actions.act_url'
     _table = 'builder_ir_act_url'
     _inherit = 'builder.ir.actions.actions'
     _sequence = 'builder_ir_actions_id_seq'
     _order = 'name'
-    name=fields.Char('Action Name', translate=True)
-    type=fields.Char('Action Type', required=True)
-    url=fields.Text('Action URL', required=True)
-    target=fields.Selection((
+    name = fields.Char('Action Name', translate=True)
+    type = fields.Char('Action Type', required=True)
+    url = fields.Text('Action URL', required=True)
+    target = fields.Selection((
         ('new', 'New Window'),
         ('self', 'This Window')),
         'Action Target', required=True
@@ -52,22 +50,22 @@ class ir_actions_act_url(osv.osv):
     }
 
 
-class ir_actions_act_window(osv.osv):
+class ir_actions_act_window(models.Model):
     _name = 'builder.ir.actions.act_window'
     _table = 'builder_ir_act_window'
     _inherit = 'builder.ir.actions.actions'
     _sequence = 'builder_ir_actions_id_seq'
 
     # @api.constrains('res_model','src_model')
-    def _check_model(self, ids, context=None):
+    def _check_model(self):
         for action in self.browse(ids, context):
-            if action.res_model not in self.pool:
+            if action.res_model not in self.env:
                 return False
-            if action.src_model and action.src_model not in self.pool:
+            if action.src_model and action.src_model not in self.env:
                 return False
         return True
 
-    def _views_get_fnc(self, ids, name, arg, context=None):
+    def _views_get_fnc(self, name, arg):
         """Returns an ordered list of the specific view modes that should be
            enabled when displaying the result of this action, along with the
            ID of the specific view to use for each mode, if any were required.
@@ -96,52 +94,53 @@ class ir_actions_act_window(osv.osv):
                 res[act.id].extend([(False, mode) for mode in missing_modes])
         return res
 
-    def _search_view(self, ids, name, arg, context=None):
+    def _search_view(self, name, arg):
         res = {}
-        for act in self.browse(ids, context=context):
-            field_get = self.pool[act.res_model].fields_view_get(act.search_view_id and act.search_view_id.id or False,
-                                                                 'search', context=context)
+        for act in self.browse(ids):
+            field_get = self.env[act.res_model].fields_view_get(
+                act.search_view_id and act.search_view_id.id or False,
+                'search')
             res[act.id] = str(field_get)
         return res
 
-    name=fields.Char('Action Name', translate=True)
-    view_id=fields.Many2one('builder.ir.ui.view', 'View Ref.', ondelete='set null')
-    domain=fields.Char('Domain Value',
-                          help="Optional domain filtering of the destination data, as a Python expression")
-    context=fields.Char('Context Value', required=True,
-                           help="Context dictionary as Python expression, empty by default (Default: {})")
-    res_id=fields.Integer('Record ID',
-                             help="Database ID of record to open in form view, when ``view_mode`` is set to 'form' only")
-    model_id=fields.Many2one('builder.ir.model', 'Destination Model', required=True, ondelete='cascade',
-                                help="Model name of the object to open in the view window")
-    src_model=fields.Char('Source Model',
-                             help="Optional model name of the objects on which this action should be visible")
-    target=fields.Selection([('current', 'Current Window'), ('new', 'New Window'), ('inline', 'Inline Edit'),
-                                ('inlineview', 'Inline View')], 'Target Window')
-    view_mode=fields.Char('View Mode', required=True,
-                             help="Comma-separated list of allowed view modes, such as 'form', 'tree', 'calendar', etc. (Default: tree,form)")
-    view_type=fields.Selection((('tree', 'Tree'), ('form', 'Form')), string='View Type', required=True,
-                                  help="View type: Tree type to use for the tree view, set to 'tree' for a hierarchical tree view, or 'form' for a regular list view")
-    usage=fields.Char('Action Usage',
-                         help="Used to filter menu and home actions from the user form.")
-    view_ids=fields.One2many('ir.actions.act_window.view', 'act_window_id', 'Views', copy=True)
-    views=fields.Binary(compute=_views_get_fnc, type='binary', string='Views',
-                             help="This function field computes the ordered list of views that should be enabled " \
-                                  "when displaying the result of an action, federating view mode, views and " \
-                                  "reference view. The result is returned as an ordered list of pairs (view_id,view_mode).")
-    limit=fields.Integer('Limit', help='Default limit for the list view')
-    auto_refresh=fields.Integer('Auto-Refresh', help='Add an auto-refresh on the view')
+    name = fields.Char('Action Name', translate=True)
+    view_id = fields.Many2one('builder.ir.ui.view', 'View Ref.', ondelete='set null')
+    domain = fields.Char('Domain Value',
+                         help="Optional domain filtering of the destination data, as a Python expression")
+    context = fields.Char('Context Value', required=True,
+                          help="Context dictionary as Python expression, empty by default (Default: {})")
+    res_id = fields.Integer('Record ID',
+                            help="Database ID of record to open in form view, when ``view_mode`` is set to 'form' only")
+    model_id = fields.Many2one('builder.ir.model', 'Destination Model', required=True, ondelete='cascade',
+                               help="Model name of the object to open in the view window")
+    src_model = fields.Char('Source Model',
+                            help="Optional model name of the objects on which this action should be visible")
+    target = fields.Selection([('current', 'Current Window'), ('new', 'New Window'), ('inline', 'Inline Edit'),
+                               ('inlineview', 'Inline View')], 'Target Window')
+    view_mode = fields.Char('View Mode', required=True,
+                            help="Comma-separated list of allowed view modes, such as 'form', 'tree', 'calendar', etc. (Default: tree,form)")
+    view_type = fields.Selection((('tree', 'Tree'), ('form', 'Form')), string='View Type', required=True,
+                                 help="View type: Tree type to use for the tree view, set to 'tree' for a hierarchical tree view, or 'form' for a regular list view")
+    usage = fields.Char('Action Usage',
+                        help="Used to filter menu and home actions from the user form.")
+    view_ids = fields.One2many('ir.actions.act_window.view', 'act_window_id', 'Views', copy=True)
+    views = fields.Binary(compute=_views_get_fnc, string='Views',
+                          help="This function field computes the ordered list of views that should be enabled " \
+                               "when displaying the result of an action, federating view mode, views and " \
+                               "reference view. The result is returned as an ordered list of pairs (view_id,view_mode).")
+    limit = fields.Integer('Limit', help='Default limit for the list view')
+    auto_refresh = fields.Integer('Auto-Refresh', help='Add an auto-refresh on the view')
     # 'groups_id=fields.Many2many('res.groups', 'ir_act_window_group_rel', 'act_id', 'gid', 'Groups'),
-    groups_id=fields.Many2many('builder.res.groups', 'builder_ir_act_window_group_rel',
-                                  'act_id', 'gid', 'Groups')
-    search_view_id=fields.Many2one('builder.ir.ui.view', 'Search View Ref.')
-    filter=fields.Boolean('Filter')
-    auto_search=fields.Boolean('Auto Search')
+    groups_id = fields.Many2many('builder.res.groups', 'builder_ir_act_window_group_rel',
+                                 'act_id', 'gid', 'Groups')
+    search_view_id = fields.Many2one('builder.ir.ui.view', 'Search View Ref.')
+    filter = fields.Boolean('Filter')
+    auto_search = fields.Boolean('Auto Search')
     # 'search_view' : fields.function(_search_view, type='text', string='Search View'),
-    multi=fields.Boolean('Restrict to lists',
-                            help="If checked and the action is bound to a model, it will only appear in the More menu on list views")
-    show_help=fields.Boolean('Display Help')
-    help=fields.Html('Help')
+    multi = fields.Boolean('Restrict to lists',
+                           help="If checked and the action is bound to a model, it will only appear in the More menu on list views")
+    show_help = fields.Boolean('Display Help')
+    help = fields.Html('Help')
 
     _defaults = {
         'type': 'builder.ir.actions.act_window',
@@ -172,7 +171,7 @@ class ir_actions_act_window(osv.osv):
             available_view_types = list(set([view.type for view in self.model_id.view_ids]) - {'search'})
             self.view_mode = ','.join(available_view_types)
 
-    def for_xml_id(self, module, xml_id, context=None):
+    def for_xml_id(self, module, xml_id):
         """ Returns the act_window object created for the provided xml_id
 
         :param module: the module the act_window originates in
@@ -180,7 +179,7 @@ class ir_actions_act_window(osv.osv):
                        attribute from the XML file)
         :return: A read() view of the ir.actions.act_window
         """
-        dataobj = self.pool.get('ir.model.data')
+        dataobj = self.env['ir.model.data']
         data_id = dataobj._get_id(SUPERUSER_ID, module, xml_id)
         res_id = dataobj.browse(data_id, context).res_id
         return self.read([res_id], [], context)[0]

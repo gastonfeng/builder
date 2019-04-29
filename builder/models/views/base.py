@@ -1,5 +1,5 @@
-from openerp import models, api, fields, _
-from openerp.exceptions import ValidationError
+from odoo import models, api, fields, _
+from odoo.exceptions import ValidationError
 
 FIELD_WIDGETS_ALL = [
     ('barchart', "FieldBarChart"),
@@ -47,7 +47,9 @@ class ViewSelector(models.TransientModel):
     model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade', required=True)
     model_name = fields.Char('Model Name', related='model_id.name', store=False)
     add_inherited_fields = fields.Boolean('Add Inherited Fields', default=True)
-    model_inherit_type = fields.Selection([('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')], 'Inherit Type', related='model_id.inherit_type')
+    model_inherit_type = fields.Selection(
+        [('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')],
+        'Inherit Type', related='model_id.inherit_type')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field',
                                               related='model_id.special_states_field_id')
     model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields',
@@ -72,7 +74,8 @@ class ViewSelector(models.TransientModel):
     def onchange_inherit_view_id(self):
         self.inherit_view_ref = False
         if self.inherit_view_id:
-            data = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view'), ('res_id', '=', self.inherit_view_id.id)])
+            data = self.env['ir.model.data'].search(
+                [('model', '=', 'ir.ui.view'), ('res_id', '=', self.inherit_view_id.id)])
             self.inherit_view_ref = "{module}.{id}".format(module=data.module, id=data.name) if data else False
 
     @api.onchange('type')
@@ -151,13 +154,17 @@ class View(models.Model):
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
     model_id = fields.Many2one('builder.ir.model', ondelete='cascade')
-    model_inherit_type = fields.Selection([('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')], 'Inherit Type', related='model_id.inherit_type', store=False, search=True)
+    model_inherit_type = fields.Selection(
+        [('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')],
+        'Inherit Type', related='model_id.inherit_type', store=False, search=True)
     model_name = fields.Char('Model Name', related='model_id.name', store=False)
     special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field',
                                               related='model_id.special_states_field_id')
     model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields',
                                                   related='model_id.groups_date_field_ids')
-    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_view_group_rel', 'view_id', 'group_id', string='Groups', help="If this field is empty, the view applies to all users. Otherwise, the view applies to the users of those groups only.")
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_view_group_rel', 'view_id', 'group_id',
+                                 string='Groups',
+                                 help="If this field is empty, the view applies to all users. Otherwise, the view applies to the users of those groups only.")
 
     # type = fields.Char('View Type')
     type = fields.Selection(
@@ -207,7 +214,8 @@ class View(models.Model):
 
     @property
     def real_xml_id(self):
-        return self.xml_id if '.' in self.xml_id else '{module}.{xml_id}'.format(module=self.module_id.name, xml_id=self.xml_id)
+        return self.xml_id if '.' in self.xml_id else '{module}.{xml_id}'.format(module=self.module_id.name,
+                                                                                 xml_id=self.xml_id)
 
 
 class InheritViewChange(models.Model):
@@ -221,8 +229,10 @@ class InheritViewChange(models.Model):
     inherit_view_type = fields.Selection([('field', 'Field'), ('xpath', 'XPath')], 'Selection Type', default='field',
                                          required=True)
     inherit_view_target = fields.Char('Inherit Target', required=True)
-    inherit_view_position = fields.Selection([('after', 'After'), ('before', 'Before'), ('inside', 'Inside'), ('replace', 'Replace'), ('attribute', 'Attribute')], 'Inherit Position', default='after',
-                                             required=True)
+    inherit_view_position = fields.Selection(
+        [('after', 'After'), ('before', 'Before'), ('inside', 'Inside'), ('replace', 'Replace'),
+         ('attribute', 'Attribute')], 'Inherit Position', default='after',
+        required=True)
     inherit_view_attribute = fields.Char('Change Attribute')
     inherit_view_attribute_value = fields.Char('Change Attribute Value')
     inherit_view_field = fields.Char('Field')

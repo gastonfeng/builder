@@ -8,13 +8,13 @@
                 <form string="Wizard Selector">
                     <group>
                         <group>
-                            <field name="module_id" invisible="1" />
+                            <field name="module_id" invisible="1"/>
                             <field name="model_id" domain="[('module_id', '=', module_id)]"/>
-                            <field name="model_name" invisible="1" />
-                            <field name="add_inherited_fields" />
+                            <field name="model_name" invisible="1"/>
+                            <field name="add_inherited_fields"/>
                         </group>
                         <group>
-                            <field name="type" />
+                            <field name="type"/>
                         </group>
                     </group>
                     <footer>

@@ -1,5 +1,5 @@
 __author__ = 'one'
-from openerp import models, fields, api, _
+from odoo import models, fields, api
 
 
 class Workflow(models.Model):
@@ -12,7 +12,7 @@ class Workflow(models.Model):
     on_create = fields.Boolean('On Create', default=True)
     activities = fields.One2many('builder.workflow.activity', 'wkf_id', 'Activities', copy=True)
 
-    #def copy(self, values):
+    # def copy(self, values):
     #    raise Warning(_("Duplicating workflows is not possible, please create a new workflow"))
 
 
@@ -23,16 +23,18 @@ class WorkflowActivity(models.Model):
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', related='wkf_id.module_id')
     wkf_id = fields.Many2one('builder.workflow', 'Workflow', required=True, ondelete='cascade')
     name = fields.Char('Name', required=True)
-    split_mode = fields.Selection([('XOR', 'Xor'), ('OR','Or'), ('AND','And')], 'Split Mode', size=3, default='XOR')
+    split_mode = fields.Selection([('XOR', 'Xor'), ('OR', 'Or'), ('AND', 'And')], 'Split Mode', size=3, default='XOR')
     join_mode = fields.Selection([('XOR', 'Xor'), ('AND', 'And')], 'Join Mode', size=3, required=True, default='XOR')
-    kind = fields.Selection([('dummy', 'Dummy'), ('function', 'Function'), ('subflow', 'Subflow'), ('stopall', 'Stop All')], 'Kind', required=True, default='dummy')
+    kind = fields.Selection(
+        [('dummy', 'Dummy'), ('function', 'Function'), ('subflow', 'Subflow'), ('stopall', 'Stop All')], 'Kind',
+        required=True, default='dummy')
     action = fields.Text('Python Action')
     action_id = fields.Many2one('ir.actions.server', 'Server Action', ondelete='set null')
     action_ref = fields.Char('Server Action Ref')
     flow_start = fields.Boolean('Flow Start')
     flow_stop = fields.Boolean('Flow Stop')
     subflow_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Subflow Type')
-    #system_subflow_id = fields.Many2one('workflow', 'Subflow')
+    # system_subflow_id = fields.Many2one('workflow', 'Subflow')
     system_subflow_ref = fields.Char('Subflow Ref')
     module_subflow_id = fields.Many2one('builder.workflow', 'Subflow')
     signal_send = fields.Char('Signal (subflow.*)')
@@ -43,15 +45,15 @@ class WorkflowActivity(models.Model):
     diagram_position_y = fields.Integer('Y')
 
     @api.one
-    @api.depends('subflow_type',  'module_subflow_id')
+    @api.depends('subflow_type', 'module_subflow_id')
     def _compute_has_subflow(self):
-        self.has_subflow = self.subflow_type and ( self.module_subflow_id != False)
+        self.has_subflow = self.subflow_type and (self.module_subflow_id != False)
 
-#    @api.onchange('system_subflow_ref')
-#    def onchange_system_subflow_ref(self):
-#         self.system_subflow_id = False
-#         if self.system_subflow_ref:
-#             self.system_subflow_id = self.env['ir.model.data'].xmlid_to_res_id(self.system_subflow_ref)
+    #    @api.onchange('system_subflow_ref')
+    #    def onchange_system_subflow_ref(self):
+    #         self.system_subflow_id = False
+    #         if self.system_subflow_ref:
+    #             self.system_subflow_id = self.env['ir.model.data'].xmlid_to_res_id(self.system_subflow_ref)
 
     # @api.onchange('system_subflow_id')
     # def onchange_system_subflow_id(self):
@@ -75,14 +77,16 @@ class WorkflowTransition(models.Model):
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', related='wkf_id.module_id')
     sequence = fields.Integer('Sequence', default=10)
     signal = fields.Char('Signal (Button Name)',
-                         help="When the operation of transition comes from a button pressed in the client form, "\
+                         help="When the operation of transition comes from a button pressed in the client form, " \
                               "signal tests the name of the pressed button. If signal is NULL, no button is necessary to validate this transition.")
-    group_id = fields.Many2one('res.groups', 'Group Required', help="The group that a user must have to be authorized to validate this transition.")
+    group_id = fields.Many2one('res.groups', 'Group Required',
+                               help="The group that a user must have to be authorized to validate this transition.")
     condition = fields.Char('Condition', required=True,
                             help="Expression to be satisfied if we want the transition done.", default='True')
-    act_from = fields.Many2one('builder.workflow.activity', 'Source Activity', required=True, index=True, ondelete='cascade',
-                                    help="Source activity. When this activity is over, the condition is tested to determine if we can start the ACT_TO activity.")
-    act_to = fields.Many2one('builder.workflow.activity', 'Destination Activity', required=True, index=True, ondelete='cascade',
-                                  help="The destination activity.")
+    act_from = fields.Many2one('builder.workflow.activity', 'Source Activity', required=True, index=True,
+                               ondelete='cascade',
+                               help="Source activity. When this activity is over, the condition is tested to determine if we can start the ACT_TO activity.")
+    act_to = fields.Many2one('builder.workflow.activity', 'Destination Activity', required=True, index=True,
+                             ondelete='cascade',
+                             help="The destination activity.")
     wkf_id = fields.Many2one('builder.workflow', related='act_from.wkf_id', string='Workflow', index=True)
-

@@ -10,8 +10,9 @@
                 <form string="Custom List Generator" version="7.0">
                     <group>
                         <group>
-                            <field name="field_ids" widget="many2many_tags" domain="[['ttype', '=', target_fields_type], ['model_id', '=', model_id]]"/>
-                            <field name="allow_nulls" />
+                            <field name="field_ids" widget="many2many_tags"
+                                   domain="[['ttype', '=', target_fields_type], ['model_id', '=', model_id]]"/>
+                            <field name="allow_nulls"/>
                         </group>
                         <group>
                             <field name="target_fields_type" invisible="1"/>
@@ -23,7 +24,8 @@
                     <group>
                         <group>
                             <field name="list_type"/>
-                            <field name="custom_list" attrs="{'invisible': [('list_type', 'not in', ['custom'])], 'required': [('list_type', '=', 'custom')]}"/>
+                            <field name="custom_list"
+                                   attrs="{'invisible': [('list_type', 'not in', ['custom'])], 'required': [('list_type', '=', 'custom')]}"/>
                         </group>
                         <group>
                         </group>

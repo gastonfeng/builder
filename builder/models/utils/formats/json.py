@@ -1,9 +1,9 @@
-from io import StringIO
-import simplejson
-import zipfile
 import zlib
-import openerp
-from openerp.fields import _RelationalMulti
+from io import StringIO
+
+import simplejson
+
+from odoo.fields import _RelationalMulti
 
 __author__ = 'charlie'
 
@@ -29,13 +29,11 @@ class JsonExport:
 
         return object
 
-
     def __get_link_column(self, module, record):
 
         return [column for column in record.keys()
                 if module._fields[column].relational and
                 not module._fields[column].compute and record.get(column)]
-
 
     def build_json(self, model, inverse_field=[]):
 
@@ -55,7 +53,8 @@ class JsonExport:
 
             if relational_multi:
                 record[column]['recordset'] = []
-                record_inverse_field = [model._fields[column].inverse_name] if hasattr(model._fields[column], 'inverse_name') else []
+                record_inverse_field = [model._fields[column].inverse_name] if hasattr(model._fields[column],
+                                                                                       'inverse_name') else []
                 for value in values:
                     recordset = self.env[comodel_name].search([['id', '=', value]])
                     record[column]['recordset'].append(
@@ -106,8 +105,8 @@ class JsonImport:
         relational = {}
         related_fields = {}
 
-        for k,v in data.iteritems():
-            if isinstance(v,dict):
+        for k, v in data.iteritems():
+            if isinstance(v, dict):
                 if v['relational_multi'] == 1:
                     relational_multi[k] = v
                 else:
@@ -116,23 +115,22 @@ class JsonImport:
                 related_fields[k] = v
 
         if len(inverse_field) > 0:
-            k,v = inverse_field.items()[0]
+            k, v = inverse_field.items()[0]
             related_fields[k] = v
 
         record = model_obj.create(related_fields)
 
-        for k,v in relational_multi.iteritems():
+        for k, v in relational_multi.iteritems():
             comodel = self.env[v['comodel_name']]
 
             for rec_ in v['recordset']:
-              self.build_model(comodel,rec_,{record._fields[k].inverse_name:record.id})
+                self.build_model(comodel, rec_, {record._fields[k].inverse_name: record.id})
 
-
-        for k,v in relational.iteritems():
+        for k, v in relational.iteritems():
             comodel = self.env[v['comodel_name']]
 
-            search_query =[(k_,"=",v_) for k_,v_ in v['recordset'].iteritems()]
-            rec_ = comodel.search(search_query,limit = 1)
-            record.write({k:rec_.id})
+            search_query = [(k_, "=", v_) for k_, v_ in v['recordset'].iteritems()]
+            rec_ = comodel.search(search_query, limit=1)
+            record.write({k: rec_.id})
 
         return record

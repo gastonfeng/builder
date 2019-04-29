@@ -1,12 +1,13 @@
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class GroupImport(models.TransientModel):
     _name = 'builder.res.groups.import.wizard'
 
-    group_ids = fields.Many2many('res.groups', 'builder_res_groups_import_wizard_group_rel', 'wizard_id', 'group_id', 'Groups')
+    group_ids = fields.Many2many('res.groups', 'builder_res_groups_import_wizard_group_rel', 'wizard_id', 'group_id',
+                                 'Groups')
     set_inherited = fields.Boolean('Set as Inherit', default=True)
 
     @api.one
@@ -18,7 +19,8 @@ class GroupImport(models.TransientModel):
             data = self.env['ir.model.data'].search([('model', '=', group._name), ('res_id', '=', group.id)])
             xml_id = "{module}.{id}".format(module=data.module, id=data.name)
 
-            module_group = self.env['builder.res.groups'].search([('module_id', '=', module.id), ('xml_id', '=', xml_id)])
+            module_group = self.env['builder.res.groups'].search(
+                [('module_id', '=', module.id), ('xml_id', '=', xml_id)])
 
             if not module_group.id:
                 new_group = group_obj.create({

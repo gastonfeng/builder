@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from odoo import http
 from odoo.http import request
 
@@ -16,12 +15,12 @@ class WebsiteDesigner(http.Controller):
             return request.redirect('/')
 
         res_id = int(res_id)
-        obj_ids = request.registry[model].exists(request.cr, request.uid, [res_id], context=request.context)
+        obj_ids = request.registry[model].exists(request.cr, request.uid, [res_id])
         if not obj_ids:
             return request.redirect('/')
         # try to find fields to display / edit -> as t-field is static, we have to limit
-        cr, uid, context = request.cr, request.uid, request.context
-        record = request.registry[model].browse(cr, uid, res_id, context=context)
+        # cr, uid, context = request.cr, request.uid, request.context
+        record = request.registry[model].browse(res_id)
         model_name = request.registry[model]._description
 
         values = {
@@ -34,7 +33,7 @@ class WebsiteDesigner(http.Controller):
             'return_url': return_url,
         }
 
-        return request.website.render("builder.designer", values)
+        return request.render("builder.designer", values)
 
     @http.route('/builder/page/designer', type='http', auth="user", website=True)
     def index(self, model, res_id, **kw):

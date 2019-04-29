@@ -3,7 +3,8 @@ import string
 
 __author__ = 'one'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
+
 
 class EmailGenerator(models.Model):
     _name = 'builder.ir.model.demo.generator.email'

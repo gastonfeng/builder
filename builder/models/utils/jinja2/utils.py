@@ -1,8 +1,3 @@
-import posixpath
-import zipfile
-from io import StringIO
-
-
 def groups_attribute(groups):
     return 'groups="{list}"'.format(list=','.join([i.real_xml_id for i in groups])) if len(groups) else ''
 

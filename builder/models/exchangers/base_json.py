@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 
-from openerp import models, api
+from odoo import models, api
 
 
 class OdooBuilderTranslator(object):
@@ -95,7 +95,9 @@ class OdooBuilderLoader(object):
                 model = self.env[model_str]
                 data = objects[obj_key]
                 missing = [
-                    key for key, value in data.items() if isinstance(value, dict) and value['@model'].startswith('builder.') and not self.seen_models.get((value['@model'], value['@id']))
+                    key for key, value in data.items() if
+                    isinstance(value, dict) and value['@model'].startswith('builder.') and not self.seen_models.get(
+                        (value['@model'], value['@id']))
                 ]
 
                 required_attributes = model_required_attributes(model)
@@ -104,10 +106,10 @@ class OdooBuilderLoader(object):
                     obj = model.create({
                         key: value if not isinstance(value, dict) else '{model},{id}'.format(model=value['@model'],
                                                                                              id=self.seen_models.get((
-                                                                                                                     value[
-                                                                                                                         '@model'],
-                                                                                                                     value[
-                                                                                                                         '@id']))) if
+                                                                                                 value[
+                                                                                                     '@model'],
+                                                                                                 value[
+                                                                                                     '@id']))) if
                         model._fields[key].type == 'reference' else self.seen_models.get(
                             (value['@model'], value['@id']))
                         for key, value in data.items()
@@ -165,4 +167,3 @@ class JSONExchanger(models.Model):
         data = json.loads(module)
         translator = OdooBuilderLoader(self.env)
         translator.load(data)
-

@@ -5,8 +5,7 @@ from base64 import decodestring
 from string import Template
 from types import MethodType
 
-from openerp import models, fields, api, _, tools
-
+from odoo import models, fields, api, _, tools
 from .utils import simple_selection
 from .utils.formats import json
 
@@ -18,6 +17,7 @@ def get_module_exporters(model):
         (attr.replace('_export_', ''), attr.replace('_export_', '').capitalize()) for attr in dir(model)
         if MODULE_EXPORTER_RE.match(attr) and isinstance(getattr(model, attr), MethodType)
     ]
+
 
 MODULE_IMPORTER_RE = re.compile('_import_\w[\w_]+')
 
@@ -37,7 +37,7 @@ class Module(models.Model):
         return [(c.name, c.name) for c in self.env['ir.module.category'].search([])]
 
     name = fields.Char("Technical Name", required=True, index=True)
-    category_id = fields.Selection(simple_selection('ir.module.category', 'name') , 'Category')
+    category_id = fields.Selection(simple_selection('ir.module.category', 'name'), 'Category')
     shortdesc = fields.Char('Module Name', translate=True, required=True)
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
@@ -54,9 +54,9 @@ class Module(models.Model):
     sequence = fields.Integer('Sequence')
     # dependencies_id = fields.One2many('programming.module.dependency', 'module_id', 'Dependencies')
     auto_install = fields.Boolean('Automatic Installation',
-                                   help='An auto-installable module is automatically installed by the '
-                                        'system when all its dependencies are satisfied. '
-                                        'If the module has no dependency, it is always installed.')
+                                  help='An auto-installable module is automatically installed by the '
+                                       'system when all its dependencies are satisfied. '
+                                       'If the module has no dependency, it is always installed.')
     license = fields.Selection([
         ('GPL-2', 'GPL Version 2'),
         ('GPL-2 or any later version', 'GPL-2 or later version'),
@@ -77,8 +77,8 @@ class Module(models.Model):
     views_by_module = fields.Text(string='Views')
 
     post_install_action = fields.Reference([
-                                    ('builder.ir.actions.act_window', 'Window'),
-                                    # ('builder.ir.actions.act_url', 'URL'),
+        ('builder.ir.actions.act_window', 'Window'),
+        # ('builder.ir.actions.act_url', 'URL'),
     ], 'After Install Action')
 
     models_count = fields.Integer("Models Count", compute='_compute_models_count', store=False, search=True)
@@ -128,7 +128,7 @@ class Module(models.Model):
     @api.one
     @api.depends('name')
     def _compute_snippet_bookmarklet_url(self):
-        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         link = """
 javascript:(function(){
     function script(url, callback){
@@ -180,7 +180,7 @@ javascript:(function(){
             'view_type': 'form',
             'view_mode': 'kanban,tree,form',
             'res_model': 'builder.data.file',
-            'views': [(False, 'kanban'),(False, 'tree'), (False, 'form')],
+            'views': [(False, 'kanban'), (False, 'tree'), (False, 'form')],
             'domain': [('module_id', '=', self.id)],
             'search_view_id': search.id if search else False,
             # 'target': 'current',
@@ -467,7 +467,6 @@ javascript:(function(){
             },
         }
 
-
     @api.multi
     def action_website_snippets(self):
 
@@ -507,7 +506,7 @@ javascript:(function(){
             },
         }
 
-    def action_edit_description_html(self, ids, context=None):
+    def action_edit_description_html(self):
         if not len(ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
         url = '/builder/page/designer?model={model}&res_id={id}&enable_editor=1'.format(id=ids[0], model=self._name)

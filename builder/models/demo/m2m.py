@@ -1,10 +1,8 @@
 import random
-import string
 
 __author__ = 'one'
 
-from openerp import models, api, fields, _
-import re
+from odoo import models, api, fields
 
 
 class M2mGenerator(models.Model):
@@ -46,10 +44,13 @@ class M2mGenerator(models.Model):
 
     def get_reference_values(self, field):
         if self.specify_references:
-            return self.format_ref_values(random.sample(self.reference_list.split('|'), random.randint(self.min_reference_count, self.max_reference_count)))
+            return self.format_ref_values(random.sample(self.reference_list.split('|'),
+                                                        random.randint(self.min_reference_count,
+                                                                       self.max_reference_count)))
         else:
             if field.relation_model_id:
-                sample = random.sample(range(0, field.relation_model_id.demo_records), random.randint(self.min_reference_count, self.max_reference_count))
+                sample = random.sample(range(0, field.relation_model_id.demo_records),
+                                       random.randint(self.min_reference_count, self.max_reference_count))
                 return self.format_ref_values([field.relation_model_id.demo_xml_id(index) for index in sample])
             else:
                 return False

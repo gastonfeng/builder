@@ -10,8 +10,9 @@
                 <form string="Date Generator" version="7.0">
                     <group>
                         <group>
-                            <field name="field_ids" widget="many2many_tags" domain="[['ttype', 'in', ['date', 'datetime']], ['model_id', '=', model_id]]"/>
-                            <field name="allow_nulls" />
+                            <field name="field_ids" widget="many2many_tags"
+                                   domain="[['ttype', 'in', ['date', 'datetime']], ['model_id', '=', model_id]]"/>
+                            <field name="allow_nulls"/>
                         </group>
                         <group>
                             <field name="model_id" invisible="1"/>
@@ -21,13 +22,17 @@
                     </group>
                     <group>
                         <group>
-                            <field name="dynamic_datetime" />
+                            <field name="dynamic_datetime"/>
                         </group>
                         <group>
-                            <field name="min_days_diff"  attrs="{'invisible': [('dynamic_datetime', '=', False)], 'required': [('dynamic_datetime', '=', True)] , 'readonly': [('dynamic_datetime', '=', False)]}"/>
-                            <field name="max_days_diff" attrs="{'invisible': [('dynamic_datetime', '=', False)], 'required': [('dynamic_datetime', '=', True)] , 'readonly': [('dynamic_datetime', '=', False)]}"/>
-                            <field name="date_from" attrs="{'invisible': [('dynamic_datetime', '=', True)], 'required': [('dynamic_datetime', '=', False)] , 'readonly': [('dynamic_datetime', '=', True)]}"/>
-                            <field name="date_to" attrs="{'invisible': [('dynamic_datetime', '=', True)], 'required': [('dynamic_datetime', '=', False)] , 'readonly': [('dynamic_datetime', '=', True)]}"/>
+                            <field name="min_days_diff"
+                                   attrs="{'invisible': [('dynamic_datetime', '=', False)], 'required': [('dynamic_datetime', '=', True)] , 'readonly': [('dynamic_datetime', '=', False)]}"/>
+                            <field name="max_days_diff"
+                                   attrs="{'invisible': [('dynamic_datetime', '=', False)], 'required': [('dynamic_datetime', '=', True)] , 'readonly': [('dynamic_datetime', '=', False)]}"/>
+                            <field name="date_from"
+                                   attrs="{'invisible': [('dynamic_datetime', '=', True)], 'required': [('dynamic_datetime', '=', False)] , 'readonly': [('dynamic_datetime', '=', True)]}"/>
+                            <field name="date_to"
+                                   attrs="{'invisible': [('dynamic_datetime', '=', True)], 'required': [('dynamic_datetime', '=', False)] , 'readonly': [('dynamic_datetime', '=', True)]}"/>
                         </group>
                     </group>
                     <footer>

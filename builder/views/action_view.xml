@@ -28,7 +28,8 @@
                                 <field name="module_id" invisible="1"/>
                                 <field name="xml_id"/>
                                 <field name="name"/>
-                                <field name="model_id" domain="[('module_id', '=', module_id)]" options="{'no_create': True}"/>
+                                <field name="model_id" domain="[('module_id', '=', module_id)]"
+                                       options="{'no_create': True}"/>
                                 <field name="src_model"/>
                             </group>
                             <group>
@@ -43,8 +44,10 @@
                                     <group string="Views">
                                         <field name="view_type"/>
                                         <field name="view_mode"/>
-                                        <field name="view_id" options="{'no_create': True}" domain="[('module_id', '=', module_id), ('model_id', '=', model_id)]"/>
-                                        <field name="search_view_id" options="{'no_create': True}" domain="[('module_id', '=', module_id), ('type', '=', 'search'), ('model_id', '=', model_id)]"/>
+                                        <field name="view_id" options="{'no_create': True}"
+                                               domain="[('module_id', '=', module_id), ('model_id', '=', model_id)]"/>
+                                        <field name="search_view_id" options="{'no_create': True}"
+                                               domain="[('module_id', '=', module_id), ('type', '=', 'search'), ('model_id', '=', model_id)]"/>
                                     </group>
                                     <group string="Filters">
                                         <field name="domain"/>
@@ -59,10 +62,11 @@
                             </page>
                             <page string="Help">
                                 <group>
-                                    <field name="show_help" />
+                                    <field name="show_help"/>
                                 </group>
                                 <group></group>
-                                <field name="help" attrs="{'invisible': [('show_help', '=', False)], 'readonly': [('show_help', '=', False)]}"/>
+                                <field name="help"
+                                       attrs="{'invisible': [('show_help', '=', False)], 'readonly': [('show_help', '=', False)]}"/>
                             </page>
                             <page string="Security">
                                 <field name="groups_id"/>

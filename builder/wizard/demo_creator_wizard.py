@@ -1,4 +1,4 @@
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class DemoDataCreator(models.TransientModel):
@@ -39,5 +39,6 @@ class DemoDataCreator(models.TransientModel):
                 'default_target_fields_type': self.target_fields_type,
             },
         }
+
 
 DemoDataCreator()

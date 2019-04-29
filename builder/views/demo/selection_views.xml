@@ -10,8 +10,9 @@
                 <form string="Selection Generator" version="7.0">
                     <group>
                         <group>
-                            <field name="field_ids" widget="many2many_tags" domain="[['ttype', '=', target_fields_type], ['model_id', '=', model_id]]"/>
-                            <field name="allow_nulls" />
+                            <field name="field_ids" widget="many2many_tags"
+                                   domain="[['ttype', '=', target_fields_type], ['model_id', '=', model_id]]"/>
+                            <field name="allow_nulls"/>
                         </group>
                         <group>
                             <field name="target_fields_type" invisible="1"/>
@@ -23,7 +24,8 @@
                     <group>
                         <group>
                             <field name="custom_selection"/>
-                            <field name="selection_options" attrs="{'invisible': [('custom_selection', '=', False)], 'required': [('custom_selection', '=', True)]}"/>
+                            <field name="selection_options"
+                                   attrs="{'invisible': [('custom_selection', '=', False)], 'required': [('custom_selection', '=', True)]}"/>
                         </group>
                         <group>
                         </group>

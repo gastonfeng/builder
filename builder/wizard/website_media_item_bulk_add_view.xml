@@ -8,7 +8,8 @@
                 <form string="Data Select">
                     <group>
                         <field name="module_id" invisible="1"/>
-                        <field name="data_ids" domain="[('module_id', '=', module_id), ('extension', 'in', ['.png', '.jpg', '.jpeg', '.gif'])]"/>
+                        <field name="data_ids"
+                               domain="[('module_id', '=', module_id), ('extension', 'in', ['.png', '.jpg', '.jpeg', '.gif'])]"/>
                     </group>
                     <footer>
                         <button name="action_import" string="Import" type="object" class="oe_highlight"/>

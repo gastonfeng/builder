@@ -1,8 +1,9 @@
-from ..fields import snake_case
-from openerp.exceptions import ValidationError
-from openerp import models, fields, api, _
-from .base import FIELD_WIDGETS_ALL
 from collections import defaultdict
+
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+from .base import FIELD_WIDGETS_ALL
+from ..fields import snake_case
 
 
 class FormView(models.Model):
@@ -22,7 +23,8 @@ class FormView(models.Model):
     show_status_bar = fields.Boolean('Show Status Bar', default=False)
     visible_states = fields.Char('Visible States')
 
-    statusbar_button_ids = fields.One2many('builder.views.form.statusbar.button', 'view_id', 'Status Bar Buttons', copy=True)
+    statusbar_button_ids = fields.One2many('builder.views.form.statusbar.button', 'view_id', 'Status Bar Buttons',
+                                           copy=True)
     button_ids = fields.One2many('builder.views.form.button', 'view_id', 'Buttons', copy=True)
     field_ids = fields.One2many('builder.views.form.field', 'view_id', 'Items', copy=True)
 
@@ -30,7 +32,8 @@ class FormView(models.Model):
     def onchange_inherit_view_id(self):
         self.inherit_view_ref = False
         if self.inherit_view_id:
-            data = self.env['ir.model.data'].search([('model', '=', 'ir.ui.view'), ('res_id', '=', self.inherit_view_id.id)])
+            data = self.env['ir.model.data'].search(
+                [('model', '=', 'ir.ui.view'), ('res_id', '=', self.inherit_view_id.id)])
             self.inherit_view_ref = "{module}.{id}".format(module=data.module, id=data.name) if data else False
 
     @api.onchange('type')
@@ -64,8 +67,8 @@ class FormView(models.Model):
         self.name = self.model_id.name
         self.xml_id = "view_{snake}_form".format(snake=snake_case(self.model_id.model))
         self.show_status_bar = True if self.model_id.special_states_field_id.id else False
-        self.model_inherit_type = self.model_id.inherit_type #shouldn`t be doing that
-        self.model_name = self.model_id.model #shouldn`t be doing that
+        self.model_inherit_type = self.model_id.inherit_type  # shouldn`t be doing that
+        self.model_name = self.model_id.model  # shouldn`t be doing that
 
         if not len(self.field_ids):
             field_list = []
@@ -74,7 +77,9 @@ class FormView(models.Model):
                     continue
                 if field.is_inherited and not self.env.context.get('add_inherited_fields', True):
                     continue
-                field_list.append({'field_id': field.id, 'widget': DEFAULT_WIDGETS_BY_TYPE.get(field.ttype), 'field_ttype': field.ttype, 'model_id': self.model_id.id, 'special_states_field_id': self.model_id.special_states_field_id.id})
+                field_list.append({'field_id': field.id, 'widget': DEFAULT_WIDGETS_BY_TYPE.get(field.ttype),
+                                   'field_ttype': field.ttype, 'model_id': self.model_id.id,
+                                   'special_states_field_id': self.model_id.special_states_field_id.id})
 
             self.field_ids = field_list
 
@@ -117,7 +122,8 @@ class StatusBarActionButton(models.Model):
 
     view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')
     model_id = fields.Many2one('builder.ir.model', string='Model', related='view_id.view_id.model_id', store=True)
-    special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id', string='States Field')
+    special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
+                                              string='States Field')
     name = fields.Char(string='Name', required=True)
     sequence = fields.Integer(string='Sequence')
     highlighted = fields.Boolean('Highlighted')
@@ -148,13 +154,15 @@ class FormField(models.Model):
     view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')
     page = fields.Char('Page')
 
-    related_field_view_type = fields.Selection([('default', 'Default'), ('defined', 'Defined'), ('custom', 'Custom')], 'View Type', default='default')
+    related_field_view_type = fields.Selection([('default', 'Default'), ('defined', 'Defined'), ('custom', 'Custom')],
+                                               'View Type', default='default')
     related_field_form_ref = fields.Char('Form View ID')
     related_field_tree_ref = fields.Char('Tree View ID')
     domain = fields.Char('Domain')
     context = fields.Char('Context')
     related_field_mode = fields.Selection([('tree', 'Tree'), ('form', 'Form')], 'Mode', default='tree')
-    related_field_tree_editable = fields.Selection([('False', 'No Editable'), ('top', 'Top'), ('bottom', 'Bottom')], 'Tree Editable', default='bottom')
+    related_field_tree_editable = fields.Selection([('False', 'No Editable'), ('top', 'Top'), ('bottom', 'Bottom')],
+                                                   'Tree Editable', default='bottom')
 
     widget = fields.Selection(FIELD_WIDGETS_ALL, 'Widget')
     widget_options = fields.Char('Widget Options')
@@ -228,12 +236,3 @@ class FormButton(models.Model):
     def onchange_name(self):
         if self.name:
             self.method_name = 'do_{name}'.format(name=self.name.lower().replace(' ', '_'))
-
-
-
-
-
-
-
-
-

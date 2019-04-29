@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2013 Soluciones Moebius (<http://www.solucionesmoebius.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,9 +18,10 @@
 #
 ##############################################################################
 
+# noinspection PyStatementEffect
 {
     'name': 'Module Builder',
-    'version': '1.0',
+    'version': '0.1',
     'category': 'Programming',
     'summary': 'Build your modules right inside Odoo',
     'description': """
@@ -30,14 +30,14 @@ This module aims to help in the development of new modules
 
 """,
     'author': 'Soluciones Moebius',
-    #"license": "AGPL-3",
+    # "license": "AGPL-3",
     'website': 'http://www.solucionesmoebius.com/',
-    'depends': ['web', 'web_diagram', 'website','software'],
+    'depends': ['web', 'web_diagram', 'website'],
     'data': [
         # 'security/base_security.xml',
         # 'security/ir.model.access.csv',
 
-        'data/oe.css.classes.yml',
+        # 'data/oe.css.classes.yml',
         'wizard/module_generate_view.xml',
         'wizard/model_lookup_wizard_view.xml',
         'wizard/menu_lookup_wizard_view.xml',
@@ -103,8 +103,8 @@ This module aims to help in the development of new modules
         'static/description/module_info.png',
         'static/description/designer.png',
     ],
-    #'qweb': [],
-     # 'qweb': ['static/src/xml/templates.xml'],
+    # 'qweb': [],
+    # 'qweb': ['static/src/xml/templates.xml'],
     'installable': True,
     'application': True,
     'auto_install': False,

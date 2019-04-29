@@ -8,13 +8,13 @@
                 <form string="Group Import">
                     <group>
                         <group>
-                            <field name="set_inherited" />
+                            <field name="set_inherited"/>
                         </group>
                         <group>
                         </group>
                     </group>
                     <group>
-                        <field name="group_ids" />
+                        <field name="group_ids"/>
                     </group>
                     <footer>
                         <button name="action_import" string="Import" type="object" class="oe_highlight"/>

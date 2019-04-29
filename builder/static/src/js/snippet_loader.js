@@ -34,11 +34,11 @@ if (window.jQuery) {
         var preservePath = false;
 
         script(window.odooUrl + '/builder/static/lib/jquery.js');
-        script(window.odooUrl + '/web/static/lib/jquery.hotkeys/jquery.hotkeys.js', function (){
-            $(document).bind('keydown', 'ctrl+up', function (){
+        script(window.odooUrl + '/web/static/lib/jquery.hotkeys/jquery.hotkeys.js', function () {
+            $(document).bind('keydown', 'ctrl+up', function () {
                 console.log(index, path.length);
                 var $active = $('.bookmarklet-active');
-                if ($active){
+                if ($active) {
                     preservePath = true;
                     path = [$active.parent().click()].concat(path);
                     preservePath = false;
@@ -46,38 +46,38 @@ if (window.jQuery) {
                 }
                 return false;
             });
-            $(document).bind('keydown', 'ctrl+down', function (){
+            $(document).bind('keydown', 'ctrl+down', function () {
                 console.log(index, path.length);
                 var $current = path[index];
-                if (index < path.length - 1){
+                if (index < path.length - 1) {
                     index++;
                     $current = path[index];
                 }
-                if ($current){
+                if ($current) {
                     preservePath = true;
                     $current.click();
                     preservePath = false;
                 }
                 return false;
             });
-            $(document).bind('keydown', 'ctrl+left', function (){
+            $(document).bind('keydown', 'ctrl+left', function () {
                 var $current = path[index];
-                if ($current){
+                if ($current) {
                     $current = $current.prev();
                     path[index] = $current;
-                    path = path.slice(0, index+1);
+                    path = path.slice(0, index + 1);
                     preservePath = true;
                     $current.click();
                     preservePath = false;
                 }
                 return false;
             });
-            $(document).bind('keydown', 'ctrl+right', function (){
+            $(document).bind('keydown', 'ctrl+right', function () {
                 var $current = path[index];
-                if ($current){
+                if ($current) {
                     $current = $current.next();
                     path[index] = $current;
-                    path = path.slice(0, index+1);
+                    path = path.slice(0, index + 1);
                     preservePath = true;
                     $current.click();
                     preservePath = false;
@@ -87,6 +87,7 @@ if (window.jQuery) {
 
         });
         script(window.odooUrl + '/builder/static/lib/jquery.getStyleObject.js');
+
         function loadCss(url) {
             $('<link />').attr({
                 "rel": "stylesheet",
@@ -260,7 +261,7 @@ if (window.jQuery) {
             }
 
             $fixed.addClass('bookmarklet-active');
-            if (!preservePath){
+            if (!preservePath) {
                 path = [$fixed];
                 index = 0;
             }

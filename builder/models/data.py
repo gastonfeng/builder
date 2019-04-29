@@ -7,7 +7,8 @@ import types
 from random import randrange
 
 from jinja2 import Template
-from openerp import models, fields, api, _
+
+from odoo import models, fields, api, _
 
 __author__ = 'deimos'
 
@@ -33,7 +34,7 @@ class Lambda(models.Model):
             l = eval(self.code)
             if not isinstance(l, types.LambdaType):
                 raise ValueError(_("The python code must be a lambda."))
-        except (SyntaxError, NameError, ):
+        except (SyntaxError, NameError,):
             raise ValueError(_("The python code must be a lambda."))
 
     _sql_constraints = [
@@ -109,7 +110,6 @@ class ModelDataAttribute(models.Model):
 
 IMPORTER_PATTERN = re.compile('_import_(\w+)')
 
-
 XML_TEMPLATE = Template(u"""<?xml version="1.0"?>
 <openerp>
     <data>
@@ -156,7 +156,7 @@ class ModelData(models.Model):
     @api.depends('attribute_ids.xml_id')
     def _compute_key_id(self):
         cr, uid, context = self.env.args
-        attrs = self.resolve_2many_commands(cr, uid, 'attribute_ids', self.attribute_ids, context=context)
+        attrs = self.resolve_2many_commands('attribute_ids', self.attribute_ids)
         keys = [value.id for key, value in attrs.items() if value.get('id') and value.get('xml_id')]
         if any(keys):
             self.key_id = keys[0]
@@ -228,7 +228,8 @@ class ModelData(models.Model):
             ('model_id', '=', self.id),
             ('xml_id', '=', True)
         ])
-        return '{model}_{hash}'.format(model=self.model.replace('.', '_'), hash=(key.compute_value(data).replace(' ', '_') if key else randrange(100000000000, 999999999999)))
+        return '{model}_{hash}'.format(model=self.model.replace('.', '_'), hash=(
+            key.compute_value(data).replace(' ', '_') if key else randrange(100000000000, 999999999999)))
 
 
 class Module(models.Model):

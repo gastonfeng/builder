@@ -10,8 +10,9 @@
                 <form string="Normal Distribution Generator" version="7.0">
                     <group>
                         <group>
-                            <field name="field_ids" widget="many2many_tags" domain="[['ttype', 'in', ['integer', 'float']], ['model_id', '=', model_id]]"/>
-                            <field name="allow_nulls" />
+                            <field name="field_ids" widget="many2many_tags"
+                                   domain="[['ttype', 'in', ['integer', 'float']], ['model_id', '=', model_id]]"/>
+                            <field name="allow_nulls"/>
                         </group>
                         <group>
                             <field name="target_fields_type" invisible="1"/>

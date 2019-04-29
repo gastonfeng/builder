@@ -1,6 +1,6 @@
 __author__ = 'one'
 
-from openerp import models, api, fields
+from odoo import models, api, fields
 
 
 class ModelAccessGenerateWizard(models.TransientModel):
@@ -9,7 +9,8 @@ class ModelAccessGenerateWizard(models.TransientModel):
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
     model_ids = fields.Many2many('builder.ir.model', 'builder_ir_model_access_generate_model_rel', 'wizard_id',
                                  'model_id', 'Models')
-    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_access_generate_group_rel', 'wizard_id', 'group_id', 'Groups')
+    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_access_generate_group_rel', 'wizard_id',
+                                 'group_id', 'Groups')
 
     perm_read = fields.Boolean('Read Access')
     perm_write = fields.Boolean('Write Access')
@@ -30,7 +31,8 @@ class ModelAccessGenerateWizard(models.TransientModel):
                     'perm_create': self.perm_create,
                     'perm_unlink': self.perm_unlink,
                     'perm_write': self.perm_write,
-                    'name': "{name} {module}_{group}".format(name=model.model.replace('.', '_'), module=self.module_id.name, group=group.xml_id)
+                    'name': "{name} {module}_{group}".format(name=model.model.replace('.', '_'),
+                                                             module=self.module_id.name, group=group.xml_id)
                 })
 
         return {'type': 'ir.actions.act_window_close'}

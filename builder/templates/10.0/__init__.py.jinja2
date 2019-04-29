@@ -1,4 +1,4 @@
 {% include 'python_file_header.py.jinja2' ignore missing %}
 {% for pack in packages -%}
-    from . import {{pack}}
+    from . import {{ pack }}
 {% endfor %}

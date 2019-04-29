@@ -1,4 +1,4 @@
-(function(){
+(function () {
     var _t = openerp.web._t;
 
     openerp.web.Sidebar.include({
@@ -25,13 +25,13 @@
             return new instance.web.Model(model).query(fields).filter(domain).context(ctx).all()
         },
 
-        add_export_items: function(view, res_id){
-            var self  = this;
+        add_export_items: function (view, res_id) {
+            var self = this;
 
             var ds = new openerp.web.DataSet(self, 'builder.ir.module.module');
 
-            ds.call('get_available_export_formats', []).done(function(formats){
-                _.each(formats, function(format){
+            ds.call('get_available_export_formats', []).done(function (formats) {
+                _.each(formats, function (format) {
                     self.add_items('other', [
                             {
                                 label: format.name,
@@ -46,13 +46,13 @@
             });
         },
 
-        add_import_items: function(view, res_id){
-            var self  = this;
+        add_import_items: function (view, res_id) {
+            var self = this;
 
             var ds = new openerp.web.DataSet(self, 'builder.ir.module.module');
 
-            ds.call('get_available_import_formats', []).done(function(formats){
-                _.each(formats, function(format){
+            ds.call('get_available_import_formats', []).done(function (formats) {
+                _.each(formats, function (format) {
                     self.add_items('other', [
                             {
                                 label: format.name,
@@ -67,7 +67,7 @@
             });
         },
 
-        on_export_item_clicked: function(item){
+        on_export_item_clicked: function (item) {
             this.do_action({
                 type: 'ir.actions.act_url',
                 target: 'self',
@@ -75,7 +75,7 @@
             });
         },
 
-        on_import_item_clicked: function(item){
+        on_import_item_clicked: function (item) {
             this.do_action({
                 type: 'ir.actions.act_url',
                 target: 'self',

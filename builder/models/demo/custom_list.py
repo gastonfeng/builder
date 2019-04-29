@@ -1,9 +1,8 @@
 import random
-import openerp
 
 __author__ = 'deimos'
 
-from openerp import models, api, fields, _
+from odoo import models, api, fields
 
 
 class RandomStringGenerator(models.Model):
@@ -23,13 +22,13 @@ class RandomStringGenerator(models.Model):
     )
 
     list_type = fields.Selection([
-                                     ('colors', 'Colors'),
-                                     ('marital_status', 'Marital Status'),
-                                     ('department_names', 'Department Names'),
-                                     ('company_names', 'Company Names'),
-                                     ('drug_names', 'Drug Names'),
-                                     ('country_names', 'Country Names'),
-                                     ('custom', 'Custom List'),
+        ('colors', 'Colors'),
+        ('marital_status', 'Marital Status'),
+        ('department_names', 'Department Names'),
+        ('company_names', 'Company Names'),
+        ('drug_names', 'Drug Names'),
+        ('country_names', 'Country Names'),
+        ('custom', 'Custom List'),
     ], required=True, default=3)
     custom_list = fields.Char("Custom List", size=1024)
 

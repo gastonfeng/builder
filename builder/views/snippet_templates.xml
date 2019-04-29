@@ -63,8 +63,13 @@
                         </div>
                     </div>
                     <div class="alert alert-info">
-                      <button type="button" class="close" data-dismiss="alert">×</button>
-                      Is important to set <a class="btn btn-success" data-toggle="modal" href="#options-modal" >Options</a> <strong>before</strong> copying any content! And you can select the parent and siblings of the active element by hitting <strong>CTRL + ARROWS</strong>
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        Is important to set <a class="btn btn-success" data-toggle="modal" href="#options-modal">
+                        Options
+                    </a>
+                        <strong>before</strong> copying any content! And you can select the parent and siblings of the
+                        active element by hitting
+                        <strong>CTRL + ARROWS</strong>
                     </div>
 
                     <form id="form-snippet" class="form-snippet" action="save" method="POST">
@@ -75,7 +80,7 @@
                         <textarea rows="6" id="html" name="html"/>
                         <div class="form-actions">
                             <button class="btn btn-large btn-primary" type="submit">Save</button>
-                            <a class="btn btn-large btn-success" data-toggle="modal" href="#options-modal" >Options</a>
+                            <a class="btn btn-large btn-success" data-toggle="modal" href="#options-modal">Options</a>
                         </div>
                     </form>
                     <script type="text/javascript" src="/web/static/lib/jquery/jquery.js"/>

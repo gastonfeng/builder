@@ -8,16 +8,16 @@
                 <form string="Model Import">
                     <group>
                         <group>
-                            <field name="set_inherited" />
+                            <field name="set_inherited"/>
                             <field name="exclude_fields" attrs="{'invisible': [('set_inherited', '=', False)]}"/>
                         </group>
                         <group>
                             <field name="create_fields" attrs="{'invisible': [('set_inherited', '=', True)]}"/>
-                            <field name="relations_only" attrs="{'invisible': [('create_fields', '=', False)]}" />
+                            <field name="relations_only" attrs="{'invisible': [('create_fields', '=', False)]}"/>
                         </group>
                     </group>
                     <group>
-                        <field name="model_ids" />
+                        <field name="model_ids"/>
                     </group>
                     <footer>
                         <button name="action_import" string="Import" type="object" class="oe_highlight"/>
