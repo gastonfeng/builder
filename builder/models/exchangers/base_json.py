@@ -90,7 +90,7 @@ class OdooBuilderLoader(object):
 
         while objects and changes:
             changes = False
-            for obj_key in objects.keys():
+            for obj_key in list(objects.keys()):
                 model_str, id_str = obj_key
                 model = self.env[model_str]
                 data = objects[obj_key]
