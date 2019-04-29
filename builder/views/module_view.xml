@@ -320,7 +320,8 @@
                         <t t-name="kanban-box">
                             <div class="oe_module_vignette">
                                 <a type="open">
-                                    <img t-att-src="kanban_image('builder.ir.module.module', 'icon_image', record.id.value, {'preview_image': 'icon_image'})" class="oe_module_icon"/>
+                                    <img t-att-src="kanban_image('builder.ir.module.module', 'icon_image', record.id.raw_value)"
+                                         class="oe_module_icon"/>
                                 </a>
                                 <div class="oe_module_desc">
                                     <h4>
