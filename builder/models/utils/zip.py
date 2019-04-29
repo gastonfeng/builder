@@ -1,14 +1,14 @@
 import datetime
 import posixpath
 import zipfile
-from io import StringIO
+from io import BytesIO
 
 
 class ZipFile(object):
 
     def __init__(self, jinja_env=None, compress_type=zipfile.ZIP_DEFLATED, external_attr=2175008768):
         self.jinja_env = jinja_env
-        self.fileIO = StringIO()
+        self.fileIO = BytesIO()
         self.zip = zipfile.ZipFile(self.fileIO, 'w')
         self.default_compress_type = compress_type
         self.default_external_attr = external_attr
