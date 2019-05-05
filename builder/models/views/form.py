@@ -40,6 +40,8 @@ class FormView(models.Model):
     def onchange_type(self):
         self.inherit_view_ref = False
         self.inherit_view_id = False
+        self.type='form'
+        self.subclass_model = 'builder.views.' + self.type
 
     @api.onchange('inherit_view')
     def onchange_inherit_view(self):
@@ -57,10 +59,10 @@ class FormView(models.Model):
             if not view.model == self.model_id.model:
                 raise ValidationError("View Ref is not a valid view reference")
 
-    _defaults = {
-        'type': 'form',
-        'subclass_model': lambda s, c, u, cxt=None: s._name,
-    }
+    # _defaults = {
+    #     'type': 'form',
+    #     'subclass_model': lambda s, c, u, cxt=None: s._name,
+    # }
 
     @api.onchange('model_id')
     def _onchange_model_id(self):

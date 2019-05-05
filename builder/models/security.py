@@ -1,3 +1,5 @@
+from odoo.exceptions import UserError
+
 __author__ = 'one'
 
 from odoo import _, api
@@ -71,17 +73,18 @@ class Groups(models.Model):
          'The name of the group must be unique within an application!')
     ]
 
-    def copy(self, id, default=None):
+    @api.multi
+    def copy(self, default=None):
         group_name = self.read([id], ['name'])[0]['name']
         default.update({'name': _('%s (copy)') % group_name})
-        return super(Groups, self).copy(id, default, context)
+        return super(Groups, self).copy(id, default)
 
     def write(self, vals):
         if 'name' in vals:
             if vals['name'].startswith('-'):
                 raise UserError(_('Error'),
                                 _('The name of the group can not start with "-"'))
-        res = super(Groups, self).write(ids, vals)
+        res = super(Groups, self).write(vals)
         return res
 
     @api.onchange('category_ref')
@@ -108,7 +111,7 @@ class IrModelAccess(models.Model):
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     name = fields.Char('Name', required=True, index=True)
-    model_id = fields.Many2one('builder.ir.model', 'Object', required=True, domain=[('osv_memory', '=', False)],
+    model_id = fields.Many2one('builder.ir.model', 'Object', required=True, domain=[('transient', '=', False)],
                                index=True, ondelete='cascade')
     group_id = fields.Many2one('builder.res.groups', 'Group', ondelete='cascade', index=True)
     perm_read = fields.Boolean('Read Access')
@@ -125,41 +128,43 @@ class IrRule(models.Model):
     _name = 'builder.ir.rule'
     _order = 'model_id, name'
 
-    def _get_value(self, field_name, arg):
+    def _get_value(self):
         res = {}
-        for rule in self.browse(ids, context):
+        for rule in self.browse():
             if not rule.groups:
                 res[rule.id] = True
             else:
                 res[rule.id] = False
         return res
 
+    @api.multi
     def _check_model_obj(self):
-        return not any(rule.model_id.osv_memory for rule in self.browse(ids, context))
+        return not any(rule.model_id.transient for rule in self.browse())
 
+    @api.multi
     def _check_model_name(self):
         # Don't allow rules on rules records (this model).
-        return not any(rule.model_id.model == 'ir.rule' for rule in self.browse(ids, context))
+        return not any(rule.model_id.model == 'ir.rule' for rule in self.browse())
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     name = fields.Char('Name', index=1)
     model_id = fields.Many2one('builder.ir.model', 'Object', index=1, required=True, ondelete="cascade")
     global_ = fields.Boolean(compute=_get_value, string='Global', type='boolean', store=True,
-                             help="If no group is specified the rule is global and applied to everyone")
+                             help="If no group is specified the rule is global and applied to everyone", default=True)
     groups = fields.Many2many('builder.res.groups', 'builder_rule_group_rel', 'rule_group_id', 'group_id', 'Groups')
     domain = fields.Text('Domain')
-    perm_read = fields.Boolean('Apply for Read')
-    perm_write = fields.Boolean('Apply for Write')
-    perm_create = fields.Boolean('Apply for Create')
-    perm_unlink = fields.Boolean('Apply for Delete')
+    perm_read = fields.Boolean('Apply for Read', default=True)
+    perm_write = fields.Boolean('Apply for Write', default=True)
+    perm_create = fields.Boolean('Apply for Create', default=True)
+    perm_unlink = fields.Boolean('Apply for Delete', default=True)
 
-    _defaults = {
-        'perm_read': True,
-        'perm_write': True,
-        'perm_create': True,
-        'perm_unlink': True,
-        'global_': True,
-    }
+    # _defaults = {
+    #     'perm_read': True,
+    #     'perm_write': True,
+    #     'perm_create': True,
+    #     'perm_unlink': True,
+    #     'global_': True,
+    # }
     _sql_constraints = [
         (
             'no_access_rights',

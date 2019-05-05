@@ -24,10 +24,13 @@ class BinaryGenerator(models.Model):
     file_ids = fields.Many2many('builder.data.file', 'builder_ir_model_demo_generator_binary_files_rel', 'generator_id',
                                 'data_id', 'Files')
 
-    _defaults = {
-        'subclass_model': lambda s, c, u, cxt=None: s._name
-    }
-
+    # _defaults = {
+    #     'subclass_model': lambda s, c, u, cxt=None: s._name
+    # }
+    @api.one
+    @api.depends('base_id')
+    def default_subclass_model(self):
+        self.subclass_model = lambda s: s._name
     @api.multi
     def get_generator(self, field):
         while True:

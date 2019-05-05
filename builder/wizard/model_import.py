@@ -47,7 +47,7 @@ class ModelImport(models.TransientModel):
                         'selection': field.selection,
                         'required': field.required,
                         'readonly': field.readonly,
-                        'select_level': field.select_level,
+                        'index': field.index,
                         'translate': field.translate,
                         'size': field.size,
                         'on_delete': field.on_delete,
@@ -98,7 +98,7 @@ class ModelImport(models.TransientModel):
                     'module_id': self.env.context.get('active_id'),
                     'name': model.name,
                     'model': model.model,
-                    'osv_memory': model.osv_memory,
+                    'transient': model.transient,
                     # 'inherit_model': self.set_inherited and model.model or False
                 })
 

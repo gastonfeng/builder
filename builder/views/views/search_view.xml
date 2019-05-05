@@ -8,6 +8,7 @@
                 <form string="View Generator">
                     <group>
                         <group>
+                            <field name="subclass_model" invisible="1"/>
                             <field name="model_id" invisible="1"/>
                             <field name="id" invisible="1"/>
                             <field name="model_name" invisible="1"/>

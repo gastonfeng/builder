@@ -59,10 +59,13 @@ class Generator(models.Model):
     field_names = fields.Char('Field Names', compute='_compute_field_names', store=True)
     allow_nulls = fields.Boolean('Allow Null Values',
                                  help='If the field is not required allow to generate null values for them.')
-
-    _defaults = {
-        'subclass_model': lambda s, c, u, cxt=None: s._name
-    }
+#    _defaults = {
+#        'subclass_model': lambda s, c, u, cxt=None: s._name
+#    }
+    @api.one
+    @api.depends('model_id')
+    def default_subclass_model(self):
+        self.subclass_model = lambda s: s._name
 
     @api.multi
     def generate_null_values(self, field):
@@ -105,7 +108,7 @@ class Generator(models.Model):
     @api.multi
     def action_open_view(self):
         model = self._model
-        action = model.get_formview_action(self.env.cr, self.env.uid, self.ids, self.env.context)
+        action = model.get_formview_action()
         action.update({'target': 'new'})
         return action
 
@@ -127,7 +130,8 @@ class IrModel(models.Model):
     @api.depends('demo_records', 'model')
     def _compute_demo_xml_id_sample(self):
         tmpl = '{model}_'.format(model=self.model.lower().replace('.', '_')) + '{id}' if self.model else 'model_'
-        self.demo_xml_id_sample = pickle.dumps([tmpl.format(id=i) for i in range(self.demo_records)]) if self.demo_records else False
+        self.demo_xml_id_sample = pickle.dumps(
+            [tmpl.format(id=i) for i in range(self.demo_records)]) if self.demo_records else False
 
     @api.multi
     def demo_xml_id(self, index):

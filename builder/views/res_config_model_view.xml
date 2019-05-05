@@ -120,8 +120,6 @@
                                                         <field name="required"/>
                                                         <field name="readonly"/>
                                                         <field name="index"/>
-                                                        <field name="select_level"
-                                                               attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                                         <field name="translate"
                                                                attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                                     </group>
@@ -300,8 +298,6 @@
                                         <field name="required"/>
                                         <field name="readonly"/>
                                         <field name="index"/>
-                                        <field name="select_level"
-                                               attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                         <field name="translate"
                                                attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                     </group>

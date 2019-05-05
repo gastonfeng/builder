@@ -21,7 +21,7 @@
 # noinspection PyStatementEffect
 {
     'name': 'Module Builder',
-    'version': '0.1',
+    'version': '0.117',
     'category': 'Programming',
     'summary': 'Build your modules right inside Odoo',
     'description': """

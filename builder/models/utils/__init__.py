@@ -21,4 +21,4 @@ def get_field_types(model):
     # break on it. See bug 939653.
     return sorted([(k, k) for k in
                    ['one2many', 'many2one', 'many2many', 'binary', 'char', 'boolean', 'date', 'datetime', 'float',
-                    'html', 'integer', 'reference', 'selection', 'serialized', 'text']])
+                    'html', 'integer', 'reference', 'selection', 'monetary', 'text']])

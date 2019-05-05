@@ -18,11 +18,14 @@ class GraphView(models.Model):
     attr_stacked = fields.Boolean('Stacked')
     attr_orientation = fields.Selection([('horizontal', 'Horizontal'), ('vertical', 'Vertical')], 'Orientation')
     field_ids = fields.One2many('builder.views.graph.field', 'view_id', 'Items', copy=True)
-
-    _defaults = {
-        'type': 'graph',
-        'subclass_model': lambda s, c, u, cxt=None: s._name,
-    }
+#    _defaults = {
+#        'type': 'graph',
+#        'subclass_model': lambda s, c, u, cxt=None: s._name,
+#    }
+    @api.onchange('type')
+    def onchange_type(self):
+        self.type = 'graph'
+        self.subclass_model = 'builder.views.' + self.type
 
     @api.model
     def create_instance(self, id):

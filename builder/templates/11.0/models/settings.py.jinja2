@@ -5,5 +5,5 @@ from openerp import models, fields, api, tools, _
 # import openerp.addons.decimal_precision as dp
 {% for setting in settings %}
 
-    {{ macros.builder_res_config_settings_model(setting) }}
+{{ macros.builder_res_config_settings_model(setting) }}
 {%- endfor -%}

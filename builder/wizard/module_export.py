@@ -8,7 +8,7 @@ class ModuleImport(models.TransientModel):
     def _get_export_types(self):
         return self.env['builder.exchanger.base'].get_exchangers()
 
-    export_type = fields.Selection(_get_export_types, 'Format', required=True)
+    export_type = fields.Selection(_get_export_types, 'Format', required=True,default='_get_default_exporter')
 
     @api.model
     def _get_default_exporter(self):
@@ -16,9 +16,9 @@ class ModuleImport(models.TransientModel):
         if exporters:
             return exporters[0][0]
 
-    _defaults = {
-        'export_type': _get_default_exporter
-    }
+    # _defaults = {
+    #     'export_type': _get_default_exporter
+    # }
 
     @api.multi
     def action_export(self):

@@ -24,12 +24,17 @@ class KanbanView(models.Model):
     # attr_quick_create = fields.Selection([(1, 'Quick Create'), (2, 'No Quick Create')], 'Quick Create')
     field_ids = fields.Many2many('builder.ir.model.fields', 'builder_view_views_kanban_field_rel', 'view_id',
                                  'field_id', 'Items')
+
     # field_ids = fields.One2many('builder.views.kanban.field', 'view_id', 'Items')
 
-    _defaults = {
-        'type': 'kanban',
-        'subclass_model': lambda s, c, u, cxt=None: s._name,
-    }
+    # _defaults = {
+    #     'type': 'kanban',
+    #     'subclass_model': lambda s, c, u, cxt=None: s._name,
+    # }
+    @api.onchange('type')
+    def onchange_type(self):
+        self.type = 'kanban'
+        self.subclass_model = 'builder.views.' + self.type
 
     @api.model
     def create_instance(self, id):

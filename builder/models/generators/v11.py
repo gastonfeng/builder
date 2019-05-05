@@ -1,16 +1,16 @@
 import base64
 from collections import defaultdict
 
-from openerp import models, api
+from odoo import models, api
 
 
-class Generatorv10(models.TransientModel):
+class Generatorv11(models.TransientModel):
     """
     Their job is to generate code.
     """
-    _name = 'builder.generator.v10'
+    _name = 'builder.generator.v11'
     _inherit = ['builder.generator.base']
-    _description = '10.0'
+    _description = '11.0'
 
     @api.model
     def generate_module(self, zip_file, module):

@@ -29,11 +29,11 @@ class IrFields(models.Model):
     _rec_name = 'name'
 
     model_id = fields.Many2one('builder.ir.model', 'Model', index=True, ondelete='cascade')
-    module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True)
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', compute='_compute_module_id')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
                                               string='States Field')
 
-    name = fields.Char('Name', required=True, index=1)
+    name = fields.Char('Name', required=True, index=1,default='_get_default_name')
 
     position = fields.Integer('Position')
     complete_name = fields.Char('Complete Name', index=1)
@@ -58,18 +58,15 @@ class IrFields(models.Model):
 
     field_description = fields.Char('Field Label')
     related = fields.Char('Related')
-    ttype = fields.Selection(get_field_types, 'Field Type', required=True)
+    ttype = fields.Selection(get_field_types, 'Field Type', required=True,default='_get_default_ttype')
     relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')],
                                       'Field Type', compute='_compute_relation_ttype',
-                                      fnct_inv='_relation_type_set_inverse', store=False, search=True)
+                                      fnct_inv='_relation_type_set_inverse', store=False, search=True,default='_get_default_ttype')
     selection = fields.Char('Selection Options', help="List of options for a selection field, "
                                                       "specified as a Python expression defining a list of (key, label) pairs. "
                                                       "For example: [('blue','Blue'),('yellow','Yellow')]")
     required = fields.Boolean('Required')
     readonly = fields.Boolean('Readonly')
-    select_level = fields.Selection(
-        [('0', 'Not Searchable'), ('1', 'Always Searchable'), ('2', 'Advanced Search (deprecated)')], 'Searchable',
-        required=True, default='0')
     translate = fields.Boolean('Translatable',
                                help="Whether values for this field can be translated (enables the translation mechanism for that field)")
     size = fields.Char('Size')
@@ -80,7 +77,7 @@ class IrFields(models.Model):
                                                      'related fields)')
 
     help = fields.Text('Help')
-    delegate = fields.Boolean('Delegate', default=True, help=''' set it to ``True`` to make fields of the target model
+    delegate = fields.Boolean('Delegate', default=False, help=''' set it to ``True`` to make fields of the target model
         accessible from the current model (corresponds to ``_inherits``)''')
     auto_join = fields.Boolean('Auto Join',
                                help='Whether JOINs are generated upon search through that field (boolean, by default ``False``')
@@ -135,6 +132,11 @@ class IrFields(models.Model):
     )
     order_priority = fields.Integer('Order Priority')
     is_rec_name = fields.Boolean('Use as Name')
+
+    @api.one
+    @api.depends('model_id')
+    def _compute_module_id(self):
+        self.module_id = self.model_id.module_id
 
     @property
     def groups(self):
@@ -272,11 +274,11 @@ class IrFields(models.Model):
         # return 'char'
         pass
 
-    _defaults = {
-        'ttype': _get_default_ttype,
-        'relation_ttype': _get_default_ttype,
-        'name': _get_default_name,
-    }
+#    _defaults = {
+#        'ttype': _get_default_ttype,
+#        'relation_ttype': _get_default_ttype,
+#        'name': _get_default_name,
+#    }
 
     def _check_selection(self, selection):
         try:

@@ -18,10 +18,14 @@ class SearchView(models.Model):
     view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
     field_ids = fields.One2many('builder.views.search.field', 'view_id', 'Search Items', copy=True)
 
-    _defaults = {
-        'type': 'search',
-        'subclass_model': lambda s, c, u, cxt=None: s._name,
-    }
+    # _defaults = {
+    #     'type': 'search',
+    #     'subclass_model': lambda s, c, u, cxt=None: s._name,
+    # }
+    @api.onchange('type')
+    def onchange_type(self):
+        self.type = 'search'
+        self.subclass_model = 'builder.views.' + self.type
 
     @api.model
     def create_instance(self, id):

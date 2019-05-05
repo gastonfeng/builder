@@ -43,11 +43,14 @@ class GanttView(models.Model):
     )
 
     field_ids = fields.One2many('builder.views.gantt.field', 'view_id', 'Items', copy=True)
-
-    _defaults = {
-        'type': 'gantt',
-        'subclass_model': lambda s, c, u, cxt=None: s._name,
-    }
+#    _defaults = {
+#        'type': 'gantt',
+#        'subclass_model': lambda s, c, u, cxt=None: s._name,
+#    }
+    @api.onchange('type')
+    def onchange_type(self):
+        self.type = 'gantt'
+        self.subclass_model = 'builder.views.' + self.type
 
     @api.model
     def create_instance(self, id):

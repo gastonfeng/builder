@@ -24,10 +24,13 @@ class SelectionRandomGenerator(models.Model):
     custom_selection = fields.Boolean("Custom Selection", default=False)
     selection_options = fields.Char("Selection Options", help="Options separated by '|'. ")
 
-    _defaults = {
-        'subclass_model': lambda s, c, u, cxt=None: s._name
-    }
-
+    # _defaults = {
+    #     'subclass_model': lambda s, c, u, cxt=None: s._name
+    # }
+    @api.one
+    @api.depends('base_id')
+    def default_subclass_model(self):
+        self.subclass_model = lambda s: s._name
     @api.multi
     def get_generator(self, field):
         while True:

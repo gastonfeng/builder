@@ -22,10 +22,13 @@ class AutoincrementGenerator(models.Model):
     start_number = fields.Float('Start at', required=True, default=1)
     increment = fields.Float('Increment', required=True, default=1)
 
-    _defaults = {
-        'subclass_model': lambda s, c, u, cxt=None: s._name
-    }
-
+    # _defaults = {
+    #     'subclass_model': lambda s, c, u, cxt=None: s._name
+    # }
+    @api.one
+    @api.depends('base_id')
+    def default_subclass_model(self):
+        self.subclass_model = lambda s: s._name
     @api.model
     def format_value(self, field, value):
         if field.ttype == 'integer':

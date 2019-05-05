@@ -11,14 +11,14 @@ class IrModel(models.Model):
     _rec_name = 'model'
 
     sequence = fields.Integer('Sequence')
-    module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True, index=1, ondelete='cascade')
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', required=True, index=1, ondelete='cascade',default=lambda self: self.env['builder.ir.module.module'].search([]))
     name = fields.Char('Description', required=True)
     model = fields.Char('Model', required=True, index=1)
     info = fields.Text('Information')
     rec_name_field_id = fields.Many2one('builder.ir.model.fields', 'Record Name', compute='_compute_rec_name_field_id',
                                         inverse='_inverse_rec_name_field_id',
                                         domain=[('ttype', 'in', ['char', 'text', 'date', 'datetime', 'selection'])])
-    osv_memory = fields.Boolean('Transient',
+    transient = fields.Boolean('Transient',
                                 help="This field specifies whether the model is transient or not (i.e. if records are automatically deleted from the database or not)")
     field_ids = fields.One2many('builder.ir.model.fields', 'model_id', 'Fields', required=True, copy=True)
     relation_field_ids = fields.One2many('builder.ir.model.fields', 'relation_model_id', 'Referenced By Fields',

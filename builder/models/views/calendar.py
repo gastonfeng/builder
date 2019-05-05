@@ -36,11 +36,15 @@ class CalendarView(models.Model):
                                help='The display format which will be used to display the event where fields are between "[" and "]"')
 
     field_ids = fields.One2many('builder.views.calendar.field', 'view_id', 'Items', copy=True)
+#    _defaults = {
+#        'type': 'calendar',
+#        'subclass_model': lambda s, c, u, cxt=None: s._name,
+#    }
 
-    _defaults = {
-        'type': 'calendar',
-        'subclass_model': lambda s, c, u, cxt=None: s._name,
-    }
+    @api.onchange('type')
+    def onchange_type(self):
+        self.type = 'calendar'
+        self.subclass_model = 'builder.views.' + self.type
 
     @api.onchange('attr_date_start_field_id')
     def _compute_calendar_attr_date_start_ttype(self):

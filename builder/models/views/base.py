@@ -201,10 +201,11 @@ class View(models.Model):
     def _onchange_type(self):
         self.subclass_model = 'builder.views.' + self.type
 
+
     @api.multi
     def action_open_view(self):
         # model = self
-        action = self.get_formview_action(self.ids, self.env.context)
+        action = self.get_formview_action()
         action.update({'target': 'new'})
         return action
 

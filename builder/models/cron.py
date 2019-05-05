@@ -18,13 +18,13 @@ class ir_cron(models.Model):
     _order = 'name'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     name = fields.Char('Name', required=True)
-    active = fields.Boolean('Active')
-    interval_number = fields.Integer('Interval Number', help="Repeat every x.")
+    active = fields.Boolean('Active',default=1)
+    interval_number = fields.Integer('Interval Number', help="Repeat every x.",default=1)
     interval_type = fields.Selection([('minutes', 'Minutes'),
                                       ('hours', 'Hours'), ('work_days', 'Work Days'), ('days', 'Days'),
-                                      ('weeks', 'Weeks'), ('months', 'Months')], 'Interval Unit')
+                                      ('weeks', 'Weeks'), ('months', 'Months')], 'Interval Unit',default='months')
     numbercall = fields.Integer('Number of Calls',
-                                help='How many times the method is called,\na negative number indicates no limit.')
+                                help='How many times the method is called,\na negative number indicates no limit.',default=1)
     doall = fields.Boolean('Repeat Missed',
                            help="Specify if missed occurrences should be executed when the server restarts.")
     nextcall = fields.Datetime('Next Execution Date', help="Next planned execution date for this job.")
@@ -34,15 +34,15 @@ class ir_cron(models.Model):
                                       help="Name of the method to be called when this job is processed.")
     args = fields.Text('Arguments', help="Arguments to be passed to the method, e.g. (uid,).")
     priority = fields.Integer('Priority',
-                              help='The priority of the job, as an integer: 0 means higher priority, 10 means lower priority.')
+                              help='The priority of the job, as an integer: 0 means higher priority, 10 means lower priority.',default=5)
 
-    _defaults = {
-        'priority': 5,
-        'interval_number': 1,
-        'interval_type': 'months',
-        'numbercall': 1,
-        'active': 1,
-    }
+    # _defaults = {
+    #     'priority': 5,
+    #     'interval_number': 1,
+    #     'interval_type': 'months',
+    #     'numbercall': 1,
+    #     'active': 1,
+    # }
 
     def _check_args(self):
         try:

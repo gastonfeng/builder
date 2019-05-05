@@ -42,7 +42,7 @@ class Module(models.Model):
     summary = fields.Char('Summary', translate=True)
     description = fields.Text("Description", translate=True)
     description_html = fields.Html(string='Description HTML', sanitize=False)
-    author = fields.Char("Author", required=True)
+    author = fields.Char("Author", required=True,default='_get_default_author')
     maintainer = fields.Char('Maintainer')
     contributors = fields.Text('Contributors')
     website = fields.Char("Website")
@@ -110,9 +110,9 @@ class Module(models.Model):
     def _get_default_author(self):
         return self.env.user.name if self.env.user else None
 
-    _defaults = {
-        'author': _get_default_author
-    }
+    # _defaults = {
+    #     'author': _get_default_author
+    # }
 
     @api.one
     def copy(self, default=None):

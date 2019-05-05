@@ -33,8 +33,6 @@
                                     <field name="readonly"/>
                                     <field name="index"/>
                                     <field name="copy"/>
-                                    <field name="select_level"
-                                           attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                     <field name="translate"
                                            attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                 </group>
@@ -160,7 +158,7 @@
                     <field name="ttype"/>
                     <field name="required"/>
                     <field name="readonly"/>
-                    <field name="select_level"/>
+                    <field name="index"/>
                 </tree>
             </field>
         </record>
@@ -208,8 +206,6 @@
                                         <field name="readonly"/>
                                         <field name="index"/>
                                         <field name="copy"/>
-                                        <field name="select_level"
-                                               attrs="{'readonly': [('ttype','in',['binary', 'serialized'])], 'invisible': [('ttype','in',['binary', 'serialized'])]}"/>
                                         <field name="translate"
                                                attrs="{'readonly': [('ttype','not in',['char','html', 'text'])], 'invisible': [('ttype','not in',['char','html', 'text'])]}"/>
                                     </group>
