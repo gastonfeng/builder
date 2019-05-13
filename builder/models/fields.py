@@ -28,12 +28,22 @@ class IrFields(models.Model):
     _description = 'Fields'
     _rec_name = 'name'
 
+    @api.model
+    def _get_default_name(self):
+        if self.env.context.get('from_diagram'):
+            return self.relation_model_id.model.replace('.', '_') + '_id' if self.relation_model_id else False
+        return False
+    @api.model
+    def _get_default_ttype(self):
+        if self.env.context.get('from_diagram'):
+            return 'many2one'
+        return 'char'
     model_id = fields.Many2one('builder.ir.model', 'Model', index=True, ondelete='cascade')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', compute='_compute_module_id')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
                                               string='States Field')
 
-    name = fields.Char('Name', required=True, index=1,default='_get_default_name')
+    name = fields.Char('Name', required=True, index=1, default=_get_default_name)
 
     position = fields.Integer('Position')
     complete_name = fields.Char('Complete Name', index=1)
@@ -58,10 +68,11 @@ class IrFields(models.Model):
 
     field_description = fields.Char('Field Label')
     related = fields.Char('Related')
-    ttype = fields.Selection(get_field_types, 'Field Type', required=True,default='_get_default_ttype')
+    ttype = fields.Selection(get_field_types, 'Field Type', required=True, default=_get_default_ttype)
     relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')],
                                       'Field Type', compute='_compute_relation_ttype',
-                                      fnct_inv='_relation_type_set_inverse', store=False, search=True,default='_get_default_ttype')
+                                      fnct_inv='_relation_type_set_inverse', store=False, search=True,
+                                      default=_get_default_ttype)
     selection = fields.Char('Selection Options', help="List of options for a selection field, "
                                                       "specified as a Python expression defining a list of (key, label) pairs. "
                                                       "For example: [('blue','Blue'),('yellow','Yellow')]")
@@ -204,12 +215,6 @@ class IrFields(models.Model):
     def __str__(self):
         return self.name
 
-    @api.model
-    def _get_default_name(self):
-        if self.env.context.get('from_diagram'):
-            return self.relation_model_id.model.replace('.', '_') + '_id' if self.relation_model_id else False
-        return False
-
     @api.onchange('relation_field')
     def onchange_relation_field(self):
         if self.ttype == 'one2many' and self.reverse_relation_name != self.relation_field:
@@ -267,18 +272,13 @@ class IrFields(models.Model):
                         model2=snake_case(self.relation_model_id.model))
                     _logger.info('relation_many2many_relation=%s' % self.relation_many2many_relation)
 
-    @api.model
-    def _get_default_ttype(self):
-        # if self.env.context.get('from_diagram'):
-        #     return 'many2one'
-        # return 'char'
-        pass
 
-#    _defaults = {
-#        'ttype': _get_default_ttype,
-#        'relation_ttype': _get_default_ttype,
-#        'name': _get_default_name,
-#    }
+
+    #    _defaults = {
+    #        'ttype': _get_default_ttype,
+    #        'relation_ttype': _get_default_ttype,
+    #        'name': _get_default_name,
+    #    }
 
     def _check_selection(self, selection):
         try:

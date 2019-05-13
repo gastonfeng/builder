@@ -9,6 +9,6 @@ de = odooModule('developer')
 sw = odooModule('software')
 
 om = build_odoo('builder', "1.0", git=gits('builder', url='ssh://kaikong@192.168.31.10/home/git/odoo_builder.git'),newTests=['test11'],oldTests=['odoo11'],
-                store=store('kaikong.com.cn'), deploy=['www.kaikong.cn', ],
+                store=store('kaikong.com.cn'), deploy=['www.kaikong.cn','www.woniu66.com' ],
                 depends=[de, sw, ])
 om.build()

@@ -193,7 +193,7 @@
                                             <button class="oe_inline oe_stat_button" string="Model View" name="%(act_builder_views_selector)d" type="action" icon="fa-plus" context="{'default_module_id': id}"/>
                                         </div>
                                         <field name="view_ids" nolabel="1" context="{'default_module_id': active_id}">
-                                            <tree string="Views" create="1" edit="1" delete="1">
+                                            <tree string="Views" create="1" edit="1" delete="1" context="{'default_module_id': active_id}">
                                                 <field name="model_id"/>
                                                 <field name="type"/>
                                                 <field name="xml_id"/>
