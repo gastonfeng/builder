@@ -423,7 +423,7 @@ class {{ class_name }}({% if model.transient %}models.TransientModel{% else %}mo
 
 {# generate builder.views.kanban #}
 {% macro builder_views_kanban(instance) %}
-    <kanban string="{{ instance.name }}"{% if not instance.attr_create %} create="false" {% endif %}{% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %} delete="false" {% endif %}{% if instance.attr_default_group_by_field_id.id %} default_group_by="{{ instance.attr_default_group_by_field_id.name }}" {% endif %}{% if not instance.attr_quick_create %} quick_create="false" {% endif %}>
+    <kanban string="{{ instance.name }}"{% if not instance.attr_create %} create="false" {% endif %}{% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %} delete="false" {% endif %}{% if not instance.attr_quick_create %} quick_create="false" {% endif %}>
     {% for field in instance.field_ids %}
         {{ builder_views_kanban_field(field) }}
     {%- endfor %}
