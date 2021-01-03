@@ -11,6 +11,7 @@
                         <group>
                             <field name="name"/>
                             <field name="field_description"/>
+                            <field name="help"/>
                             <!--<field name="module_id" invisible="1"/>-->
                             <field name="model_id" invisible="1"/>
                             <field name="relation_model_id" invisible="1"/>
@@ -174,14 +175,15 @@
                         </div>-->
                         <group>
                             <group>
-                                <field name="id" invisible="1"/>
-                                <field name="module_id" invisible="1"/>
+                                <field name="id" invisible="0"/>
+                                <field name="module_id" invisible="0"/>
                                 <field name="model_id" invisible="1"/>
                                 <field name="relation_model_id" invisible="1"/>
                                 <field name="special_states_field_id" invisible="1"/>
 
                                 <field name="name"/>
                                 <field name="field_description"/>
+                                <field name="help"/>
                                 <field name="is_inherited" invisible="1"/>
                                 <field name="redefine" attrs="{'invisible': [['is_inherited', '=', False]], }"/>
                             </group>

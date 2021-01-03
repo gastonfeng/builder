@@ -239,8 +239,8 @@ class {{ class_name }}({% if model.transient %}models.TransientModel{% else %}mo
     def {{ method.name }}(self):
         raise NotImplementedError
     {% elif method.type == 'constraint' %}
-    @api.constraints({{ ','.join(method.field_names) }})
-    def {{ method.name }}(self):
+        @api.constraints({{ ','.join(method.field_names) }})
+        def {{ method.name }}(self):
         raise NotImplementedError
     {% endif %}
 {% endmacro -%}
@@ -248,16 +248,25 @@ class {{ class_name }}({% if model.transient %}models.TransientModel{% else %}mo
 {# generate builder.ir.model.field #}
 {% macro builder_ir_model_field(field) -%}
     {%- if field.define -%}
-    {{ field.name }} = fields.{{ field.ttype.capitalize() }}(
-        {%- if field.ttype == 'many2many' -%} '{{ field.relation_model_id.model }}', '{{ field.relation_many2many_relation }}', {% if field.relation_many2many_column1 and field.relation_many2many_column2 %}'{{ field.relation_many2many_column1 }}', '{{ field.relation_many2many_column2 }}', {%- endif %}{%- endif -%}
-        {%- if field.ttype == 'many2one' -%} '{{ field.relation_model_id.model }}', {% if field.on_delete %}ondelete='{{field.on_delete}}',{% endif %}{% if field.auto_join %}auto_join=True,{% endif %}{% if field.delegate -%}delegate=True,{% endif %}{%- endif -%}
-        {%- if field.ttype == 'one2many' -%} '{{ field.relation_model_id.model }}', '{{field.relation_field}}', {%- endif -%}
-        {%- if field.ttype == 'char' -%} {%- if field.size %} size={{ field.size }}, {%- endif -%}{% if field.translate %}translate=True,{% endif %}{%- endif -%}
+        {{ field.name }} = fields.{{ field.ttype.capitalize() }}(
+        {%- if field.ttype == 'many2many' -%} '{{ field.relation_model_id.model }}',
+            {% if field.relation_many2many_column1 and field.relation_many2many_column2 %}'
+                {{ field.relation_many2many_column1 }}', '{{ field.relation_many2many_column2 }}',
+            {%- endif %}{%- endif -%}
+        {%- if field.ttype == 'many2one' -%} '{{ field.relation_model_id.model }}', {% if field.on_delete %}ondelete='
+            {{ field.on_delete }}',{% endif %}{% if field.auto_join %}auto_join=True,{% endif %}{% if field.delegate -%}
+            delegate=True,{% endif %}{%- endif -%}
+        {%- if field.ttype == 'one2many' -%} '{{ field.relation_model_id.model }}', '{{ field.relation_field }}',
+        {%- endif -%}
+        {%- if field.ttype == 'char' -%} {%- if field.size %} size={{ field.size }}, {%- endif -%}
+        {% if field.translate %}translate=True,{% endif %}{%- endif -%}
         {%- if field.ttype == 'text' -%} {% if field.translate %}translate=True, {% endif %}{%- endif -%}
-        {%- if field.ttype == 'float' -%} {% if field.decimal_digits and field.decimal_precision %} digits=({{field.decimal_digits}}, {{field.decimal_precision}}),{% endif %}{%- endif -%}
+        {%- if field.ttype == 'float' -%} {% if field.decimal_digits and field.decimal_precision %} digits=(
+            {{ field.decimal_digits }}, {{ field.decimal_precision }}),{% endif %}{%- endif -%}
         {%- if field.required %} required=True,{%- endif -%}
         {%- if field.readonly %} readonly=True,{%- endif -%}
-        {%- if field.field_description %} string='{{ field.field_description }}',{% endif -%} {# This should be removed??? #}
+        {%- if field.field_description %} string='{{ field.field_description }}',{% endif -%}
+        {# This should be removed??? #}
         {%- if field.string %} string='{{ field.string }}',{%- endif -%}
         {%- if field.help %} help='''{{ field.help }}''',{%- endif -%}
         {%- if field.index %} index=True,{%- endif -%}

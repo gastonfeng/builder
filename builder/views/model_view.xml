@@ -64,6 +64,7 @@
                                             <group>
                                                 <field name="name"/>
                                                 <field name="field_description"/>
+                                                <field name="help"/>
                                                 <field name="is_inherited" invisible="1"/>
                                                 <field name="module_id" />
                                                 <field name="redefine"
@@ -122,7 +123,7 @@
                                                                domain="[['module_id', '=', parent.module_id]]"
                                                                attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>
                                                         <field name="relation"
-                                                               attrs="{'required': [('ttype','in',['many2one','one2many','many2many'])], 'invisible': [('ttype', 'not in', ['many2one','one2many','many2many'])]}"/>
+                                                               attrs="{'required': [('ttype','in',['one2many'])], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
                                                         <field name="relation_field"
                                                                attrs="{'required': [('ttype','=','one2many')], 'invisible': [('ttype', 'not in', ['one2many'])]}"/>
 
