@@ -17,7 +17,7 @@ class SettingModel(models.Model):
 
     field_ids = fields.One2many('builder.res.config.settings.field', 'model_id', 'Fields', required=True, copy=True)
 
-    @api.multi
+    # @api.multi
     def action_fields(self):
         return {
             'name': _('Fields'),
@@ -93,7 +93,7 @@ class SettingModelField(models.Model):
     def onchange_relation_model_id(self):
         self.relation = self.relation_model_id.model if self.relation_model_id else False
 
-    @api.one
+    #@api.one
     @api.onchange('setting_field_type', 'toggle_module_name', 'default_field_name', 'group_name')
     @api.depends('setting_field_type', 'toggle_module_name', 'default_field_name', 'group_name')
     def _compute_field_name(self):

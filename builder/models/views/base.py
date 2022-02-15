@@ -90,7 +90,7 @@ class ViewSelector(models.TransientModel):
             if views:
                 self.inherit_view_id = views[0].id
 
-    @api.one
+    # @api.one
     @api.constrains('inherit_view_ref')
     def _check_view_ref(self):
         if self.inherit_view_ref:
@@ -100,7 +100,7 @@ class ViewSelector(models.TransientModel):
                 if not view.model == self.model_id.model:
                     raise ValidationError("View Ref is not a valid view reference")
 
-    @api.multi
+    #@api.multi
     def action_show_view(self):
         view_type_names = {
             'form': _('Form View View'),
@@ -201,15 +201,14 @@ class View(models.Model):
     def _onchange_type(self):
         self.subclass_model = 'builder.views.' + self.type
 
-
-    @api.multi
+    #@api.multi
     def action_open_view(self):
         # model = self
         action = self.get_formview_action()
         action.update({'target': 'new'})
         return action
 
-    @api.multi
+    #@api.multi
     def action_save(self):
         return {'type': 'ir.actions.act_window_close'}
 
@@ -255,7 +254,7 @@ class AbstractViewField(models.AbstractModel):
     module_id = fields.Many2one('builder.ir.model', related='view_id.model_id.module_id', string='Module')
     string = fields.Char('String')
 
-    @api.one
+    #@api.one
     @api.depends('field_id.ttype')
     def _compute_field_ttype(self):
         self.field_ttype = self.field_id.ttype

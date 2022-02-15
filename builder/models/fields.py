@@ -1,7 +1,7 @@
 import logging
-
 from odoo import models, api, fields, _
 from odoo.exceptions import except_orm
+
 from .utils import get_field_types
 
 __author__ = 'one'
@@ -33,11 +33,13 @@ class IrFields(models.Model):
         if self.env.context.get('from_diagram'):
             return self.relation_model_id.model.replace('.', '_') + '_id' if self.relation_model_id else False
         return False
+
     @api.model
     def _get_default_ttype(self):
         if self.env.context.get('from_diagram'):
             return 'many2one'
         return 'char'
+
     model_id = fields.Many2one('builder.ir.model', 'Model', index=True, ondelete='cascade')
     module_id = fields.Many2one('builder.ir.module.module', 'Module', compute='_compute_module_id')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', related='model_id.special_states_field_id',
@@ -102,8 +104,7 @@ class IrFields(models.Model):
                               "specified as a Python expression defining a list of triplets. "
                               "For example: [('color','=','red')]")
     selectable = fields.Boolean('Selectable', default=1)
-    group_ids = fields.Many2many('builder.res.groups', 'builder_ir_model_fields_group_rel', 'field_id', 'group_id',
-                                 string='Groups')
+    group_ids = fields.Many2many('builder.res.groups', string='Groups')
     option_ids = fields.One2many('builder.ir.model.fields.option', 'field_id', 'Options', copy=True)
     states_ids = fields.One2many('builder.ir.model.fields.state', 'field_id', 'States', copy=True)
 
@@ -144,7 +145,7 @@ class IrFields(models.Model):
     order_priority = fields.Integer('Order Priority')
     is_rec_name = fields.Boolean('Use as Name')
 
-    @api.one
+    # @api.one
     @api.depends('model_id')
     def _compute_module_id(self):
         self.module_id = self.model_id.module_id
@@ -161,7 +162,7 @@ class IrFields(models.Model):
     def onchange_name(self):
         self.is_rec_name = self.name == 'name'
 
-    @api.one
+    # @api.one
     def _compute_arc_name(self):
         if self.ttype in relational_field_types:
             small_map = {'many2one': 'm2o', 'one2many': 'o2m', 'many2many': 'm2m'}
@@ -200,7 +201,7 @@ class IrFields(models.Model):
         else:
             self.relation = False
 
-    @api.one
+    # @api.one
     @api.depends('ttype')
     def _compute_relation_ttype(self):
         if self.ttype in relational_field_types:
@@ -208,7 +209,7 @@ class IrFields(models.Model):
         else:
             return False
 
-    @api.one
+    # @api.one
     def _relation_type_set_inverse(self):
         return self.write({'ttype': self.relation_ttype})
 
@@ -272,8 +273,6 @@ class IrFields(models.Model):
                         model2=snake_case(self.relation_model_id.model))
                     _logger.info('relation_many2many_relation=%s' % self.relation_many2many_relation)
 
-
-
     #    _defaults = {
     #        'ttype': _get_default_ttype,
     #        'relation_ttype': _get_default_ttype,
@@ -303,7 +302,7 @@ class IrFields(models.Model):
                              _("The Selection Options expression is must be in the [('key','Label'), ...] format!"))
         return True
 
-    @api.one
+    # @api.one
     def ensure_one_rec_name(self):
         # set previous field with is_rec_name to False
         # this way write is not triggered
@@ -351,7 +350,7 @@ class IrFields(models.Model):
 
         return model
 
-    @api.multi
+    # @api.multi
     def write(self, vals):
         saved = super(IrFields, self).write(vals)
 

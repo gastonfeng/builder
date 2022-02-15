@@ -14,7 +14,7 @@ class PageImport(models.TransientModel):
                                 domain="[('type', '=', 'qweb'), ('page', '=', True)]")
     include_menu = fields.Boolean('Include Menu', default=True)
 
-    @api.one
+    # @api.one
     def action_import(self):
         # asset = self.env[self.env.context.get('active_model')].search([('id', '=', self.env.context.get('active_id'))])
         page_item_model = self.env['builder.website.page']

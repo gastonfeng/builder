@@ -37,7 +37,8 @@
 
                         <notebook>
                             <page string="Inherited">
-                                <label string="Users added to this group are automatically added in the following groups."/>
+                                <label for="module_id"
+                                       string="Users added to this group are automatically added in the following groups."/>
                                 <field name="implied_ids" domain="[('module_id', '=', module_id)]"/>
                             </page>
                             <page string="Menus">
@@ -90,7 +91,7 @@
         <record model="ir.actions.act_window" id="act_builder_res_groups">
             <field name="name">Groups</field>
             <field name="res_model">builder.res.groups</field>
-            <field name="view_type">form</field>
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -140,16 +141,16 @@
                             <field name="groups" nolabel="1" colspan="4"/>
                         </group>
                         <group string="Interaction between rules">
-                            <label colspan="2"
+                            <label colspan="2" for="name"
                                    string="Global rules (non group-specific) are restrictions, and cannot be bypassed. Group-local rules grant additional permissions, but are constrained within the bounds of global ones. The first group rules restrict further than global rules, but any additional group rule will add more permissions"/>
-                            <label colspan="2" string="Detailed algorithm:"/>
-                            <label colspan="2"
+                            <label colspan="2" for="name" string="Detailed algorithm:"/>
+                            <label colspan="2" for="name"
                                    string="1. Global rules are combined together with a logical AND operator, and with the result of the following steps"/>
-                            <label colspan="2"
+                            <label colspan="2" for="name"
                                    string="2. Group-specific rules are combined together with a logical OR operator"/>
-                            <label colspan="2"
+                            <label colspan="2" for="name"
                                    string="3. If user belongs to several groups, the results from step 2 are combined with logical OR operator"/>
-                            <label colspan="2"
+                            <label colspan="2" for="name"
                                    string="Example: GLOBAL_RULE_1 AND GLOBAL_RULE_2 AND ( (GROUP_A_RULE_1 OR GROUP_A_RULE_2) OR (GROUP_B_RULE_1 OR GROUP_B_RULE_2) )"/>
                         </group>
                     </sheet>
@@ -160,7 +161,7 @@
         <record model="ir.actions.act_window" id="act_builder_ir_rule">
             <field name="name">Rules</field>
             <field name="res_model">builder.ir.rule</field>
-            <field name="view_type">form</field>
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -210,7 +211,7 @@
         <record model="ir.actions.act_window" id="act_builder_ir_model_access">
             <field name="name">Access Control Lists</field>
             <field name="res_model">builder.ir.model.access</field>
-            <field name="view_type">form</field>
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 

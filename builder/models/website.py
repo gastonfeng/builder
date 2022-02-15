@@ -71,7 +71,7 @@ class MediaItem(models.Model):
 
         return True
 
-    @api.one
+    # @api.one
     @api.depends('attr_name')
     def _compute_attr_id(self):
         if not self.attr_id and self.attr_name:
@@ -98,7 +98,7 @@ class Pages(models.Model):
     controller_route = fields.Char('Route')
     content = fields.Html('Body', sanitize=False)
 
-    @api.one
+    #@api.one
     def action_edit_html(self):
         if not len(self.ids) == 1:
             raise ValueError('One and only one ID allowed for this action')
@@ -234,12 +234,12 @@ class WebsiteSnippet(models.Model):
     #     'category': 'custom'
     # }
 
-    @api.one
+    #@api.one
     @api.depends('name')
     def _compute_snippet_id(self):
         self.snippet_id = self.name.lower().replace(' ', '_').replace('.', '_') if self.name else ''
 
-    @api.one
+    #@api.one
     @api.depends('category')
     def _compute_is_custom_category(self):
         self.is_custom_category = self.category == 'custom'

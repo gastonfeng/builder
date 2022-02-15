@@ -10,11 +10,11 @@ class GeneratorInterface(models.AbstractModel):
     _name = 'builder.ir.model.demo.generator.base'
     _description = 'Generator Interface'
 
-    @api.multi
+    # @api.multi
     def get_generator(self, field):
         raise NotImplementedError
 
-    @api.multi
+    #@api.multi
     def action_save(self):
         return {'type': 'ir.actions.act_window_close'}
 
@@ -61,30 +61,30 @@ class Generator(models.Model):
                                  help='If the field is not required allow to generate null values for them.')
 #    _defaults = {
 #        'subclass_model': lambda s, c, u, cxt=None: s._name
-#    }
-    @api.one
+    #    }
+    #@api.one
     @api.depends('model_id')
     def default_subclass_model(self):
         self.subclass_model = lambda s: s._name
 
-    @api.multi
+    #@api.multi
     def generate_null_values(self, field):
         if self.allow_nulls and not field.required:
             return random.random() <= (1.0 / (self.model_id.demo_records + 1))
         return False
 
-    @api.one
+    #@api.one
     @api.depends('subclass_model')
     def _compute_type(self):
         data = dict(self.get_generators())
         self.type = data.get(self.subclass_model, _('Unknown'))
 
-    @api.one
+    #@api.one
     @api.depends('field_ids.name')
     def _compute_field_names(self):
         self.field_names = ', '.join([field.name for field in self.field_ids])
 
-    @api.one
+    #@api.one
     @api.depends('subclass_model')
     def _compute_target_fields_type(self):
         self.target_fields_type = self.env[self.subclass_model]._model._target_type
@@ -101,11 +101,11 @@ class Generator(models.Model):
             for model in ms
         ]
 
-    @api.one
+    #@api.one
     def get_generator(self, field):
         return self.get_instance().get_generator(field)
 
-    @api.multi
+    #@api.multi
     def action_open_view(self):
         model = self._model
         action = model.get_formview_action()
@@ -126,14 +126,14 @@ class IrModel(models.Model):
     )
     demo_xml_id_sample = fields.Text(compute='_compute_demo_xml_id_sample', store=True)
 
-    @api.one
+    #@api.one
     @api.depends('demo_records', 'model')
     def _compute_demo_xml_id_sample(self):
         tmpl = '{model}_'.format(model=self.model.lower().replace('.', '_')) + '{id}' if self.model else 'model_'
         self.demo_xml_id_sample = pickle.dumps(
             [tmpl.format(id=i) for i in range(self.demo_records)]) if self.demo_records else False
 
-    @api.multi
+    #@api.multi
     def demo_xml_id(self, index):
         return pickle.loads(self.demo_xml_id_sample)[index]
 

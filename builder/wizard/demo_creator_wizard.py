@@ -12,7 +12,7 @@ class DemoDataCreator(models.TransientModel):
     type = fields.Selection(selection='_get_type_selection', string='Type', required=True)
     target_fields_type = fields.Char('Target Fields Type', compute='_compute_target_fields_type')
 
-    @api.one
+    # @api.one
     @api.depends('type')
     def _compute_target_fields_type(self):
         self.target_fields_type = self.env[self.type]._model._target_type if self.type else False
@@ -21,7 +21,7 @@ class DemoDataCreator(models.TransientModel):
     def _get_type_selection(self):
         return self.env['builder.ir.model.demo.generator'].get_generators()
 
-    @api.multi
+    #@api.multi
     def action_create(self):
         model = self.env[self.type]._model
         return {

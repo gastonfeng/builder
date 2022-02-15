@@ -13,7 +13,7 @@ class Superclass(models.AbstractModel):
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
 
-    @api.one
+    # @api.one
     def _compute_res_id(self):
         if self.subclass_model == self._name:
             self.subclass_id = self.id
@@ -34,7 +34,7 @@ class Superclass(models.AbstractModel):
     #     else:
     #         view = self.pool.get(record.subclass_model).fields_view_get( view_id, view_type, context=context, toolbar=toolbar, submenu=submenu)
     #     return view
-    @api.multi
+    #@api.multi
     def get_formview_action(self, access_uid=None):
         """
         @return <ir.actions.act_window>
@@ -60,7 +60,7 @@ class Superclass(models.AbstractModel):
             view = self.env[record.subclass_model].browse(record.subclass_id).get_formview_action()
         return view
 
-    @api.one
+    #@api.one
     def get_instance(self):
         return self.env[self.subclass_model].browse(self.subclass_id)
 
@@ -72,7 +72,7 @@ class Superclass(models.AbstractModel):
     def create_instance(self, id):
         raise NotImplementedError
 
-    @api.multi
+    #@api.multi
     def action_edit(self):
         data = self._model.get_formview_action()
         return data
@@ -88,7 +88,7 @@ class Subclass(models.AbstractModel):
         ])
         return view[0].id if len(view) else False
 
-    @api.multi
+    #@api.multi
     def unlink(self):
         records = self
         parent_ids = {

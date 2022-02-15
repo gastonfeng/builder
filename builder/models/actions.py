@@ -57,7 +57,7 @@ class ir_actions_act_window(models.Model):
     _sequence = 'builder_ir_actions_id_seq'
 
     # @api.constrains('res_model','src_model')
-    @api.multi
+    # @api.multi
     def _check_model(self):
         for action in self:
             if action.res_model not in self.env:
@@ -65,7 +65,8 @@ class ir_actions_act_window(models.Model):
             if action.src_model and action.src_model not in self.env:
                 return False
         return True
-    @api.multi
+
+    #@api.multi
     def _views_get_fnc(self, name, arg):
         """Returns an ordered list of the specific view modes that should be
            enabled when displaying the result of this action, along with the
@@ -94,7 +95,8 @@ class ir_actions_act_window(models.Model):
                     res[act.id].append((act.view_id.id, act.view_id.type))
                 res[act.id].extend([(False, mode) for mode in missing_modes])
         return res
-    @api.multi
+
+    #@api.multi
     def _search_view(self, name, arg):
         res = {}
         for act in self:

@@ -12,7 +12,7 @@ class Groups(models.Model):
     _rec_name = 'full_name'
     _order = 'sequence, name'
 
-    @api.one
+    # @api.one
     def _get_full_name(self):
         res = {}
         for g in self:
@@ -26,7 +26,7 @@ class Groups(models.Model):
                 res[g.id] = g.name
         return res
 
-    @api.multi
+    #@api.multi
     def _get_trans_implied(self, ids, context=None):
         "computes the transitive closure of relation implied_ids"
         memo = {}  # use a memo for performance and cycle avoidance
@@ -73,7 +73,7 @@ class Groups(models.Model):
          'The name of the group must be unique within an application!')
     ]
 
-    @api.multi
+    #@api.multi
     def copy(self, default=None):
         group_name = self.read([id], ['name'])[0]['name']
         default.update({'name': _('%s (copy)') % group_name})
@@ -137,11 +137,11 @@ class IrRule(models.Model):
                 res[rule.id] = False
         return res
 
-    @api.multi
+    #@api.multi
     def _check_model_obj(self):
         return not any(rule.model_id.transient for rule in self.browse())
 
-    @api.multi
+    #@api.multi
     def _check_model_name(self):
         # Don't allow rules on rules records (this model).
         return not any(rule.model_id.model == 'ir.rule' for rule in self.browse())

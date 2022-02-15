@@ -259,7 +259,7 @@ class {{ class_name }}({% if model.transient %}models.TransientModel{% else %}mo
         {%- if field.ttype == 'one2many' -%} '{{ field.relation_model_id.model }}', '{{ field.relation_field }}',
         {%- endif -%}
         {%- if field.ttype == 'char' -%} {%- if field.size %} size={{ field.size }}, {%- endif -%}
-        {% if field.translate %}translate=True,{% endif %}{%- endif -%}
+            {% if field.translate %}translate=True,{% endif %}{%- endif -%}
         {%- if field.ttype == 'text' -%} {% if field.translate %}translate=True, {% endif %}{%- endif -%}
         {%- if field.ttype == 'float' -%} {% if field.decimal_digits and field.decimal_precision %} digits=(
             {{ field.decimal_digits }}, {{ field.decimal_precision }}),{% endif %}{%- endif -%}

@@ -31,7 +31,7 @@ class IrUiMenu(models.Model):
 
     _rec_name = 'complete_name'
 
-    @api.multi
+    # @api.multi
     def get_user_roots(self):
         """ Return all root menu ids visible for the user.
 
@@ -41,7 +41,7 @@ class IrUiMenu(models.Model):
         menu_domain = [('parent_id', '=', False), ('parent_ref', '=', False)]
         return self.search(menu_domain)
 
-    @api.multi
+    #@api.multi
     def load_menus_root(self):
         menu_roots = self.get_user_roots()
         return {
@@ -97,6 +97,7 @@ class IrUiMenu(models.Model):
     child_ids = fields.One2many('builder.ir.ui.menu', 'parent_id', 'Child Ids', copy=True)
     # group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_menu_group_rel', 'menu_id', 'gid', 'Groups', help="If you have groups, the visibility of this menu will be based on these groups. "\
     #             "If this field is empty, Odoo will compute visibility based on the related object's read access.")
+    parent_path = fields.Char(index=True)
     parent_menu_id = fields.Many2one('ir.ui.menu', 'System Menu', ondelete='set null')
     parent_ref = fields.Char('System Menu Ref', index=True)
     parent_id = fields.Many2one('builder.ir.ui.menu', 'Parent Menu', index=True, ondelete='cascade')
@@ -149,7 +150,7 @@ class IrUiMenu(models.Model):
 
         return super(IrUiMenu, self).create(vals)
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         if not vals.get('parent_type', self.parent_type):
             vals['parent_id'] = False
@@ -158,11 +159,11 @@ class IrUiMenu(models.Model):
 
         return super(IrUiMenu, self).write(vals)
 
-    @api.one
+    #@api.one
     def _compute_complete_name(self):
         self.complete_name = self._get_full_name_one()
 
-    @api.multi
+    #@api.multi
     def _get_full_name_one(self, level=6):
         if level <= 0:
             return '...'
@@ -177,7 +178,7 @@ class IrUiMenu(models.Model):
 
         return (parent_path + self.name) if self.name else False
 
-    @api.one
+    #@api.one
     def name_get(self):
         return self.id, self._get_full_name_one()
 

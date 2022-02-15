@@ -2,12 +2,12 @@
 <openerp>
     <data>
 
-        <act_window id="act_builder_ir_module_export_wizard"
-                    name="Export Modules"
-                    src_model="builder.ir.module.module"
-                    res_model="builder.ir.module.export.wizard"
-                    view_type="form" view_mode="form"
-                    key2="client_action_multi" target="new"/>
+        <!--        <act_window id="act_builder_ir_module_export_wizard"-->
+        <!--                    name="Export Modules"-->
+        <!--                    src_model="builder.ir.module.module"-->
+        <!--                    res_model="builder.ir.module.export.wizard"-->
+        <!--                     view_mode="form"-->
+        <!--                    key2="client_action_multi" target="new"/>-->
 
 
         <record model="ir.ui.view" id="builder_ir_module_export_wizard_form_view">

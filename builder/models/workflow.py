@@ -44,7 +44,7 @@ class WorkflowActivity(models.Model):
     diagram_position_x = fields.Integer('X')
     diagram_position_y = fields.Integer('Y')
 
-    @api.one
+    # @api.one
     @api.depends('subflow_type', 'module_subflow_id')
     def _compute_has_subflow(self):
         self.has_subflow = self.subflow_type and (self.module_subflow_id != False)

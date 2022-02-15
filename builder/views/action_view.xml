@@ -11,7 +11,7 @@
                     <field name="name"/>
                     <field name="model_id"/>
                     <field name="view_mode"/>
-                    <field name="view_type"/>
+<!--                    <field name="view_type"/>-->
                     <field name="target"/>
                 </tree>
             </field>
@@ -42,7 +42,7 @@
                             <page string="General Settings">
                                 <group>
                                     <group string="Views">
-                                        <field name="view_type"/>
+                                        <!--                                        <field name="view_type"/>-->
                                         <field name="view_mode"/>
                                         <field name="view_id" options="{'no_create': True}"
                                                domain="[('module_id', '=', module_id), ('model_id', '=', model_id)]"/>
@@ -80,7 +80,7 @@
         <record model="ir.actions.act_window" id="act_builder_ir_actions_act_window">
             <field name="name">Window Action</field>
             <field name="res_model">builder.ir.actions.act_window</field>
-            <field name="view_type">form</field>
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 

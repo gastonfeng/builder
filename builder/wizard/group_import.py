@@ -10,7 +10,7 @@ class GroupImport(models.TransientModel):
                                  'Groups')
     set_inherited = fields.Boolean('Set as Inherit', default=True)
 
-    @api.one
+    # @api.one
     def action_import(self):
         group_obj = self.env['builder.res.groups']
         module = self.env[self.env.context.get('active_model')].search([('id', '=', self.env.context.get('active_id'))])

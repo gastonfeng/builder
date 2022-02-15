@@ -23,7 +23,7 @@ class ModelImport(models.TransientModel):
     set_inherited = fields.Boolean('Set as Inherit', default=True)
     exclude_auto_fields = fields.Boolean('Exclude Auto Fields', default=True)
 
-    @api.one
+    # @api.one
     def _create_model_fields(self, module, model_items, model_map, relations_only=True):
 
         _review_models = []
@@ -75,7 +75,7 @@ class ModelImport(models.TransientModel):
         if len(_review_models):
             self._create_model_fields(module, _review_models, model_map, relations_only)
 
-    @api.one
+    #@api.one
     def action_import(self):
         model_obj = self.env['builder.ir.model']
 

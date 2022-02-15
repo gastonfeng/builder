@@ -25,7 +25,7 @@ class AutoincrementGenerator(models.Model):
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
-    @api.one
+    # @api.one
     @api.depends('base_id')
     def default_subclass_model(self):
         self.subclass_model = lambda s: s._name
@@ -36,7 +36,7 @@ class AutoincrementGenerator(models.Model):
         else:
             return value
 
-    @api.multi
+    #@api.multi
     def get_generator(self, field):
         n = self.start_number
         yield self.format_value(field, n)

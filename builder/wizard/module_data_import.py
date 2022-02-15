@@ -14,7 +14,7 @@ class ModuleImport(models.TransientModel):
     path_prefix = fields.Char('Path Prefix')
     file = fields.Binary('File', required=True)
 
-    @api.one
+    # @api.one
     def action_import(self):
         f = StringIO()
         f.write(decodestring(self.file))

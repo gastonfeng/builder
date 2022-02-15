@@ -27,16 +27,17 @@ class SelectionRandomGenerator(models.Model):
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
-    @api.one
+    # @api.one
     @api.depends('base_id')
     def default_subclass_model(self):
         self.subclass_model = lambda s: s._name
-    @api.multi
+
+    #@api.multi
     def get_generator(self, field):
         while True:
             yield self.get_random_value_from_field(field)
 
-    @api.multi
+    #@api.multi
     def get_random_value_from_field(self, field):
         options = []
         if field.ttype == 'selection':

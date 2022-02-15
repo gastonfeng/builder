@@ -84,7 +84,7 @@
                                                         class="oe_link oe_edit_only"
                                                         type="action"
                                                         context="{'target_field': 'action_ref', 'default_lookup_mode': 'ref'}">
-                                                    <i class="fa fa-search"></i>
+                                                    <i class="fa fa-search" title="fa"/>
                                                 </button>
                                             </div>
 
@@ -126,7 +126,7 @@
                                                 <button name="%(act_builder_ir_action_lookup_wizard)d"
                                                         class="oe_link oe_edit_only" type="action"
                                                         context="{'target_field': 'action_ref', 'default_lookup_mode': 'ref'}">
-                                                    <i class="fa fa-search"></i>
+                                                    <i class="fa fa-search" title="fa"/>
                                                 </button>
                                             </div>
 
@@ -181,7 +181,6 @@
                                                     <field name="inherit_view_attribute_value"
                                                            attrs="{'invisible': [['inherit_view_position', '!=', 'attribute']]}"/>
                                                     <field name="inherit_view_field"
-                                                           domain="[['model_id', '=', parent.model_id]]"
                                                            attrs="{'invisible': [['inherit_view_position', '=', 'attribute']]}"/>
                                                 </group>
                                             </group>
@@ -256,7 +255,7 @@
         <record model="ir.actions.act_window" id="act_builder_wizard_views_form">
             <field name="name">Form Wizard</field>
             <field name="res_model">builder.views.form</field>
-            <field name="view_type">form</field>
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>

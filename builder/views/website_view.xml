@@ -52,7 +52,7 @@
         <record model="ir.actions.act_window" id="act_builder_website_snippet">
             <field name="name">Website Snippet</field>
             <field name="res_model">builder.website.snippet</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -241,10 +241,11 @@
                                     </div>
                                     <div>
                                         <a type="open">
-                                            <img t-if="record.is_image.value"
+                                            <img t-if="record.is_image.value" alt="image"
                                                  t-att-src="kanban_image('builder.website.media.item', 'image_small', record.id.value)"
                                                  class="oe_avatar oe_kanban_avatar_smallbox"/>
-                                            <img t-if="!record.is_image.value" src="/builder/static/src/img/file.svg"/>
+                                            <img alt="image" t-if="!record.is_image.value"
+                                                 src="/builder/static/src/img/file.svg"/>
                                         </a>
                                     </div>
                                     <div class="oe_name">

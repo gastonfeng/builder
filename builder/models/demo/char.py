@@ -1,6 +1,5 @@
-from random import randint, sample
-
 import openerp
+from random import randint, sample
 
 __author__ = 'deimos'
 
@@ -43,11 +42,12 @@ class RandomStringGenerator(models.Model):
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
-    @api.one
+    # @api.one
     @api.depends('base_id')
     def default_subclass_model(self):
         self.subclass_model = lambda s: s._name
-    @api.multi
+
+    #@api.multi
     def get_generator(self, field):
         while True:
             words = []

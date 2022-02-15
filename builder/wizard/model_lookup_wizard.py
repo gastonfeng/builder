@@ -18,7 +18,7 @@ class ModelLookupWizard(models.TransientModel):
     def lookup_value_update(self):
         self.lookup_value = self.get_value()
 
-    @api.multi
+    # @api.multi
     def action_lookup(self):
 
         active_model = self.env[self.env.context.get('active_model')].search(
@@ -29,7 +29,7 @@ class ModelLookupWizard(models.TransientModel):
 
         return {'type': 'ir.actions.act_window_close'}
 
-    @api.multi
+    #@api.multi
     def get_value(self):
         raw_value = self.model_source == 'system' and self.system_model_id or self.development_model_id
 

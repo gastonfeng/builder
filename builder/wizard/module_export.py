@@ -20,7 +20,7 @@ class ModuleImport(models.TransientModel):
     #     'export_type': _get_default_exporter
     # }
 
-    @api.multi
+    # @api.multi
     def action_export(self):
         ids = self.env.context.get('active_ids') or [self.env.context.get('active_ids')]
         return {

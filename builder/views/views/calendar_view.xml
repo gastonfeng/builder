@@ -99,7 +99,6 @@
                                                     <field name="inherit_view_attribute_value"
                                                            attrs="{'invisible': [['inherit_view_position', '!=', 'attribute']]}"/>
                                                     <field name="inherit_view_field"
-                                                           domain="[['model_id', '=', parent.model_id]]"
                                                            attrs="{'invisible': [['inherit_view_position', '=', 'attribute']]}"/>
                                                 </group>
                                             </group>
@@ -145,7 +144,7 @@
         <record model="ir.actions.act_window" id="act_builder_wizard_views_calendar">
             <field name="name">Calendar Wizard</field>
             <field name="res_model">builder.views.calendar</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>

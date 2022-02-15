@@ -10,7 +10,7 @@ class MediaItemBulkAddWizard(models.TransientModel):
     data_ids = fields.Many2many('builder.data.file', 'builder_website_media_item_bulk_data_file_rel', 'wizard_id',
                                 'data_id', 'Files')
 
-    @api.one
+    # @api.one
     def action_import(self):
         media_item_model = self.env['builder.website.media.item']
 

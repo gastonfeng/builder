@@ -18,11 +18,11 @@ class ModelDependency(models.Model):
     type = fields.Selection(DEPENDENCY_TYPES, 'Type', default='manual', store=False, search=True)
 
     # the module corresponding to the dependency, and its status
-    dependency_module_id = fields.Many2one('ir.module.module', 'Dependency', store=False, search=True)
-    dependency_project_id = fields.Many2one('builder.ir.module.module', 'Dependency', store=False, search=True)
+    dependency_module_id = fields.Many2one('ir.module.module', 'Dependency module', store=False, search=True)
+    dependency_project_id = fields.Many2one('builder.ir.module.module', 'Dependency project', store=False, search=True)
     dependency_module_name = fields.Char('Dependency', index=True)
 
-    @api.one
+    # @api.one
     @api.depends('dependency_module_id', 'dependency_project_id', 'dependency_module_name')
     def _compute_name(self):
         self.dependency_module_name = self.name = self.dependency_module_id.name or self.dependency_project_id.name or self.dependency_module_name

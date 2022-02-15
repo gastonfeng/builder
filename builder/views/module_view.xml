@@ -16,9 +16,11 @@
                                         <span class="oe_topbar_name"><div class="stat_button_icon fa fa-asterisk fa-fw"></div>Base</span>
                                         <b class="caret"></b>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Files" name="action_base_files" type="object"  icon="fa-file" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Files"
+                                                    name="action_base_files" type="object" icon="fa-file"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                     </ul>
                                 </li>
@@ -27,15 +29,21 @@
                                          <span class="oe_topbar_name"><div class="stat_button_icon fa fa-cogs fa-fw"></div>Backend</span>
                                         <b class="caret"></b>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Models" name="action_backend_models" type="object"  icon="fa-code" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Models"
+                                                    name="action_backend_models" type="object" icon="fa-code"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Views" name="action_backend_views" type="object"  icon="fa-columns" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Views"
+                                                    name="action_backend_views" type="object" icon="fa-columns"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Actions" name="action_backend_actions" type="object"  icon="fa-font" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Actions"
+                                                    name="action_backend_actions" type="object" icon="fa-font"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
                                             <button class="oe_inline oe_stat_button" string="Menus" name="action_backend_menus" type="object"  icon="fa-list" context="{'default_module_id': id}"/>
@@ -68,15 +76,21 @@
                                         <span class="oe_topbar_name"><div class="stat_button_icon fa fa-html5 fa-fw"></div>Website</span>
                                         <b class="caret"></b>
                                     </a>
-                                    <ul class="dropdown-menu">
+                                    <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Pages" name="action_website_pages" type="object"  icon="fa-file" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Pages"
+                                                    name="action_website_pages" type="object" icon="fa-file"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Themes" name="action_website_themes" type="object"  icon="fa-html5" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Themes"
+                                                    name="action_website_themes" type="object" icon="fa-html5"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
-                                            <button class="oe_inline oe_stat_button" string="Media Manager" name="action_website_media_item" type="object"  icon="fa-image" context="{'default_module_id': id}"/>
+                                            <button class="oe_inline oe_stat_button" string="Media Manager"
+                                                    name="action_website_media_item" type="object" icon="fa-image"
+                                                    context="{'default_module_id': id}"/>
                                         </li>
                                         <li>
                                             <button class="oe_inline oe_stat_button" string="Snippets" name="action_website_snippets" type="object"  icon="fa-puzzle-piece" context="{'default_module_id': id}"/>
@@ -208,7 +222,7 @@
                                                 <field name="name"/>
                                                 <field name="model_id"/>
                                                 <field name="view_mode"/>
-                                                <field name="view_type"/>
+                                                <!--                                                <field name="view_type"/>-->
                                                 <field name="target"/>
                                             </tree>
                                         </field>
@@ -320,7 +334,8 @@
                         <t t-name="kanban-box">
                             <div class="oe_module_vignette">
                                 <a type="open">
-                                    <img t-att-src="kanban_image('builder.ir.module.module', 'icon_image', record.id.raw_value)"
+                                    <img alt="image"
+                                         t-att-src="kanban_image('builder.ir.module.module', 'icon_image', record.id.raw_value)"
                                          class="oe_module_icon"/>
                                 </a>
                                 <div class="oe_module_desc">
@@ -359,36 +374,36 @@
                     <separator/>
                     <field name="category_id"/>
                     <group expand="0" string="Group By">
-                        <filter string="Author" domain="[]" context="{'group_by':'author'}"/>
-                        <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
+                        <!--                        <filter string="Author" domain="[]" context="{'group_by':'author'}"/>-->
+                        <!--                        <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>-->
                     </group>
                 </search>
             </field>
         </record>
 
 
-        <record id="view_builder_model_diagram" model="ir.ui.view">
-            <field name="name">builder.ir.module.module.diagram</field>
-            <field name="model">builder.ir.module.module</field>
-            <field name="arch" type="xml">
-                <diagram string="UML Editor">
-                    <node object="builder.ir.model" shape="rectangle:True" bgcolor="gray:transient==True;lightcyan:inherit_type=='prototype';lightgreen:inherit_type=='class';lightyellow:inherit_type=='mixed';lightsalmon:inherit_type=='delegation'">
-                        <field name="model"/>
-                        <field name="name"/>
-                        <field name="transient" invisible="1"/>
-                    </node>
-                    <arrow object="builder.ir.model.fields" source="model_id" destination="relation_model_id" label="['diagram_arc_name']" form_view_ref="builder.builder_ir_model_fields_form_diagram_view"  >
-                    </arrow>
-                </diagram>
-            </field>
-        </record>
+        <!--        <record id="view_builder_model_diagram" model="ir.ui.view">-->
+        <!--            <field name="name">builder.ir.module.module.diagram</field>-->
+        <!--            <field name="model">builder.ir.module.module</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <diagram string="UML Editor">-->
+        <!--                    <node object="builder.ir.model" shape="rectangle:True" bgcolor="gray:transient==True;lightcyan:inherit_type=='prototype';lightgreen:inherit_type=='class';lightyellow:inherit_type=='mixed';lightsalmon:inherit_type=='delegation'">-->
+        <!--                        <field name="model"/>-->
+        <!--                        <field name="name"/>-->
+        <!--                        <field name="transient" invisible="1"/>-->
+        <!--                    </node>-->
+        <!--                    <arrow object="builder.ir.model.fields" source="model_id" destination="relation_model_id" label="['diagram_arc_name']" form_view_ref="builder.builder_ir_model_fields_form_diagram_view"  >-->
+        <!--                    </arrow>-->
+        <!--                </diagram>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
 
         <record id="open_module_tree" model="ir.actions.act_window">
             <field name="name">Modules</field>
             <field name="res_model">builder.ir.module.module</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">kanban,tree,form,diagram</field>
+            <!--            <field name="view_type">form</field>-->
+            <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="view_module_filter"/>
             <field name="help" type="html">
                 <p>
@@ -401,24 +416,24 @@
 
         <!-- Data File -->
 
-        <record id="view_builder_data_file_filter" model="ir.ui.view">
-            <field name="name">builder.data.file.select</field>
-            <field name="model">builder.data.file</field>
-            <field name="arch" type="xml">
-                <search string="Search files">
-                    <field name="filename" filter_domain="['|', '|', ('filename', 'ilike', self), ('path', 'ilike', self)]" string="Name"/>
-                    <field name="extension" filter_domain="[('extension', '=', '.' + self)]" string="Ext"/>
-                    <field name="path" filter_domain="[('path', 'ilike', self)]" string="Path"/>
-                    <separator/>
-                    <filter string="Image" domain="[('is_image', '=', True)]"/>
-                    <filter string="Not Image" domain="[('is_image', '=', False)]"/>
-                    <separator/>
-                    <group expand="0" string="Group By">
-                        <filter string="Content Type" domain="[]" context="{'group_by':'content_type'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+        <!--        <record id="view_builder_data_file_filter" model="ir.ui.view">-->
+        <!--            <field name="name">builder.data.file.select</field>-->
+        <!--            <field name="model">builder.data.file</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <search string="Search files">-->
+        <!--&lt;!&ndash;                    <field name="filename" filter_domain="['|', '|', ('filename', 'ilike', self), ('path', 'ilike', self)]" string="Name"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <field name="extension" filter_domain="[('extension', '=', '.' + self)]" string="Ext"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <field name="path" filter_domain="[('path', 'ilike', self)]" string="Path"/>&ndash;&gt;-->
+        <!--                    <separator/>-->
+        <!--                    <filter string="Image" domain="[('is_image', '=', True)]"/>-->
+        <!--                    <filter string="Not Image" domain="[('is_image', '=', False)]"/>-->
+        <!--                    <separator/>-->
+        <!--                    <group expand="0" string="Group By">-->
+        <!--&lt;!&ndash;                        <filter string="Content Type" domain="[]" context="{'group_by':'content_type'}"/>&ndash;&gt;-->
+        <!--                    </group>-->
+        <!--                </search>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         <record model="ir.ui.view" id="builder_data_file_tree_view">
             <field name="name">builder.data.file.tree</field>
@@ -473,8 +488,11 @@
                                     </div>
                                     <div>
                                         <a type="open">
-                                            <img t-if="record.is_image.value" t-att-src="kanban_image('builder.data.file', 'image_small', record.id.value)" class="oe_avatar oe_kanban_avatar_smallbox"/>
-                                            <img t-if="!record.is_image.value" src="/builder/static/src/img/file.svg"/>
+                                            <img alt="image" t-if="record.is_image.value"
+                                                 t-att-src="kanban_image('builder.data.file', 'image_small', record.id.value)"
+                                                 class="oe_avatar oe_kanban_avatar_smallbox"/>
+                                            <img alt="image" t-if="!record.is_image.value"
+                                                 src="/builder/static/src/img/file.svg"/>
                                         </a>
                                     </div>
                                     <div class="oe_name" t-att-title="record.path.value">

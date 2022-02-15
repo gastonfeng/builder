@@ -2,7 +2,7 @@
     'use strict';
     var website = odoo.website;
 
-    odoo.if_dom_contains('#page_designer', function () {
+    odoo.define('#page_designer', function () {
         website.snippet.BuildingBlock.include({
             _get_snippet_url: function () {
                 //return '/builder/page/snippets';

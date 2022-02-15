@@ -17,7 +17,7 @@ class ModelAccessGenerateWizard(models.TransientModel):
     perm_create = fields.Boolean('Create Access')
     perm_unlink = fields.Boolean('Delete Access')
 
-    @api.one
+    # @api.one
     def action_generate(self):
         access_obj = self.env['builder.ir.model.access']
 

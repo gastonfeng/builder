@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+
 from ..fields import snake_case
 
 __author__ = 'one'
@@ -33,7 +34,7 @@ class GraphView(models.Model):
             'view_id': id,
         })
 
-    @api.multi
+    # @api.multi
     def action_save(self):
         return {'type': 'ir.actions.act_window_close'}
 

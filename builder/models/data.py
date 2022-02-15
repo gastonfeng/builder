@@ -4,11 +4,9 @@ import base64
 import csv
 import re
 import types
-from random import randrange
-
 from jinja2 import Template
-
 from odoo import models, fields, api, _
+from random import randrange
 
 __author__ = 'deimos'
 
@@ -27,7 +25,7 @@ class Lambda(models.Model):
     name = fields.Char(string='Name', required=True)
     code = fields.Text(string='Code', required=True)
 
-    @api.one
+    # @api.one
     @api.constrains('code')
     def _check_code(self):
         try:
@@ -152,7 +150,7 @@ class ModelData(models.Model):
     result_text = fields.Text('XML', compute='_compute_result', store=True)
     result_file = fields.Binary('Result', compute='_compute_result', store=True)
 
-    @api.one
+    #@api.one
     @api.depends('attribute_ids.xml_id')
     def _compute_key_id(self):
         cr, uid, context = self.env.args
@@ -161,12 +159,12 @@ class ModelData(models.Model):
         if any(keys):
             self.key_id = keys[0]
 
-    @api.one
+    #@api.one
     @api.depends('input_file')
     def _compute_input_text(self):
         self.input_text = base64.decodestring(self.input_file) if self.input_file else ''
 
-    @api.one
+    #@api.one
     @api.depends('input_text', 'importer', 'model', 'attribute_ids.xml_id', 'key_id')
     def _compute_result(self):
         self.result_text = getattr(self, '_import_{type}'.format(type=self.importer))() if self.importer else ''

@@ -35,11 +35,12 @@ class RandomStringGenerator(models.Model):
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
-    @api.one
+    # @api.one
     @api.depends('base_id')
     def default_subclass_model(self):
         self.subclass_model = lambda s: s._name
-    @api.multi
+
+    #@api.multi
     def get_generator(self, field):
         while True:
             if self.list_type == 'custom':
@@ -47,7 +48,7 @@ class RandomStringGenerator(models.Model):
             else:
                 yield self.get_value_from_list(field, self.list_type)
 
-    @api.multi
+    #@api.multi
     def get_value_from_list(self, field, list_type):
         data = self.get_demo_data()
         return random.choice(data.get(list_type, []))

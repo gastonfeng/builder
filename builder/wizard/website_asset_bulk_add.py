@@ -10,7 +10,7 @@ class ModelImport(models.TransientModel):
     data_ids = fields.Many2many('builder.data.file', 'builder_website_asset_data_file_rel', 'wizard_id', 'data_id',
                                 'Files')
 
-    @api.one
+    # @api.one
     def action_import(self):
         asset_model_name = self.env.context.get('asset_model', 'builder.website.asset.item')
         model = self.env[self.env.context.get('active_model')].search([('id', '=', self.env.context.get('active_id'))])

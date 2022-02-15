@@ -2,10 +2,10 @@ import mimetypes
 import os
 import re
 from base64 import decodestring
+from odoo import models, fields, api, _, tools
 from string import Template
 from types import MethodType
 
-from odoo import models, fields, api, _, tools
 from .utils import simple_selection
 from .utils.formats import json
 
@@ -72,9 +72,9 @@ class Module(models.Model):
     icon_image = fields.Binary(string='Icon')
     icon_image_name = fields.Char('Icon Filename')
 
-    menus_by_module = fields.Text(string='Menus')
+    menus_by_module = fields.Text(string='Module Menus')
     reports_by_module = fields.Text(string='Reports')
-    views_by_module = fields.Text(string='Views')
+    views_by_module = fields.Text(string='module Views')
 
     post_install_action = fields.Reference([
         ('builder.ir.actions.act_window', 'Window'),
@@ -101,7 +101,7 @@ class Module(models.Model):
     action_window_ids = fields.One2many('builder.ir.actions.act_window', 'module_id', 'Window Actions', copy=True)
     action_url_ids = fields.One2many('builder.ir.actions.act_url', 'module_id', 'URL Actions', copy=True)
     workflow_ids = fields.One2many('builder.workflow', 'module_id', 'Workflows', copy=True)
-    backend_asset_ids = fields.One2many('builder.web.asset', 'module_id', 'Assets', copy=True)
+    backend_asset_ids = fields.One2many('builder.web.asset', 'module_id', 'backend Assets', copy=True)
 
     data_file_ids = fields.One2many('builder.data.file', 'module_id', 'Data Files', copy=True)
     snippet_bookmarklet_url = fields.Char('Link', compute='_compute_snippet_bookmarklet_url')
@@ -114,7 +114,7 @@ class Module(models.Model):
     #     'author': _get_default_author
     # }
 
-    @api.one
+    # @api.one
     def copy(self, default=None):
         default = dict(default or {})
         default['shortdesc'] = _('%s (copy)') % self.shortdesc
@@ -125,7 +125,7 @@ class Module(models.Model):
         if not self.name and self.shortdesc:
             self.name = self.shortdesc.lower().replace(' ', '_').replace('.', '_')
 
-    @api.one
+    #@api.one
     @api.depends('name')
     def _compute_snippet_bookmarklet_url(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -145,11 +145,11 @@ javascript:(function(){
         """
         self.snippet_bookmarklet_url = Template(link).substitute(base_url=base_url, module=self.name)
 
-    @api.multi
+    #@api.multi
     def dependencies_as_list(self):
         return [str(dep.name) for dep in self.dependency_ids]
 
-    @api.one
+    #@api.one
     def add_dependency(self, names):
         if not names:
             return
@@ -166,12 +166,12 @@ javascript:(function(){
                     'dependency_module_name': name
                 })
 
-    @api.one
+    #@api.one
     @api.depends('model_ids')
     def _compute_models_count(self):
         self.models_count = len(self.model_ids)
 
-    @api.multi
+    #@api.multi
     def action_base_files(self):
         search = self.env.ref('builder.view_builder_data_file_filter', False)
         return {
@@ -189,7 +189,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_models(self):
 
         tree_view = self.env.ref('builder.builder_ir_model_tree_view', False)
@@ -210,7 +210,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_views(self):
 
         tree_view = self.env.ref('builder.builder_ir_ui_view_tree', False)
@@ -230,7 +230,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_actions(self):
 
         return {
@@ -247,7 +247,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_menus(self):
 
         return {
@@ -264,7 +264,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_groups(self):
 
         return {
@@ -281,7 +281,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_model_access(self):
 
         return {
@@ -298,7 +298,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_rules(self):
 
         return {
@@ -315,7 +315,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_workflows(self):
         return {
             'name': _('Workflows'),
@@ -331,7 +331,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_config_models(self):
 
         return {
@@ -348,7 +348,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_cron_jobs(self):
 
         return {
@@ -365,7 +365,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_backend_assets(self):
 
         return {
@@ -382,7 +382,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_website_pages(self):
 
         return {
@@ -399,7 +399,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_website_assets(self):
 
         return {
@@ -416,7 +416,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_website_themes(self):
 
         return {
@@ -433,7 +433,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_website_media_item(self):
 
         return {
@@ -450,7 +450,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_website_menus(self):
 
         return {
@@ -467,7 +467,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_website_snippets(self):
 
         return {
@@ -484,7 +484,7 @@ javascript:(function(){
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_diagram(self):
 
         diagram_view = self.env.ref('builder.view_builder_model_diagram', False)
@@ -520,11 +520,11 @@ javascript:(function(){
     def import_models(self, model):
         pass
 
-    @api.multi
+    #@api.multi
     def _export_zip(self):
         return self.get_zipped_module()
 
-    @api.multi
+    #@api.multi
     def _export_odoo(self):
         return json.JsonExport(self.env).export(self)
 
@@ -551,19 +551,19 @@ class DataFile(models.Model):
     content = fields.Binary('Content')
     media_item_ids = fields.One2many('builder.website.media.item', 'file_id', 'Media Files', copy=True)
 
-    @api.one
+    #@api.one
     @api.depends('media_item_ids.file_id')
     def _compute_is_in_media(self):
         self.in_media = len(self.media_item_ids) > 0
 
-    @api.multi
+    #@api.multi
     def action_add_as_media_item(self):
         self.env['builder.website.media.item'].create({
             'module_id': self.module_id.id,
             'file_id': self.id,
         })
 
-    @api.one
+    #@api.one
     @api.depends('content', 'path')
     def _compute_stats(self):
         if self.content:

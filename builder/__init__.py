@@ -1,9 +1,9 @@
 __author__ = 'one'
 
-from . import graph;
+# from . import graph;
 
-graph.monkey_patch()
-from . import models
-from . import wizard
 from . import controllers
+# graph.monkey_patch()
+from . import models
 from . import tests
+from . import wizard

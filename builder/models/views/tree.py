@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+
 from .base import FIELD_WIDGETS_ALL
 from ..fields import snake_case
 
@@ -37,7 +38,7 @@ class TreeView(models.Model):
             'view_id': id,
         })
 
-    @api.multi
+    # @api.multi
     def action_save(self):
         return {'type': 'ir.actions.act_window_close'}
 
@@ -76,7 +77,7 @@ class TreeField(models.Model):
     readonly = fields.Boolean('Readonly')
     domain = fields.Char('Domain')
 
-    @api.one
+    #@api.one
     @api.depends('field_id.ttype', 'view_id')
     def _compute_field_type(self):
         if self.field_id:

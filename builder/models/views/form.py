@@ -1,7 +1,7 @@
 from collections import defaultdict
-
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+
 from .base import FIELD_WIDGETS_ALL
 from ..fields import snake_case
 
@@ -50,7 +50,7 @@ class FormView(models.Model):
             if views:
                 self.inherit_view_id = views[0].id
 
-    @api.one
+    # @api.one
     @api.constrains('inherit_view_ref')
     def _check_view_ref(self):
         exists = self.env['ir.model.data'].xmlid_lookup(self.inherit_view_ref)
@@ -91,7 +91,7 @@ class FormView(models.Model):
             'view_id': id,
         })
 
-    @api.multi
+    #@api.multi
     def action_save(self):
         return {'type': 'ir.actions.act_window_close'}
 
@@ -182,7 +182,7 @@ class FormField(models.Model):
 
     states = fields.Char('States')
 
-    @api.one
+    #@api.one
     @api.depends('field_id.ttype')
     def _compute_field_type(self):
         self.field_ttype = self.field_id.ttype

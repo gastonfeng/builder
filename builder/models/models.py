@@ -70,7 +70,7 @@ class IrModel(models.Model):
                                            compute='_compute_field_groups')
     groups_m2o_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='M2O Fields',
                                            compute='_compute_field_groups')
-    groups_binary_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='M2O Fields',
+    groups_binary_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='Binary Fields',
                                               compute='_compute_field_groups')
     groups_inherited_field_ids = fields.One2many('builder.ir.model.fields', 'model_id', string='Inherited Fields',
                                                  compute='_compute_field_groups')
@@ -151,20 +151,20 @@ class IrModel(models.Model):
         return len(self.method_ids) or len(self.status_bar_button_ids) or len(self.button_ids) or any(
             not field.is_inherited or field.redefine for field in self.field_ids)
 
-    @api.one
+    # @api.one
     def _compute_rec_name_field_id(self):
         self.rec_name_field_id = self.env['builder.ir.model.fields'].search([
             ('model_id', '=', self.id),
             ('is_rec_name', '=', True)
         ])
 
-    @api.one
+    #@api.one
     def _inverse_rec_name_field_id(self):
         self.rec_name_field_id.write({
             'is_rec_name': True
         })
 
-    @api.one
+    #@api.one
     @api.depends('inherit_model_ids', 'inherits_model_ids')
     def _compute_inherited(self):
         self.is_inherited = len(self.inherit_model_ids) > 0
@@ -187,17 +187,17 @@ class IrModel(models.Model):
         if not self.name:
             self.name = self.model
 
-    @api.multi
+    #@api.multi
     def find_field_by_name(self, name):
         field_obj = self.env['builder.ir.model.fields']
         return field_obj.search([('model_id', '=', self.id), ('name', '=', name)])
 
-    @api.multi
+    #@api.multi
     def find_field_by_type(self, types):
         field_obj = self.env['builder.ir.model.fields']
         return field_obj.search([('model_id', '=', self.id), ('ttype', 'in', types)])
 
-    @api.one
+    #@api.one
     @api.depends('field_ids', 'field_ids.name')
     def _compute_special_fields(self):
         self.special_states_field_id = self.find_field_by_name('state')
@@ -205,7 +205,7 @@ class IrModel(models.Model):
         self.special_sequence_field_id = self.find_field_by_name('sequence')
         self.special_parent_id_field_id = self.find_field_by_name('parent')
 
-    @api.one
+    #@api.one
     @api.depends('field_ids', 'field_ids.ttype')
     def _compute_field_groups(self):
         self.groups_date_field_ids = self.find_field_by_type(['date', 'datetime'])
@@ -219,7 +219,7 @@ class IrModel(models.Model):
         self.groups_inherited_field_ids = self.env['builder.ir.model.fields'].search(
             [('model_id', '=', self.id), ('is_inherited', '=', True)])
 
-    @api.multi
+    #@api.multi
     def action_fields(self):
         ref = self.env.ref('builder.builder_ir_model_fields_form_view', False)
         return {
@@ -237,7 +237,7 @@ class IrModel(models.Model):
             },
         }
 
-    @api.multi
+    #@api.multi
     def action_methods(self):
         return {
             'name': _('Methods'),
@@ -292,12 +292,12 @@ class InheritModelTemplate(models.AbstractModel):
     module_id = fields.Many2one('builder.ir.module.module', string='Module', related='model_id.module_id',
                                 ondelete='cascade')
     model_source = fields.Selection([('module', 'Module'), ('system', 'System')], 'Source', required=True)
-    module_model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade')
-    system_model_id = fields.Many2one('ir.model', 'Model', ondelete='set null')
+    module_model_id = fields.Many2one('builder.ir.model', 'module Model', ondelete='cascade')
+    system_model_id = fields.Many2one('ir.model', 'system Model', ondelete='set null')
     system_model_name = fields.Char('Model Name')
-    model_display = fields.Char('Model', compute='_compute_model_display')
+    model_display = fields.Char('Model display', compute='_compute_model_display')
 
-    @api.one
+    # @api.one
     @api.depends('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
     def _compute_model_display(self):
         self.model_display = self.system_model_name if self.model_source == 'system' else self.module_model_id.name
@@ -317,11 +317,11 @@ class InheritsModel(models.Model):
     _name = 'builder.ir.model.inherits'
     _inherit = 'builder.ir.model.inherit.template'
 
-    field_name = fields.Char('Field')
+    field_name = fields.Char('Field name')
     field_id = fields.Many2one('builder.ir.model.fields', 'Field')
-    field_display = fields.Char('Field', compute='_compute_field_display')
+    field_display = fields.Char('Field display', compute='_compute_field_display')
 
-    @api.one
+    #@api.one
     @api.depends('model_source', 'module_model_id', 'system_model_id', 'system_model_name')
     def _compute_field_display(self):
         self.field_display = self.field_name if self.model_source == 'system' else self.field_id.name

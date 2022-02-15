@@ -39,7 +39,7 @@ class NameGenerator(models.Model):
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
-    @api.one
+    # @api.one
     @api.depends('base_id')
     def default_subclass_model(self):
         self.subclass_model = lambda s: s._name
@@ -47,7 +47,7 @@ class NameGenerator(models.Model):
     def onchange_name_type(self):
         self.name_type_schema = self.name_type
 
-    @api.multi
+    #@api.multi
     def get_generator(self, field):
         while True:
             placeholder = self.name_type_schema

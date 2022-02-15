@@ -40,7 +40,6 @@
                                 <field name="action_type"/>
                                 <field name="action_module" options="{'no_create': True}"
                                        context="{'default_module_id': module_id}"
-                                       domain="[('module_id', '=' , module_id)]"
                                        attrs="{'invisible': [('action_type', 'not in', ['module'])], 'readonly': [('action_type', 'not in', ['module'])], 'required': [('action_type', 'in', ['module'])]}"/>
                                 <field name="action_system"
                                        attrs="{'invisible': [('action_type', 'not in', ['system'])], 'readonly': [('action_type', 'not in', ['system'])]}"/>
@@ -69,7 +68,7 @@
         <record model="ir.actions.act_window" id="act_builder_ir_ui_menu">
             <field name="name">Menu</field>
             <field name="res_model">builder.ir.ui.menu</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 
