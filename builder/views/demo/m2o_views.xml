@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<openerp>
+<odoo>
     <data>
         <!-- Random String -->
 
@@ -42,10 +42,10 @@
         <record model="ir.actions.act_window" id="act_builder_ir_model_demo_generator_m2o">
             <field name="name">m2o Generator</field>
             <field name="res_model">builder.ir.model.demo.generator.m2o</field>
-<!--            <field name="view_type">form</field>-->
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 
         <!-- Random String -->
     </data>
-</openerp>
+</odoo>

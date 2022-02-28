@@ -15,19 +15,19 @@ class Superclass(models.AbstractModel):
     # }
 
     # @api.one
-    def _compute_res_id(mself):
-        for self in mself:
-            if self.subclass_model == self._name:
-                self.subclass_id = self.id
+    def _compute_res_id(self):
+        for SELF in self:
+            if SELF.subclass_model == SELF._name:
+                SELF.subclass_id = SELF.id
             else:
-                subclass_model = self.env[self.subclass_model]
-                attr = subclass_model._inherits.get(self._name)
+                subclass_model = SELF.env[SELF.subclass_model]
+                attr = subclass_model._inherits.get(SELF._name)
                 if attr:
-                    self.subclass_id = subclass_model.search([
-                        (attr, '=', self.id)
+                    SELF.subclass_id = subclass_model.search([
+                        (attr, '=', SELF.id)
                     ]).id
                 else:
-                    self.subclass_id = self.id
+                    SELF.subclass_id = SELF.id
 
     # def fields_view_get(self,  view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
     #     record = self.browse( 2, context=context)
@@ -62,9 +62,10 @@ class Superclass(models.AbstractModel):
             view = self.env[record.subclass_model].browse(record.subclass_id).get_formview_action()
         return view
 
-    #@api.one
+    # @api.one
     def get_instance(self):
-        return self.env[self.subclass_model].browse(self.subclass_id)
+        for SELF in self:
+            return SELF  # .env[self.subclass_model].browse(self.subclass_id)
 
     @property
     def instance(self):
@@ -74,7 +75,7 @@ class Superclass(models.AbstractModel):
     def create_instance(self, id):
         raise NotImplementedError
 
-    #@api.multi
+    # @api.multi
     def action_edit(self):
         data = self._model.get_formview_action()
         return data

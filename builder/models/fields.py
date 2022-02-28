@@ -2,7 +2,6 @@ import logging
 
 from odoo import models, api, fields, _
 from odoo.exceptions import except_orm
-
 from .utils import get_field_types
 
 __author__ = 'one'
@@ -148,9 +147,9 @@ class IrFields(models.Model):
 
     # @api.one
     @api.depends('model_id')
-    def _compute_module_id(mself):
-        for self in mself:
-            self.module_id = self.model_id.module_id
+    def _compute_module_id(self):
+        for _self in self:
+            _self.module_id = _self.model_id.module_id
 
     @property
     def groups(self):
@@ -165,13 +164,13 @@ class IrFields(models.Model):
         self.is_rec_name = self.name == 'name'
 
     # @api.one
-    def _compute_arc_name(mself):
-        for self in mself:
-            if self.ttype in relational_field_types:
+    def _compute_arc_name(self):
+        for _self in self:
+            if _self.ttype in relational_field_types:
                 small_map = {'many2one': 'm2o', 'one2many': 'o2m', 'many2many': 'm2m'}
-                self.diagram_arc_name = "{name} ({type})".format(name=self.name, type=small_map[self.ttype])
+                _self.diagram_arc_name = "{name} ({type})".format(name=_self.name, type=small_map[_self.ttype])
             else:
-                self.diagram_arc_name = self.name
+                _self.diagram_arc_name = _self.name
 
     @api.onchange('allow_compute', 'allow_inverse', 'allow_search', 'allow_default')
     def _compute_method_names(self):
@@ -206,17 +205,17 @@ class IrFields(models.Model):
 
     # @api.one
     @api.depends('ttype')
-    def _compute_relation_ttype(mself):
-        for self in mself:
-            if self.ttype in relational_field_types:
-                self.relation_ttype = self.ttype
+    def _compute_relation_ttype(self):
+        for _self in self:
+            if _self.ttype in relational_field_types:
+                _self.relation_ttype = _self.ttype
             else:
                 return False
 
     # @api.one
-    def _relation_type_set_inverse(mself):
-        for self in mself:
-            return self.write({'ttype': self.relation_ttype})
+    def _relation_type_set_inverse(self):
+        for _self in self:
+            return _self.write({'ttype': _self.relation_ttype})
 
     def __str__(self):
         return self.name
@@ -308,13 +307,13 @@ class IrFields(models.Model):
         return True
 
     # @api.one
-    def ensure_one_rec_name(mself):
+    def ensure_one_rec_name(self):
         # set previous field with is_rec_name to False
         # this way write is not triggered
-        for self in mself:
-            [setattr(rec, 'is_rec_name', False) for rec in self.search([
-                ('id', '!=', self.id),
-                ('model_id.id', '=', self.model_id.id),
+        for _self in self:
+            [setattr(rec, 'is_rec_name', False) for rec in _self.search([
+                ('id', '!=', _self.id),
+                ('model_id.id', '=', _self.model_id.id),
                 ('is_rec_name', '=', True)
             ])]
 
@@ -352,7 +351,7 @@ class IrFields(models.Model):
                     # attrs['reverse_field_description'] = model.model_id.name
                     attrs['relation_create_inverse_relation'] = True
 
-                reverse_field = field_obj.create(attrs)
+                field_obj.create(attrs)
 
         return model
 
@@ -372,7 +371,7 @@ class IrFields(models.Model):
             reverse_field = field_obj.search(
                 [('model_id', '=', model.relation_model_id.id), ('name', '=', model.reverse_relation_name)])
 
-            if not reverse_field.id:
+            if len(reverse_field) == 0:
                 ttype = relational_field_reverse_funct(model.ttype)
                 attrs = {
                     'model_id': model.relation_model_id.id,
@@ -391,7 +390,7 @@ class IrFields(models.Model):
                     # attrs['reverse_field_description'] = model.model_id.name
                     attrs['relation_create_inverse_relation'] = True
 
-                reverse_field = field_obj.create(attrs)
+                field_obj.create(attrs)
 
         return saved
 

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<openerp>
+<odoo>
     <data>
         <!-- Cron Jobs -->
         <record model="ir.ui.view" id="builder_ir_cron_tree_view">
@@ -62,10 +62,10 @@
         <record model="ir.actions.act_window" id="act_builder_ir_cron">
             <field name="name">Cron Jobs</field>
             <field name="res_model">builder.ir.cron</field>
-<!--            <field name="view_type">form</field>-->
+            <!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form</field>
         </record>
 
         <!-- Cron Jobs -->
     </data>
-</openerp>
+</odoo>

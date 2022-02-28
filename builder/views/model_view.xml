@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<openerp>
+<odoo>
     <data>
 
         <!-- Model View -->
@@ -455,4 +455,4 @@
         <!-- Model Method -->
 
     </data>
-</openerp>
+</odoo>
