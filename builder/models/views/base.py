@@ -42,14 +42,12 @@ FIELD_WIDGETS_ALL = [
 
 class ViewSelector(models.TransientModel):
     _name = 'builder.views.selector'
-
+    _description = 'ViewSelector'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='cascade', required=True)
     model_name = fields.Char('Model Name', related='model_id.name', store=False)
     add_inherited_fields = fields.Boolean('Add Inherited Fields', default=True)
-    model_inherit_type = fields.Selection(
-        [('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')],
-        'Inherit Type', related='model_id.inherit_type')
+    model_inherit_type = fields.Selection(related='model_id.inherit_type')
     special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field',
                                               related='model_id.special_states_field_id')
     model_groups_date_field_ids = fields.One2many('builder.ir.model.fields', string='Has Date Fields',
@@ -92,13 +90,14 @@ class ViewSelector(models.TransientModel):
 
     # @api.one
     @api.constrains('inherit_view_ref')
-    def _check_view_ref(self):
-        if self.inherit_view_ref:
-            exists = self.env['ir.model.data'].xmlid_lookup(self.inherit_view_ref)
-            if exists:
-                view = self.env['ir.model.data'].get_object(*self.inherit_view_ref.split('.'))
-                if not view.model == self.model_id.model:
-                    raise ValidationError("View Ref is not a valid view reference")
+    def _check_view_ref(mself):
+        for self in mself:
+            if self.inherit_view_ref:
+                exists = self.env['ir.model.data'].xmlid_lookup(self.inherit_view_ref)
+                if exists:
+                    view = self.env['ir.model.data'].get_object(*self.inherit_view_ref.split('.'))
+                    if not view.model == self.model_id.model:
+                        raise ValidationError("View Ref is not a valid view reference")
 
     #@api.multi
     def action_show_view(self):
@@ -149,14 +148,12 @@ VIEW_TYPES = {
 class View(models.Model):
     _name = 'builder.ir.ui.view'
     _rec_name = 'xml_id'
-
+    _description = 'View'
     _inherit = ['ir.mixin.polymorphism.superclass']
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='CASCADE')
     model_id = fields.Many2one('builder.ir.model', ondelete='cascade')
-    model_inherit_type = fields.Selection(
-        [('mixed', 'Mixed'), ('class', 'Class'), ('prototype', 'Prototype'), ('delegation', 'Delegation')],
-        'Inherit Type', related='model_id.inherit_type', store=False, search=True)
+    model_inherit_type = fields.Selection(related='model_id.inherit_type', store=False, search=True)
     model_name = fields.Char('Model Name', related='model_id.name', store=False)
     special_states_field_id = fields.Many2one('builder.ir.model.fields', 'States Field',
                                               related='model_id.special_states_field_id')
@@ -220,7 +217,7 @@ class View(models.Model):
 
 class InheritViewChange(models.Model):
     _name = 'builder.ir.ui.view.inherit.change'
-
+    _description = 'InheritViewChange'
     view_id = fields.Many2one(
         comodel_name='builder.ir.ui.view',
         string='View',
@@ -240,7 +237,7 @@ class InheritViewChange(models.Model):
 
 class AbstractViewField(models.AbstractModel):
     _name = 'builder.views.abstract.field'
-
+    _description = 'AbstractViewField'
     _rec_name = 'field_id'
     _order = 'view_id, sequence'
 

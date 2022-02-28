@@ -8,7 +8,7 @@ __author__ = 'one'
 # TODO: add support for levels?
 class GanttView(models.Model):
     _name = 'builder.views.gantt'
-
+    _description = 'GanttView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -73,6 +73,7 @@ class GanttView(models.Model):
 
 class GanttField(models.Model):
     _name = 'builder.views.gantt.field'
+    _description = 'GanttField'
     _inherit = 'builder.views.abstract.field'
 
     view_id = fields.Many2one('builder.views.gantt', string='View', ondelete='cascade')

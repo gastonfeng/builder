@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
@@ -8,7 +9,7 @@ from ..fields import snake_case
 
 class FormView(models.Model):
     _name = 'builder.views.form'
-
+    _description = 'FormView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -52,12 +53,13 @@ class FormView(models.Model):
 
     # @api.one
     @api.constrains('inherit_view_ref')
-    def _check_view_ref(self):
-        exists = self.env['ir.model.data'].xmlid_lookup(self.inherit_view_ref)
-        if exists:
-            view = self.env['ir.model.data'].get_object(*self.inherit_view_ref.split('.'))
-            if not view.model == self.model_id.model:
-                raise ValidationError("View Ref is not a valid view reference")
+    def _check_view_ref(mself):
+        for self in mself:
+            exists = self.env['ir.model.data'].xmlid_lookup(self.inherit_view_ref)
+            if exists:
+                view = self.env['ir.model.data'].get_object(*self.inherit_view_ref.split('.'))
+                if not view.model == self.model_id.model:
+                    raise ValidationError("View Ref is not a valid view reference")
 
     # _defaults = {
     #     'type': 'form',
@@ -119,7 +121,7 @@ DEFAULT_WIDGETS_BY_TYPE = {
 
 class StatusBarActionButton(models.Model):
     _name = 'builder.views.form.statusbar.button'
-
+    _description = 'StatusBarActionButton'
     _order = 'sequence, name'
 
     view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')
@@ -151,6 +153,7 @@ class StatusBarActionButton(models.Model):
 
 class FormField(models.Model):
     _name = 'builder.views.form.field'
+    _description = 'FormField'
     _inherit = 'builder.views.abstract.field'
 
     view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')
@@ -194,7 +197,7 @@ class FormField(models.Model):
 
 class FormButton(models.Model):
     _name = 'builder.views.form.button'
-
+    _description = 'FormButton'
     name = fields.Char(string='Name', required=True)
     sequence = fields.Integer(string='Sequence')
     view_id = fields.Many2one('builder.views.form', string='View', ondelete='cascade')

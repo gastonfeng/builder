@@ -8,6 +8,7 @@ from odoo import fields, models
 
 class actions(models.Model):
     _name = 'builder.ir.actions.actions'
+    _description = 'actions'
     _table = 'builder_ir_actions'
     _order = 'name'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -31,6 +32,7 @@ class actions(models.Model):
 
 class ir_actions_act_url(models.Model):
     _name = 'builder.ir.actions.act_url'
+    _description = 'ir_actions_act_url'
     _table = 'builder_ir_act_url'
     _inherit = 'builder.ir.actions.actions'
     _sequence = 'builder_ir_actions_id_seq'
@@ -52,6 +54,7 @@ class ir_actions_act_url(models.Model):
 
 class ir_actions_act_window(models.Model):
     _name = 'builder.ir.actions.act_window'
+    _description = 'ir_actions_act_window'
     _table = 'builder_ir_act_window'
     _inherit = 'builder.ir.actions.actions'
     _sequence = 'builder_ir_actions_id_seq'

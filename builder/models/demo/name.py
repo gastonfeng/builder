@@ -41,8 +41,10 @@ class NameGenerator(models.Model):
     # }
     # @api.one
     @api.depends('base_id')
-    def default_subclass_model(self):
-        self.subclass_model = lambda s: s._name
+    def default_subclass_model(mself):
+        for self in mself:
+            self.subclass_model = lambda s: s._name
+
     @api.onchange('name_type')
     def onchange_name_type(self):
         self.name_type_schema = self.name_type

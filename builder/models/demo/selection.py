@@ -29,8 +29,9 @@ class SelectionRandomGenerator(models.Model):
     # }
     # @api.one
     @api.depends('base_id')
-    def default_subclass_model(self):
-        self.subclass_model = lambda s: s._name
+    def default_subclass_model(mself):
+        for self in mself:
+            self.subclass_model = lambda s: s._name
 
     #@api.multi
     def get_generator(self, field):

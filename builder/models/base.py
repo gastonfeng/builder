@@ -4,7 +4,7 @@ from odoo import models, fields, api
 
 class ModelDependency(models.Model):
     _name = 'builder.ir.module.dependency'
-
+    _description = 'ModelDependency'
     DEPENDENCY_TYPES = [
         ('module', _('Module')),
         ('project', _('Module Project')),
@@ -24,12 +24,14 @@ class ModelDependency(models.Model):
 
     # @api.one
     @api.depends('dependency_module_id', 'dependency_project_id', 'dependency_module_name')
-    def _compute_name(self):
-        self.dependency_module_name = self.name = self.dependency_module_id.name or self.dependency_project_id.name or self.dependency_module_name
+    def _compute_name(mself):
+        for self in mself:
+            self.dependency_module_name = self.name = self.dependency_module_id.name or self.dependency_project_id.name or self.dependency_module_name
 
 
 class OeCssClass(models.Model):
     _name = 'builder.web.util.css.class'
+    _description = 'OeCssClass'
     _order = 'name'
     _log_access = False
 

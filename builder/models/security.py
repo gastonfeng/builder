@@ -24,9 +24,10 @@ class Groups(models.Model):
                 res[g.id] = "{module} / {group}".format(module=g.module_id.shortdesc, group=g.name)
             else:
                 res[g.id] = g.name
+            g.full_name = res[g.id]
         return res
 
-    #@api.multi
+    # @api.multi
     def _get_trans_implied(self, ids, context=None):
         "computes the transitive closure of relation implied_ids"
         memo = {}  # use a memo for performance and cycle avoidance
@@ -56,7 +57,7 @@ class Groups(models.Model):
     menu_access = fields.Many2many('builder.ir.ui.menu', 'builder_ir_ui_menu_group_rel', 'gid', 'menu_id',
                                    'Access Menu')
     view_access = fields.Many2many('builder.ir.ui.view', 'builder_ir_ui_view_group_rel', 'group_id', 'view_id', 'Views')
-    comment = fields.Text('Comment', size=250, translate=True)
+    comment = fields.Text('Comment', translate=True)
     category_type = fields.Selection([('custom', 'Custom'), ('module', 'Module'), ('system', 'System')],
                                      'Application Type')
     category_id = fields.Many2one('ir.module.category', 'System Application', index=True, ondelete='set null')
@@ -73,7 +74,7 @@ class Groups(models.Model):
          'The name of the group must be unique within an application!')
     ]
 
-    #@api.multi
+    # @api.multi
     def copy(self, default=None):
         group_name = self.read([id], ['name'])[0]['name']
         default.update({'name': _('%s (copy)') % group_name})
@@ -108,7 +109,7 @@ class Groups(models.Model):
 
 class IrModelAccess(models.Model):
     _name = 'builder.ir.model.access'
-
+    _description = 'IrModelAccess'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     name = fields.Char('Name', required=True, index=True)
     model_id = fields.Many2one('builder.ir.model', 'Object', required=True, domain=[('transient', '=', False)],
@@ -126,6 +127,7 @@ class IrModelAccess(models.Model):
 
 class IrRule(models.Model):
     _name = 'builder.ir.rule'
+    _description = 'IrRule'
     _order = 'model_id, name'
 
     def _get_value(self):
@@ -137,11 +139,11 @@ class IrRule(models.Model):
                 res[rule.id] = False
         return res
 
-    #@api.multi
+    # @api.multi
     def _check_model_obj(self):
         return not any(rule.model_id.transient for rule in self.browse())
 
-    #@api.multi
+    # @api.multi
     def _check_model_name(self):
         # Don't allow rules on rules records (this model).
         return not any(rule.model_id.model == 'ir.rule' for rule in self.browse())
@@ -171,7 +173,14 @@ class IrRule(models.Model):
             'CHECK (perm_read!=False or perm_write!=False or perm_create!=False or perm_unlink!=False)',
             'Rule must have at least one checked access right !'),
     ]
-    _constraints = [
-        (_check_model_obj, 'Rules can not be applied on Transient models.', ['model_id']),
-        (_check_model_name, 'Rules can not be applied on the Record Rules model.', ['model_id']),
-    ]
+
+    @api.constrains('model_id')
+    def check(self):
+        if self._check_model_obj():
+            raise Exception('Rules can not be applied on Transient models.')
+        if self._check_model_name():
+            raise Exception('Rules can not be applied on the Record Rules model.')
+    # _constraints = [
+    #     (_check_model_obj, 'Rules can not be applied on Transient models.', ['model_id']),
+    #     (_check_model_name, 'Rules can not be applied on the Record Rules model.', ['model_id']),
+    # ]

@@ -37,6 +37,7 @@ class SettingModel(models.Model):
 
 class SettingModelField(models.Model):
     _name = 'builder.res.config.settings.field'
+    _description = 'SettingModelField'
     _inherit = ['builder.ir.model.fields']
 
     model_id = fields.Many2one('builder.res.config.settings', 'Model', ondelete='cascade')
@@ -55,7 +56,7 @@ class SettingModelField(models.Model):
     toggle_module_id = fields.Many2one('ir.module.module', 'Module', store=False, search=True)
     toggle_module_name = fields.Char('Module Name')
 
-    default_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Default Type')
+    default_type = fields.Selection([('module', 'Module'), ('system', 'System')], string='Default Type', )
     default_system_model_id = fields.Many2one('ir.model', 'System Model', store=False, search=True)
     default_model_id = fields.Many2one('builder.ir.model', 'Builder Model')
     default_model = fields.Char('Model')
@@ -93,18 +94,19 @@ class SettingModelField(models.Model):
     def onchange_relation_model_id(self):
         self.relation = self.relation_model_id.model if self.relation_model_id else False
 
-    #@api.one
+    # @api.one
     @api.onchange('setting_field_type', 'toggle_module_name', 'default_field_name', 'group_name')
     @api.depends('setting_field_type', 'toggle_module_name', 'default_field_name', 'group_name')
-    def _compute_field_name(self):
-        if self.setting_field_type == 'module' and self.toggle_module_name:
-            self.name = "module_{}".format(self.toggle_module_name)
-            self.ttype = 'boolean'
-        elif self.setting_field_type == 'default' and self.default_field_name:
-            self.name = "default_{}".format(self.default_field_name)
-        elif self.setting_field_type == 'group' and self.group_name:
-            self.name = "group_{}".format(re.sub('\.', '_', self.group_name))
-            self.ttype = 'boolean'
+    def _compute_field_name(mself):
+        for self in mself:
+            if self.setting_field_type == 'module' and self.toggle_module_name:
+                self.name = "module_{}".format(self.toggle_module_name)
+                self.ttype = 'boolean'
+            elif self.setting_field_type == 'default' and self.default_field_name:
+                self.name = "default_{}".format(self.default_field_name)
+            elif self.setting_field_type == 'group' and self.group_name:
+                self.name = "group_{}".format(re.sub('\.', '_', self.group_name))
+                self.ttype = 'boolean'
 
     @api.onchange('toggle_module_id')
     def onchange_toggle_module_id(self):
@@ -131,6 +133,7 @@ class SettingModelField(models.Model):
 
 class Module(models.Model):
     _name = 'builder.ir.module.module'
+    _description = 'Module'
     _inherit = ['builder.ir.module.module']
 
     setting_ids = fields.One2many(

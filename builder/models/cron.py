@@ -1,6 +1,6 @@
 import logging
 
-from odoo import fields, models
+from odoo import fields, models, api
 
 _logger = logging.getLogger(__name__)
 
@@ -15,6 +15,7 @@ class ir_cron(models.Model):
     # See also openerp.cron
 
     _name = "builder.ir.cron"
+    _description = 'ir_cron'
     _order = 'name'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     name = fields.Char('Name', required=True)
@@ -43,7 +44,7 @@ class ir_cron(models.Model):
     #     'numbercall': 1,
     #     'active': 1,
     # }
-
+    @api.constrains('args')
     def _check_args(self):
         try:
             for this in self.browse(self._ids):
@@ -53,9 +54,9 @@ class ir_cron(models.Model):
             return False
         return True
 
-    _constraints = [
-        (_check_args, 'Invalid arguments', ['args']),
-    ]
+    # _constraints = [
+    #     (_check_args, 'Invalid arguments', ['args']),
+    # ]
 
     def toggle(self, ids, model, domain):
         active = bool(self.env[model].search_count(domain))

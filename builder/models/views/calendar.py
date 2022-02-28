@@ -7,7 +7,7 @@ __author__ = 'one'
 
 class CalendarView(models.Model):
     _name = 'builder.views.calendar'
-
+    _description = 'CalendarView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -75,6 +75,7 @@ class CalendarView(models.Model):
 
 class CalendarField(models.Model):
     _name = 'builder.views.calendar.field'
+    _description = 'CalendarField'
     _inherit = 'builder.views.abstract.field'
 
     invisible = fields.Boolean('Invisible')

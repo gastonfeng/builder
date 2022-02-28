@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 from odoo import models, fields, api
 
 from ..fields import snake_case
@@ -8,7 +9,7 @@ __author__ = 'one'
 
 class SearchView(models.Model):
     _name = 'builder.views.search'
-
+    _description = 'SearchView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -70,7 +71,7 @@ class SearchView(models.Model):
 class SearchField(models.Model):
     _name = 'builder.views.search.field'
     _inherit = 'builder.views.abstract.field'
-
+    _description = 'SearchField'
     _order = 'view_id, sequence, id'
 
     view_id = fields.Many2one('builder.views.search', string='View', ondelete='cascade')

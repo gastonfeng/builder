@@ -30,15 +30,16 @@ class RandomStringGenerator(models.Model):
         ('country_names', 'Country Names'),
         ('custom', 'Custom List'),
     ], required=True, default=3)
-    custom_list = fields.Char("Custom List", size=1024)
+    custom_list = fields.Char("Custom List")
 
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
     # @api.one
     @api.depends('base_id')
-    def default_subclass_model(self):
-        self.subclass_model = lambda s: s._name
+    def default_subclass_model(mself):
+        for self in mself:
+            self.subclass_model = lambda s: s._name
 
     #@api.multi
     def get_generator(self, field):

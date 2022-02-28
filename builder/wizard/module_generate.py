@@ -3,7 +3,7 @@ from odoo import models, api, fields
 
 class ModuleGenerate(models.TransientModel):
     _name = 'builder.ir.module.module.generate.wizard'
-
+    _description = 'ModuleGenerate'
     @api.model
     def _get_generators(self):
         return self.env['builder.generator.base'].get_generators()

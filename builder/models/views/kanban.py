@@ -7,7 +7,7 @@ __author__ = 'one'
 
 class KanbanView(models.Model):
     _name = 'builder.views.kanban'
-
+    _description = 'KanbanView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -57,6 +57,7 @@ class KanbanView(models.Model):
 
 class KanbanField(models.Model):
     _name = 'builder.views.kanban.field'
+    _description = 'KanbanField'
     _inherit = 'builder.views.abstract.field'
 
     view_id = fields.Many2one('builder.views.kanban', string='View', ondelete='cascade')

@@ -9,7 +9,7 @@ from odoo import models, fields, api, _
 
 class BackendAssets(models.Model):
     _name = 'builder.web.asset'
-
+    _description = 'BackendAssets'
     _rec_name = 'attr_id'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     attr_name = fields.Char(string='Name')
@@ -21,7 +21,7 @@ class BackendAssets(models.Model):
 
 class WebAssetItem(models.Model):
     _name = 'builder.web.asset.item'
-
+    _description = 'WebAssetItem'
     sequence = fields.Integer('Sequence', default=10)
     file_id = fields.Many2one('builder.data.file', 'File', ondelete='CASCADE')
     asset_id = fields.Many2one('builder.web.asset', 'Asset', ondelete='CASCADE')
@@ -29,7 +29,7 @@ class WebAssetItem(models.Model):
 
 class WebsiteAssets(models.Model):
     _name = 'builder.website.asset'
-
+    _description = 'WebsiteAssets'
     _rec_name = 'attr_id'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     attr_name = fields.Char(string='Name')
@@ -43,7 +43,7 @@ class WebsiteAssets(models.Model):
 
 class AssetItem(models.Model):
     _name = 'builder.website.asset.item'
-
+    _description = 'AssetItem'
     sequence = fields.Integer('Sequence', default=10)
     file_id = fields.Many2one('builder.data.file', 'File', ondelete='CASCADE')
     asset_id = fields.Many2one('builder.website.asset', 'Asset', ondelete='CASCADE')
@@ -51,7 +51,7 @@ class AssetItem(models.Model):
 
 class MediaItem(models.Model):
     _name = 'builder.website.media.item'
-
+    _description = 'MediaItem'
     _rec_name = 'attr_name'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -73,9 +73,10 @@ class MediaItem(models.Model):
 
     # @api.one
     @api.depends('attr_name')
-    def _compute_attr_id(self):
-        if not self.attr_id and self.attr_name:
-            self.attr_id = re.sub('[^a-zA-Z_]', '_', self.attr_name) + str(1 + len(self.search([])))
+    def _compute_attr_id(mself):
+        for self in mself:
+            if not self.attr_id and self.attr_name:
+                self.attr_id = re.sub('[^a-zA-Z_]', '_', self.attr_name) + str(1 + len(self.search([])))
 
     @api.onchange('attr_name')
     def _onchange_attr_id(self):
@@ -85,7 +86,7 @@ class MediaItem(models.Model):
 
 class Pages(models.Model):
     _name = 'builder.website.page'
-
+    _description = 'Pages'
     _rec_name = 'attr_name'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -117,7 +118,7 @@ class Pages(models.Model):
 
 class Theme(models.Model):
     _name = 'builder.website.theme'
-
+    _description = 'Theme'
     _rec_name = 'attr_name'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -135,7 +136,7 @@ class Theme(models.Model):
 
 class ThemeAssetItem(models.Model):
     _name = 'builder.website.theme.item'
-
+    _description = 'Asset Item'
     sequence = fields.Integer('Sequence', default=10)
     file_id = fields.Many2one('builder.data.file', 'File', ondelete='CASCADE')
     theme_id = fields.Many2one('builder.website.theme', 'Theme', ondelete='CASCADE')
@@ -143,7 +144,7 @@ class ThemeAssetItem(models.Model):
 
 class Menu(models.Model):
     _name = 'builder.website.menu'
-
+    _description = 'Menu'
     _order = 'sequence, id'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -195,7 +196,7 @@ SNIPPET_TEMPLATE = Template("""
 
 class WebsiteSnippet(models.Model):
     _name = 'builder.website.snippet'
-
+    _description = 'Snippet'
     _order = 'sequence, name'
 
     name = fields.Char('Name', required=True)

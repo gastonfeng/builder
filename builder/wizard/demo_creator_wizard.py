@@ -3,7 +3,7 @@ from odoo import models, api, fields
 
 class DemoDataCreator(models.TransientModel):
     _name = 'builder.ir.model.demo.creator.wizard'
-
+    _description = 'DemoDataCreator'
     model_id = fields.Many2one(
         comodel_name='builder.ir.model',
         string='Model',
@@ -14,8 +14,9 @@ class DemoDataCreator(models.TransientModel):
 
     # @api.one
     @api.depends('type')
-    def _compute_target_fields_type(self):
-        self.target_fields_type = self.env[self.type]._model._target_type if self.type else False
+    def _compute_target_fields_type(mself):
+        for self in mself:
+            self.target_fields_type = self.env[self.type]._model._target_type if self.type else False
 
     @api.model
     def _get_type_selection(self):

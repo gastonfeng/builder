@@ -10,7 +10,7 @@ from odoo import models, api, fields
 
 class ModuleImport(models.TransientModel):
     _name = 'builder.ir.module.module.import.wizard'
-
+    _description = 'ModuleImport'
     @api.model
     def _get_import_types(self):
         return self.env['builder.exchanger.base'].get_exchangers()
@@ -27,7 +27,7 @@ class ModuleImport(models.TransientModel):
     def file_version(self):
         if self.file:
             try:
-                file_like_object = io.BytesIO(base64.decodestring(self.file))
+                file_like_object = io.BytesIO(base64.decodebytes(self.file))
             except:
                 raise ValueError(self.file)
             zf = zipfile.ZipFile(file_like_object)
@@ -55,7 +55,7 @@ class ModuleImport(models.TransientModel):
             raise ValueError('File version ({fv}) do not match builder version ({bv})'.format(fv=self.file_version,
                                                                                               bv=self.builder_version))
 
-        file_like_object = io.BytesIO(base64.decodestring(self.file))
+        file_like_object = io.BytesIO(base64.decodebytes(self.file))
         zf = zipfile.ZipFile(file_like_object)
         self.env[self.import_type].import_modules(zf)
 

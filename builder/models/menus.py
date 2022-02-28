@@ -28,7 +28,7 @@ MENU_ITEM_SEPARATOR = "/"
 
 class IrUiMenu(models.Model):
     _name = 'builder.ir.ui.menu'
-
+    _description = 'IrUiMenu'
     _rec_name = 'complete_name'
 
     # @api.multi
@@ -161,7 +161,8 @@ class IrUiMenu(models.Model):
 
     #@api.one
     def _compute_complete_name(self):
-        self.complete_name = self._get_full_name_one()
+        for r in self:
+            r.complete_name = r._get_full_name_one()
 
     #@api.multi
     def _get_full_name_one(self, level=6):
@@ -190,9 +191,14 @@ class IrUiMenu(models.Model):
         return self.xml_id if '.' in self.xml_id else '{module}.{xml_id}'.format(module=self.module_id.name,
                                                                                  xml_id=self.xml_id)
 
-    _constraints = [
-        (models.Model._check_recursion, _rec_message, ['parent_id'])
-    ]
+    @api.constrains('parent_id')
+    def check(self):
+        if not models.Model._check_recursion(self):
+            raise ValueError(self._rec_message())
+
+    # _constraints = [
+    #     (models.Model._check_recursion, _rec_message, ['parent_id'])
+    # ]
     # _defaults = {
     #     'sequence': 10,
     # }

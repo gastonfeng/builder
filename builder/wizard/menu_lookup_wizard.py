@@ -5,7 +5,7 @@ from odoo import models, api, fields
 
 class MenuLookupWizard(models.TransientModel):
     _name = 'builder.ir.ui.menu.lookup.wizard'
-
+    _description = 'MenuLookupWizard'
     model_source = fields.Selection([('system', 'System'), ('development', 'Development')], 'Type',
                                     default='development')
     system_model_id = fields.Many2one('ir.ui.menu', 'Menu')

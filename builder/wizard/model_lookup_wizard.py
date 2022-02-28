@@ -5,7 +5,7 @@ from odoo import models, api, fields
 
 class ModelLookupWizard(models.TransientModel):
     _name = 'builder.ir.model.lookup.wizard'
-
+    _description = 'ModelLookupWizard'
     model_source = fields.Selection([('system', 'System'), ('development', 'Development')], 'Type',
                                     default='development')
     system_model_id = fields.Many2one('ir.model', 'Model')

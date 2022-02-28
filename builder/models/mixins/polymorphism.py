@@ -5,27 +5,29 @@ __author__ = 'deimos'
 
 class Superclass(models.AbstractModel):
     _name = 'ir.mixin.polymorphism.superclass'
-
+    _description = 'Superclass'
     subclass_id = fields.Integer('Subclass ID', compute='_compute_res_id')
-    subclass_model = fields.Char("Subclass Model", required=True,default=lambda s: s._name)
+    subclass_model = fields.Char("Subclass Model", required=True, default=lambda s: s._name)
+
     #
     # _defaults = {
     #     'subclass_model': lambda s, c, u, cxt=None: s._name
     # }
 
     # @api.one
-    def _compute_res_id(self):
-        if self.subclass_model == self._name:
-            self.subclass_id = self.id
-        else:
-            subclass_model = self.env[self.subclass_model]
-            attr = subclass_model._inherits.get(self._name)
-            if attr:
-                self.subclass_id = subclass_model.search([
-                    (attr, '=', self.id)
-                ]).id
-            else:
+    def _compute_res_id(mself):
+        for self in mself:
+            if self.subclass_model == self._name:
                 self.subclass_id = self.id
+            else:
+                subclass_model = self.env[self.subclass_model]
+                attr = subclass_model._inherits.get(self._name)
+                if attr:
+                    self.subclass_id = subclass_model.search([
+                        (attr, '=', self.id)
+                    ]).id
+                else:
+                    self.subclass_id = self.id
 
     # def fields_view_get(self,  view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
     #     record = self.browse( 2, context=context)
@@ -34,7 +36,7 @@ class Superclass(models.AbstractModel):
     #     else:
     #         view = self.pool.get(record.subclass_model).fields_view_get( view_id, view_type, context=context, toolbar=toolbar, submenu=submenu)
     #     return view
-    #@api.multi
+    # @api.multi
     def get_formview_action(self, access_uid=None):
         """
         @return <ir.actions.act_window>
@@ -80,7 +82,7 @@ class Superclass(models.AbstractModel):
 
 class Subclass(models.AbstractModel):
     _name = 'ir.mixin.polymorphism.subclass'
-
+    _description = 'Subclass'
     def get_formview_id(self, access_uid=None):
         view = self.env['ir.ui.view'].search([
             ('type', '=', 'form'),

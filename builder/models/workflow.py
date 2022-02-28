@@ -4,6 +4,7 @@ from odoo import models, fields, api
 
 class Workflow(models.Model):
     _name = 'builder.workflow'
+    _description = 'Workflow'
     _order = "name"
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
@@ -18,13 +19,14 @@ class Workflow(models.Model):
 
 class WorkflowActivity(models.Model):
     _name = 'builder.workflow.activity'
+    _description = 'Activity'
     _order = "name"
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', related='wkf_id.module_id')
     wkf_id = fields.Many2one('builder.workflow', 'Workflow', required=True, ondelete='cascade')
     name = fields.Char('Name', required=True)
-    split_mode = fields.Selection([('XOR', 'Xor'), ('OR', 'Or'), ('AND', 'And')], 'Split Mode', size=3, default='XOR')
-    join_mode = fields.Selection([('XOR', 'Xor'), ('AND', 'And')], 'Join Mode', size=3, required=True, default='XOR')
+    split_mode = fields.Selection([('XOR', 'Xor'), ('OR', 'Or'), ('AND', 'And')], 'Split Mode', default='XOR')
+    join_mode = fields.Selection([('XOR', 'Xor'), ('AND', 'And')], 'Join Mode', required=True, default='XOR')
     kind = fields.Selection(
         [('dummy', 'Dummy'), ('function', 'Function'), ('subflow', 'Subflow'), ('stopall', 'Stop All')], 'Kind',
         required=True, default='dummy')
@@ -46,8 +48,9 @@ class WorkflowActivity(models.Model):
 
     # @api.one
     @api.depends('subflow_type', 'module_subflow_id')
-    def _compute_has_subflow(self):
-        self.has_subflow = self.subflow_type and (self.module_subflow_id != False)
+    def _compute_has_subflow(mself):
+        for self in mself:
+            self.has_subflow = self.subflow_type and (self.module_subflow_id != False)
 
     #    @api.onchange('system_subflow_ref')
     #    def onchange_system_subflow_ref(self):
@@ -70,6 +73,7 @@ class WorkflowActivity(models.Model):
 
 class WorkflowTransition(models.Model):
     _name = 'builder.workflow.transition'
+    _description = 'WorkflowTransition'
     _rec_name = 'signal'
 
     _order = 'sequence,id'

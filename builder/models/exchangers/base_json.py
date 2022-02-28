@@ -10,11 +10,11 @@ class OdooBuilderTranslator(object):
 
     def translate(self, obj):
         if isinstance(obj, models.Model):
-            instance = {'@model': obj._model._name, '@id': obj.id}
-            obj_id = obj._model._name, obj.id
-            if obj.id and obj_id not in self.seen_models and obj._model._name.startswith('builder.'):
+            instance = {'@model': obj._name, '@id': obj.id}
+            obj_id = obj._name, obj.id
+            if obj.id and obj_id not in self.seen_models and obj._name.startswith('builder.'):
                 self.seen_models.add(obj_id)
-                for name, column in obj._model._fields.items():
+                for name, column in obj._fields.items():
                     if name in ['id', 'write_uid', 'write_date', 'create_date', 'create_uid']:
                         continue
                     if column.type in ['function'] or not getattr(column, 'store', True):

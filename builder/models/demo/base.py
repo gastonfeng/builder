@@ -115,6 +115,7 @@ class Generator(models.Model):
 
 class IrModel(models.Model):
     _name = 'builder.ir.model'
+    _description = 'IrModel'
     _inherit = ['builder.ir.model']
 
     demo_records = fields.Integer('Demo Records')
@@ -129,9 +130,10 @@ class IrModel(models.Model):
     #@api.one
     @api.depends('demo_records', 'model')
     def _compute_demo_xml_id_sample(self):
-        tmpl = '{model}_'.format(model=self.model.lower().replace('.', '_')) + '{id}' if self.model else 'model_'
-        self.demo_xml_id_sample = pickle.dumps(
-            [tmpl.format(id=i) for i in range(self.demo_records)]) if self.demo_records else False
+        for r in self:
+            tmpl = '{model}_'.format(model=r.model.lower().replace('.', '_')) + '{id}' if r.model else 'model_'
+            r.demo_xml_id_sample = pickle.dumps(
+                [tmpl.format(id=i) for i in range(r.demo_records)]) if r.demo_records else False
 
     #@api.multi
     def demo_xml_id(self, index):
@@ -155,6 +157,7 @@ class IrModel(models.Model):
 
 class IrModule(models.Model):
     _name = 'builder.ir.module.module'
+    _description = 'IrModule'
     _inherit = ['builder.ir.module.module']
 
     demo_data_ids = fields.One2many(

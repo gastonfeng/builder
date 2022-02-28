@@ -2,9 +2,10 @@ import mimetypes
 import os
 import re
 from base64 import decodestring
-from odoo import models, fields, api, _, tools
 from string import Template
 from types import MethodType
+
+from odoo import models, fields, api, _, tools
 
 from .utils import simple_selection
 from .utils.formats import json
@@ -31,7 +32,7 @@ def get_module_importers(model):
 
 class Module(models.Model):
     _name = 'builder.ir.module.module'
-
+    _description = 'Module'
     @api.model
     def _get_categories(self):
         return [(c.name, c.name) for c in self.env['ir.module.category'].search([])]
@@ -115,17 +116,18 @@ class Module(models.Model):
     # }
 
     # @api.one
-    def copy(self, default=None):
-        default = dict(default or {})
-        default['shortdesc'] = _('%s (copy)') % self.shortdesc
-        return super(Module, self).copy(default)
+    def copy(mself, default=None):
+        for self in mself:
+            default = dict(default or {})
+            default['shortdesc'] = _('%s (copy)') % self.shortdesc
+            return super(Module, self).copy(default)
 
     @api.onchange('shortdesc')
     def _compute_name(self):
         if not self.name and self.shortdesc:
             self.name = self.shortdesc.lower().replace(' ', '_').replace('.', '_')
 
-    #@api.one
+    # @api.one
     @api.depends('name')
     def _compute_snippet_bookmarklet_url(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -535,7 +537,7 @@ javascript:(function(){
 
 class DataFile(models.Model):
     _name = 'builder.data.file'
-
+    _description = 'DataFile'
     _rec_name = 'path'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')

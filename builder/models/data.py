@@ -4,9 +4,10 @@ import base64
 import csv
 import re
 import types
+from random import randrange
+
 from jinja2 import Template
 from odoo import models, fields, api, _
-from random import randrange
 
 __author__ = 'deimos'
 
@@ -21,19 +22,20 @@ def utf_8_encoder(unicode_csv_data):
 
 class Lambda(models.Model):
     _name = 'builder.lambda'
-
+    _description = 'Lambda'
     name = fields.Char(string='Name', required=True)
     code = fields.Text(string='Code', required=True)
 
     # @api.one
     @api.constrains('code')
-    def _check_code(self):
-        try:
-            l = eval(self.code)
-            if not isinstance(l, types.LambdaType):
+    def _check_code(mself):
+        for self in mself:
+            try:
+                l = eval(self.code)
+                if not isinstance(l, types.LambdaType):
+                    raise ValueError(_("The python code must be a lambda."))
+            except (SyntaxError, NameError,):
                 raise ValueError(_("The python code must be a lambda."))
-        except (SyntaxError, NameError,):
-            raise ValueError(_("The python code must be a lambda."))
 
     _sql_constraints = [
         ('name', 'unique(name)', 'The name must be unique.')
@@ -42,7 +44,7 @@ class Lambda(models.Model):
 
 class ModelDataAttributeProcess(models.Model):
     _name = 'builder.model.data.change'
-
+    _description = 'ModelDataAttributeProcess'
     sequence = fields.Integer('Sequence')
     name = fields.Char(string='Name', related='lambda_id.name')
     attribute_id = fields.Many2one(
@@ -69,7 +71,7 @@ ATTRIBUTE_PATTERN = re.compile('[\w_]+')
 
 class ModelDataAttribute(models.Model):
     _name = 'builder.model.data.attribute'
-
+    _description = 'ModelDataAttribute'
     name = fields.Char(string='Input Attribute', required=True)
     model_attr = fields.Char(string='Model Attribute')
     filters = fields.Char(string='Filters')
@@ -126,7 +128,7 @@ XML_TEMPLATE = Template(u"""<?xml version="1.0"?>
 
 class ModelData(models.Model):
     _name = 'builder.model.data'
-
+    _description = 'ModelData'
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', required=True)
     name = fields.Char(string='Name', required=True)
     model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='set null')
@@ -150,25 +152,28 @@ class ModelData(models.Model):
     result_text = fields.Text('XML', compute='_compute_result', store=True)
     result_file = fields.Binary('Result', compute='_compute_result', store=True)
 
-    #@api.one
+    # @api.one
     @api.depends('attribute_ids.xml_id')
-    def _compute_key_id(self):
-        cr, uid, context = self.env.args
-        attrs = self.resolve_2many_commands('attribute_ids', self.attribute_ids)
-        keys = [value.id for key, value in attrs.items() if value.get('id') and value.get('xml_id')]
-        if any(keys):
-            self.key_id = keys[0]
+    def _compute_key_id(mself):
+        for self in mself:
+            cr, uid, context = self.env.args
+            attrs = self.resolve_2many_commands('attribute_ids', self.attribute_ids)
+            keys = [value.id for key, value in attrs.items() if value.get('id') and value.get('xml_id')]
+            if any(keys):
+                self.key_id = keys[0]
 
-    #@api.one
+    # @api.one
     @api.depends('input_file')
-    def _compute_input_text(self):
-        self.input_text = base64.decodestring(self.input_file) if self.input_file else ''
+    def _compute_input_text(mself):
+        for self in mself:
+            self.input_text = base64.decodestring(self.input_file) if self.input_file else ''
 
-    #@api.one
+    # @api.one
     @api.depends('input_text', 'importer', 'model', 'attribute_ids.xml_id', 'key_id')
-    def _compute_result(self):
-        self.result_text = getattr(self, '_import_{type}'.format(type=self.importer))() if self.importer else ''
-        self.result_file = base64.encodestring(self.result_text.encode('utf-8'))
+    def _compute_result(mself):
+        for self in mself:
+            self.result_text = getattr(self, '_import_{type}'.format(type=self.importer))() if self.importer else ''
+            self.result_file = base64.encodestring(self.result_text.encode('utf-8'))
 
     @api.model
     def _get_importer_selection(self):
@@ -221,17 +226,18 @@ class ModelData(models.Model):
         return XML_TEMPLATE.render(data=d)
 
     # @api.one
-    def compute_xml_id(self, data):
-        key = self.env['builder.model.data.attribute'].search([
-            ('model_id', '=', self.id),
-            ('xml_id', '=', True)
-        ])
-        return '{model}_{hash}'.format(model=self.model.replace('.', '_'), hash=(
-            key.compute_value(data).replace(' ', '_') if key else randrange(100000000000, 999999999999)))
+    def compute_xml_id(mself, data):
+        for self in mself:
+            key = self.env['builder.model.data.attribute'].search([
+                ('model_id', '=', self.id),
+                ('xml_id', '=', True)
+            ])
+            return '{model}_{hash}'.format(model=self.model.replace('.', '_'), hash=(
+                key.compute_value(data).replace(' ', '_') if key else randrange(100000000000, 999999999999)))
 
 
 class Module(models.Model):
     _name = 'builder.ir.module.module'
     _inherit = ['builder.ir.module.module']
-
+    _description = 'Module'
     data_ids = fields.One2many('builder.model.data', 'module_id', 'Data', copy=True)

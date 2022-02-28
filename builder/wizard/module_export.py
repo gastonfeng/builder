@@ -3,7 +3,7 @@ from odoo import models, api, fields
 
 class ModuleImport(models.TransientModel):
     _name = 'builder.ir.module.export.wizard'
-
+    _description = 'ModuleImport'
     @api.model
     def _get_export_types(self):
         return self.env['builder.exchanger.base'].get_exchangers()

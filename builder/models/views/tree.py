@@ -8,7 +8,7 @@ __author__ = 'one'
 
 class TreeView(models.Model):
     _name = 'builder.views.tree'
-
+    _description = 'TreeView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -65,6 +65,7 @@ class TreeView(models.Model):
 
 class TreeField(models.Model):
     _name = 'builder.views.tree.field'
+    _description = 'TreeField'
     _inherit = 'builder.views.abstract.field'
 
     view_id = fields.Many2one('builder.views.tree', string='View', ondelete='cascade')

@@ -5,7 +5,7 @@ from odoo import models, api, fields
 
 class ModelLookupWizard(models.TransientModel):
     _name = 'builder.ir.action.lookup.wizard'
-
+    _description = 'ModelLookupWizard'
     action_id = fields.Many2one('ir.actions.act_window', 'Action')
     lookup_mode = fields.Selection([('id', 'ID'), ('name', 'Name'), ('field', 'Field'), ('ref', 'Reference')],
                                    'Lookup Mode', default='name', required=True)

@@ -7,7 +7,7 @@ __author__ = 'one'
 
 class GraphView(models.Model):
     _name = 'builder.views.graph'
-
+    _description = 'GraphView'
     _inherit = ['ir.mixin.polymorphism.subclass']
 
     _inherits = {
@@ -48,6 +48,7 @@ class GraphView(models.Model):
 
 class GraphField(models.Model):
     _name = 'builder.views.graph.field'
+    _description = 'GraphField'
     _inherit = 'builder.views.abstract.field'
 
     view_id = fields.Many2one('builder.views.graph', string='View', ondelete='cascade')
