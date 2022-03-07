@@ -15,22 +15,22 @@ class ModuleImport(models.TransientModel):
     file = fields.Binary('File', required=True)
 
     # @api.one
-    def action_import(mself):
-        for self in mself:
+    def action_import(self):
+        for SELF in self:
             f = StringIO()
-            f.write(decodestring(self.file))
+            f.write(decodestring(SELF.file))
             zfile = zipfile.ZipFile(f)
-            print(self.env.context)
+            print(SELF.env.context)
 
-            module = self.env[self.env.context.get('active_model')].search(
-                [('id', '=', self.env.context.get('active_id'))])
+            module = SELF.env[SELF.env.context.get('active_model')].search(
+                [('id', '=', SELF.env.context.get('active_id'))])
 
             for zitem in zfile.filelist:
                 if not zitem.orig_filename.endswith('/'):
                     result = module.data_file_ids.create({
-                        'path': posixpath.join('/', self.path_prefix or '', zitem.orig_filename),
+                        'path': posixpath.join('/', SELF.path_prefix or '', zitem.orig_filename),
                         'content': encodestring(zfile.read(zitem)),
-                        'module_id': self.env.context.get('active_id')
+                        'module_id': SELF.env.context.get('active_id')
                     })
 
             return {'type': 'ir.actions.act_window_close'}

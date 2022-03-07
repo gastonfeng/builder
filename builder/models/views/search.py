@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 from odoo import models, fields, api
-
 from ..fields import snake_case
 
 __author__ = 'one'
@@ -81,7 +80,7 @@ class SearchField(models.Model):
     group_field_id = fields.Many2one('builder.ir.model.fields', string='Group By', ondelete='set null')
     group = fields.Char('Group')
     attr_name = fields.Char('Name')
-    attr_string = fields.Char('String')
+    attr_string = fields.Char('attr String')
     attr_filter_domain = fields.Char('Filter Domain')
     attr_domain = fields.Char('Domain')
     attr_operator = fields.Char('Operator')

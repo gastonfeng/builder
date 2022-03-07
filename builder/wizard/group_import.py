@@ -11,24 +11,24 @@ class GroupImport(models.TransientModel):
     set_inherited = fields.Boolean('Set as Inherit', default=True)
 
     # @api.one
-    def action_import(mself):
-        for self in mself:
-            group_obj = self.env['builder.res.groups']
-            module = self.env[self.env.context.get('active_model')].search(
-                [('id', '=', self.env.context.get('active_id'))])
+    def action_import(self):
+        for tself in self:
+            group_obj = tself.env['builder.res.groups']
+            module = tself.env[tself.env.context.get('active_model')].search(
+                [('id', '=', tself.env.context.get('active_id'))])
 
-            for group in self.group_ids:
-                data = self.env['ir.model.data'].search([('model', '=', group._name), ('res_id', '=', group.id)])
+            for group in tself.group_ids:
+                data = tself.env['ir.model.data'].search([('model', '=', group._name), ('res_id', '=', group.id)])
                 xml_id = "{module}.{id}".format(module=data.module, id=data.name)
 
-                module_group = self.env['builder.res.groups'].search(
+                module_group = tself.env['builder.res.groups'].search(
                     [('module_id', '=', module.id), ('xml_id', '=', xml_id)])
 
                 if not module_group.id:
                     new_group = group_obj.create({
-                        'module_id': self.env.context.get('active_id'),
+                        'module_id': tself.env.context.get('active_id'),
                         'name': group.name,
-                        'inherited': self.set_inherited,
+                        'inherited': tself.set_inherited,
                         'xml_id': xml_id,
                     })
 

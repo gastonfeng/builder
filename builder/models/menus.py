@@ -103,7 +103,7 @@ class IrUiMenu(models.Model):
     parent_id = fields.Many2one('builder.ir.ui.menu', 'Parent Menu', index=True, ondelete='cascade')
     parent_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Parent Type')
     parent_left = fields.Integer('Parent Left', index=True)
-    parent_right = fields.Integer('Parent Left', index=True)
+    parent_right = fields.Integer('Parent right', index=True)
     action_type = fields.Selection([('module', 'Module'), ('system', 'System')], 'Action Type')
     action_system_ref = fields.Char('Action System Ref')
     action_system = fields.Reference([

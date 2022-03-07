@@ -15,7 +15,7 @@ class GraphView(models.Model):
     }
 
     view_id = fields.Many2one('builder.ir.ui.view', string='View', required=True, ondelete='cascade')
-    attr_type = fields.Selection([('bar', 'Bar'), ('pie', 'Pie'), ('line', 'Line'), ('pivot', 'Pivot')], 'Type')
+    attr_type = fields.Selection([('bar', 'Bar'), ('pie', 'Pie'), ('line', 'Line'), ('pivot', 'Pivot')], 'attr Type')
     attr_stacked = fields.Boolean('Stacked')
     attr_orientation = fields.Selection([('horizontal', 'Horizontal'), ('vertical', 'Vertical')], 'Orientation')
     field_ids = fields.One2many('builder.views.graph.field', 'view_id', 'Items', copy=True)

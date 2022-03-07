@@ -11,14 +11,14 @@ class MediaItemBulkAddWizard(models.TransientModel):
                                 'data_id', 'Files')
 
     # @api.one
-    def action_import(mself):
-        for self in mself:
-            media_item_model = self.env['builder.website.media.item']
+    def action_import(self):
+        for SELF in self:
+            media_item_model = SELF.env['builder.website.media.item']
 
-            for data_file in self.data_ids:
+            for data_file in SELF.data_ids:
                 new_item = media_item_model.create({
                     'file_id': data_file.id,
-                    'module_id': self.module_id.id,
+                    'module_id': SELF.module_id.id,
                 })
 
             return {'type': 'ir.actions.act_window_close'}

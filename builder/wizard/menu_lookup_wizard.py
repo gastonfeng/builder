@@ -8,8 +8,8 @@ class MenuLookupWizard(models.TransientModel):
     _description = 'MenuLookupWizard'
     model_source = fields.Selection([('system', 'System'), ('development', 'Development')], 'Type',
                                     default='development')
-    system_model_id = fields.Many2one('ir.ui.menu', 'Menu')
-    development_model_id = fields.Many2one('builder.ir.ui.menu', 'Menu')
+    system_model_id = fields.Many2one('ir.ui.menu', 'system Menu')
+    development_model_id = fields.Many2one('builder.ir.ui.menu', 'dev Menu')
     lookup_mode = fields.Selection([('id', 'ID'), ('name', 'Name'), ('field', 'Field'), ('ref', 'Reference')],
                                    'Lookup Mode', default='name', required=True)
     lookup_value = fields.Char('Lookup Value')

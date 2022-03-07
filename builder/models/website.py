@@ -56,9 +56,9 @@ class MediaItem(models.Model):
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
     attr_id = fields.Char('XML ID', compute='_compute_attr_id', readonly=False, store=True)
-    file_id = fields.Many2one('builder.data.file', 'Image', required=True, ondelete='cascade')
+    file_id = fields.Many2one('builder.data.file', 'file id', required=True, ondelete='cascade')
     attr_name = fields.Char(string='Name', related='file_id.filename', store=False, search=True)
-    is_image = fields.Boolean('Image', related='file_id.is_image', store=False, search=True)
+    is_image = fields.Boolean('is Image', related='file_id.is_image', store=False, search=True)
     image = fields.Binary('Image', related='file_id.content', store=False, search=True)
     image_small = fields.Binary('Image Small', related='file_id.image_small', store=False, search=True)
     size = fields.Integer('Size', related='file_id.size', store=False, search=True)
@@ -122,7 +122,7 @@ class Theme(models.Model):
     _rec_name = 'attr_name'
 
     module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
-    attr_id = fields.Char(string='ID', required=True)
+    attr_id = fields.Char(string='attr ID', required=True)
     attr_name = fields.Char(string='Name', required=True)
     attr_description = fields.Html('Description')
     image = fields.Binary(string='Image')
@@ -223,7 +223,7 @@ class WebsiteSnippet(models.Model):
     xpath = fields.Char('XPath', readonly=True)
 
     # Snippet
-    snippet_id = fields.Char('ID', compute='_compute_snippet_id', store=True, readonly=False, required=True)
+    snippet_id = fields.Char('snippet ID', compute='_compute_snippet_id', store=True, readonly=False, required=True)
     content = fields.Html('Content', sanitize=False)
     image = fields.Binary('Image')
 

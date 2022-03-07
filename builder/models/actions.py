@@ -129,7 +129,7 @@ class ir_actions_act_window(models.Model):
                                  help="View type: Tree type to use for the tree view, set to 'tree' for a hierarchical tree view, or 'form' for a regular list view",default= 'form')
     usage = fields.Char('Action Usage',
                         help="Used to filter menu and home actions from the user form.")
-    view_ids = fields.One2many('ir.actions.act_window.view', 'act_window_id', 'Views', copy=True)
+    view_ids = fields.One2many('ir.actions.act_window.view', 'act_window_id', 'View ids', copy=True)
     views = fields.Binary(compute=_views_get_fnc, string='Views',
                           help="This function field computes the ordered list of views that should be enabled " \
                                "when displaying the result of an action, federating view mode, views and " \

@@ -53,13 +53,13 @@ class SettingModelField(models.Model):
             ('other', 'Normal Field'),
         ], 'Setting Type', default='other', required=True)
 
-    toggle_module_id = fields.Many2one('ir.module.module', 'Module', store=False, search=True)
+    toggle_module_id = fields.Many2one('ir.module.module', 'toggle Module', store=False, search=True)
     toggle_module_name = fields.Char('Module Name')
 
-    default_type = fields.Selection([('module', 'Module'), ('system', 'System')], string='Default Type', )
+    # default_type = fields.Selection([('module', 'Module'), ('system', 'System')], string='Default Type', )
     default_system_model_id = fields.Many2one('ir.model', 'System Model', store=False, search=True)
     default_model_id = fields.Many2one('builder.ir.model', 'Builder Model')
-    default_model = fields.Char('Model')
+    default_model = fields.Char('Default Model')
     default_field_name = fields.Char('Field Name')
     default_system_model_field_id = fields.Many2one('ir.model.fields', 'System Field', store=False, search=True,
                                                     domain="[('model_id', '=', default_system_model_id)]",

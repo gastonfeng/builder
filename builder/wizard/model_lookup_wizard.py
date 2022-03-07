@@ -8,8 +8,8 @@ class ModelLookupWizard(models.TransientModel):
     _description = 'ModelLookupWizard'
     model_source = fields.Selection([('system', 'System'), ('development', 'Development')], 'Type',
                                     default='development')
-    system_model_id = fields.Many2one('ir.model', 'Model')
-    development_model_id = fields.Many2one('builder.ir.model', 'Model')
+    system_model_id = fields.Many2one('ir.model', 'system Model')
+    development_model_id = fields.Many2one('builder.ir.model', 'dev Model')
     lookup_mode = fields.Selection([('id', 'ID'), ('name', 'Name'), ('field', 'Field'), ('ref', 'Reference')],
                                    'Lookup Mode', default='name', required=True)
     lookup_value = fields.Char('Lookup Value')

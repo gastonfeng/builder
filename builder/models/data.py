@@ -7,6 +7,7 @@ import types
 from random import randrange
 
 from jinja2 import Template
+
 from odoo import models, fields, api, _
 
 __author__ = 'deimos'
@@ -88,7 +89,7 @@ class ModelDataAttribute(models.Model):
     change_ids = fields.One2many(
         comodel_name='builder.model.data.change',
         inverse_name='attribute_id',
-        string='Filters', copy=True
+        string='change Filters', copy=True
     )
 
     @api.onchange('name')

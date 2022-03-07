@@ -94,6 +94,8 @@ class OdooBuilderLoader(object):
                 model_str, id_str = obj_key
                 model = self.env[model_str]
                 data = objects[obj_key]
+                if model_str == 'builder.ir.model':
+                    data.pop('special_active_field_id')
                 missing = [
                     key for key, value in data.items() if
                     isinstance(value, dict) and value['@model'].startswith('builder.') and not self.seen_models.get(

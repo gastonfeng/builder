@@ -11,17 +11,17 @@ class ModelImport(models.TransientModel):
                                 'Files')
 
     # @api.one
-    def action_import(mself):
-        for self in mself:
-            asset_model_name = self.env.context.get('asset_model', 'builder.website.asset.item')
-            model = self.env[self.env.context.get('active_model')].search(
-                [('id', '=', self.env.context.get('active_id'))])
-            asset_item_model = self.env[asset_model_name]
-            model_field = self.env.context.get('model_link_field', 'asset_id')
-            asset_field = self.env.context.get('asset_field', 'file_id')
+    def action_import(self):
+        for SELF in self:
+            asset_model_name = SELF.env.context.get('asset_model', 'builder.website.asset.item')
+            model = SELF.env[SELF.env.context.get('active_model')].search(
+                [('id', '=', SELF.env.context.get('active_id'))])
+            asset_item_model = SELF.env[asset_model_name]
+            model_field = SELF.env.context.get('model_link_field', 'asset_id')
+            asset_field = SELF.env.context.get('asset_field', 'file_id')
 
-            for data_file in self.data_ids:
-                current_file = self.env[asset_model_name].search(
+            for data_file in SELF.data_ids:
+                current_file = SELF.env[asset_model_name].search(
                     [(model_field, '=', model.id), (asset_field, '=', data_file.id)])
 
                 if not current_file.id:

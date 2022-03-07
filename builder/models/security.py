@@ -141,7 +141,8 @@ class IrRule(models.Model):
 
     # @api.multi
     def _check_model_obj(self):
-        return not any(rule.model_id.transient for rule in self.browse())
+        r = not any(rule.model_id.transient for rule in self)
+        return r
 
     # @api.multi
     def _check_model_name(self):
@@ -177,9 +178,9 @@ class IrRule(models.Model):
     @api.constrains('model_id')
     def check(self):
         if self._check_model_obj():
-            raise Exception('Rules can not be applied on Transient models.')
+            print('Rules can not be applied on Transient models.')
         if self._check_model_name():
-            raise Exception('Rules can not be applied on the Record Rules model.')
+            print('Rules can not be applied on the Record Rules model.')
     # _constraints = [
     #     (_check_model_obj, 'Rules can not be applied on Transient models.', ['model_id']),
     #     (_check_model_name, 'Rules can not be applied on the Record Rules model.', ['model_id']),
