@@ -365,10 +365,13 @@
 {% macro builder_views_calendar(instance) %}
     <calendar string="{{ instance.name }}"{% if instance.attr_date_start_field_id.id %}
               date_start="{{ instance.attr_date_start_field_id.name }}" {% endif %}
-    {% if instance.attr_date_stop_field_id.id %} date_stop="{{ instance.attr_date_stop_field_id.name }}" {% endif %}
-    {% if instance.attr_day_length_field_id.id %} day_length="{{ instance.attr_day_length_field_id.name }}" {% endif %}
-    {% if instance.attr_date_delay_field_id.id %} date_delay="{{ instance.attr_date_delay_field_id.name }}" {% endif %}
-    {% if instance.attr_all_day %} all_day="true" {% endif %}{% if instance.attr_use_contacts %}
+            {% if instance.attr_date_stop_field_id.id %}
+              date_stop="{{ instance.attr_date_stop_field_id.name }}" {% endif %}
+            {% if instance.attr_day_length_field_id.id %}
+              day_length="{{ instance.attr_day_length_field_id.name }}" {% endif %}
+            {% if instance.attr_date_delay_field_id.id %}
+              date_delay="{{ instance.attr_date_delay_field_id.name }}" {% endif %}
+            {% if instance.attr_all_day %} all_day="true" {% endif %}{% if instance.attr_use_contacts %}
               use_contacts="true" {% endif %}{% if instance.attr_color_field_id.id %}
               color="{{ instance.attr_color_field_id.name }}" {% endif %}{% if instance.attr_color_is_attendee %}
               color_is_attendee="true" {% endif %}{% if instance.attr_event_open_popup %}
@@ -392,12 +395,14 @@
 {# generate builder.views.tree #}
 {% macro builder_views_tree(instance) %}
     <tree string="{{ instance.name }}"{% if not instance.attr_create %} create="false" {% endif %}
-    {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %} delete="false" {% endif %}
-    {% if instance.toolbar %} toolbar="True" {% endif %}{% if instance.fonts %} fonts="{{ instance.fonts }}" {% endif %}
-    {% if instance.colors %} colors="{{ instance.colors }}" {% endif %}>
+            {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %}
+          delete="false" {% endif %}
+            {% if instance.toolbar %} toolbar="True" {% endif %}{% if instance.fonts %}
+          fonts="{{ instance.fonts }}" {% endif %}
+            {% if instance.colors %} colors="{{ instance.colors }}" {% endif %}>
         {%- for field in instance.field_ids %}
             <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
-            {% if field.invisible %} invisible="True" {% endif %}{% if field.widget %}
+                    {% if field.invisible %} invisible="True" {% endif %}{% if field.widget %}
                    widget="{{ field.widget }}" {% endif %}{% if field.widget_options %}
                    widget_options="{{ field.widget_options }}" {% endif %}{% if field.readonly %}
                    readonly="{{ field.readonly }}" {% endif %}{% if field.domain %}
@@ -409,8 +414,9 @@
 {# generate builder.views.tree.field #}
 {% macro builder_views_tree_field(field) %}
     <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
-    {% if field.invisible %} invisible="True" {% endif %}{% if field.widget %} widget="{{ field.widget }}" {% endif %}
-    {% if field.widget_options %} widget_options="{{ field.widget_options }}" {% endif %}{% if field.readonly %}
+            {% if field.invisible %} invisible="True" {% endif %}{% if field.widget %}
+           widget="{{ field.widget }}" {% endif %}
+            {% if field.widget_options %} widget_options="{{ field.widget_options }}" {% endif %}{% if field.readonly %}
            readonly="{{ field.readonly }}" {% endif %}{% if field.domain %} domain="{{ field.domain }}" {% endif %} />
 {% endmacro %}
 
@@ -480,7 +486,7 @@
                 context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %}/>
     {%- elif field.type == 'field' -%}
         <field name="{{ field.field_id.name }}"{% if field.attr_string %} string="{{ field.attr_string }}" {% endif %}
-        {% if field.attr_domain %} domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
+                {% if field.attr_domain %} domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
                filter_domain="{{ field.attr_filter_domain }}" {% endif %}{% if field.attr_operator %}
                operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
@@ -494,8 +500,9 @@
 {# generate builder.views.kanban #}
 {% macro builder_views_kanban(instance) %}
     <kanban string="{{ instance.name }}"{% if not instance.attr_create %} create="false" {% endif %}
-    {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %} delete="false" {% endif %}
-    {% if not instance.attr_quick_create %} quick_create="false" {% endif %}>
+            {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %}
+            delete="false" {% endif %}
+            {% if not instance.attr_quick_create %} quick_create="false" {% endif %}>
         {% for field in instance.field_ids %}
             {{ builder_views_kanban_field(field) }}
         {%- endfor %}
@@ -518,7 +525,7 @@
 {# generate builder.views.graph #}
 {% macro builder_views_graph(instance) %}
     <graph string="{{ instance.name }}"{% if instance.attr_type %} type="{{ instance.attr_type }}" {% endif %}
-    {% if instance.attr_stacked %} stacked="true" {% endif %}{% if instance.attr_orientation %}
+            {% if instance.attr_stacked %} stacked="true" {% endif %}{% if instance.attr_orientation %}
            orientation="{{ instance.attr_orientation }}" {% endif %}>
         {% for field in instance.field_ids %}
             {{ builder_views_graph_field(field) }}
@@ -530,7 +537,7 @@
 {# generate builder.views.graph.field #}
 {% macro builder_views_graph_field(field) %}
     <field name="{{ field.field_id.name }}"{% if field.operator %} operator="{{ field.operator }}" {% endif %}
-    {% if field.type %} type="{{ field.type }}" {% endif %}{% if field.interval %}
+            {% if field.type %} type="{{ field.type }}" {% endif %}{% if field.interval %}
            interval="{{ field.interval }}" {% endif %}/>
 {% endmacro %}
 
@@ -538,14 +545,19 @@
 {# generate builder.views.gantt #}
 {% macro builder_views_gantt(instance) %}
     <gantt string="{{ instance.name }}"{% if not instance.attr_create %} create="false" {% endif %}
-    {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %} delete="false" {% endif %}
-    {% if instance.attr_date_start_field_id.id %} date_start="{{ instance.attr_date_start_field_id.name }}" {% endif %}
-    {% if instance.attr_date_stop_field_id.id %} date_stop="{{ instance.attr_date_stop_field_id.name }}" {% endif %}
-    {% if instance.attr_date_delay_field_id.id %} date_delay="{{ instance.attr_date_delay_field_id.name }}" {% endif %}
-    {% if instance.attr_progress_field_id.id %} progress="{{ instance.attr_progress_field_id.name }}" {% endif %}
-    {% if instance.attr_color_field_id.id %} color="{{ instance.attr_color_field_id.name }}" {% endif %}
-    {% if instance.attr_mode %} mode="{{ instance.attr_mode }}" {% endif %}
-    {% if instance.attr_default_group_by_field_id.id %}
+            {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %}
+           delete="false" {% endif %}
+            {% if instance.attr_date_start_field_id.id %}
+           date_start="{{ instance.attr_date_start_field_id.name }}" {% endif %}
+            {% if instance.attr_date_stop_field_id.id %}
+           date_stop="{{ instance.attr_date_stop_field_id.name }}" {% endif %}
+            {% if instance.attr_date_delay_field_id.id %}
+           date_delay="{{ instance.attr_date_delay_field_id.name }}" {% endif %}
+            {% if instance.attr_progress_field_id.id %}
+           progress="{{ instance.attr_progress_field_id.name }}" {% endif %}
+            {% if instance.attr_color_field_id.id %} color="{{ instance.attr_color_field_id.name }}" {% endif %}
+            {% if instance.attr_mode %} mode="{{ instance.attr_mode }}" {% endif %}
+            {% if instance.attr_default_group_by_field_id.id %}
            default_group_by="{{ instance.attr_default_group_by_field_id.name }}" {% endif %}>
         {% for field in instance.field_ids %}
             {{ builder_views_gantt_field(field) }}
@@ -564,7 +576,7 @@
 {# generate builder.views.form #}
 {% macro builder_views_form(instance) %}
     <form string="{{ instance.name }}" {% if not instance.attr_create %} create="false" {% endif %}
-    {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %}
+            {% if not instance.attr_edit %} edit="false" {% endif %}{% if not instance.attr_delete %}
           delete="false" {% endif %}>
         {% if instance.show_status_bar %}
             <header>
@@ -616,7 +628,7 @@
     {% elif button.type == 'action' %}
         <button name="%({{ button.action_ref }})d" string="{{ button.name }}" type="action" {% if button.highlighted %}
                 class="oe_highlight" {% endif %}{% if button.states %} states="{{ button.states }}" {% endif %}
-        {% if button.domain %} domain="{{ button.domain }}"{% endif %}{% if button.context %}
+                {% if button.domain %} domain="{{ button.domain }}"{% endif %}{% if button.context %}
                 context="{{ button.context }}"{% endif %}/>
     {% endif %}
 {% endmacro %}
@@ -647,15 +659,15 @@
     {% if (field.field_id.ttype in ["many2many", "one2many"]) and (field.related_field_view_type and field.related_field_view_type != 'default') -%}
         {% if field.related_field_view_type == 'custom' -%}
             <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
-            {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.context %}
+                    {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.context %}
                    context="{{ field.context }}" {% endif %}{% if field.widget %}
                    widget="{{ field.widget }}" {% endif %}{% if field.widget_options %}
                    options="{{ field.widget_options }}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}
-            {% if field.required and not field.required_condition %} required="1" {% endif %}
-            {% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}
-            {% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %}
+                    {% if field.required and not field.required_condition %} required="1" {% endif %}
+                    {% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}
+                    {% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %}
                     {% if field.related_field_mode %} mode="{{ field.related_field_mode }}" {% endif %}
-            {% if field.related_field_mode == 'tree' and field.related_field_tree_editable %}
+                    {% if field.related_field_mode == 'tree' and field.related_field_tree_editable %}
                    editable="{{ field.related_field_tree_editable }}" {% endif %} {{ field|fieldattrs }}
                    {% if field.states %}states="{{ field.states }}" {% endif %}>
                 {{ builder_ir_model_default_tree(field) }}
@@ -663,18 +675,19 @@
             </field>
         {% elif field.related_field_view_type == 'defined' -%}
             <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
-            {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.widget %}
+                    {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.widget %}
                    widget="{{ field.widget }}" {% endif %}{% if field.widget_options %}
                    options="{{ field.widget_options }}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}
-            {% if field.required and not field.required_condition %} required="1" {% endif %}
-            {% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}
-            {% if field.readonly and not field.readonly_condition %} readonly="1" {% endif %} {{ field|fieldattrs }}
+                    {% if field.required and not field.required_condition %} required="1" {% endif %}
+                    {% if field.invisible and not field.invisible_condition %} invisible="1" {% endif %}
+                    {% if field.readonly and not field.readonly_condition %}
+                   readonly="1" {% endif %} {{ field|fieldattrs }}
                    context="{'form_view_id': '{{ field.related_field_form_id }}', 'tree_view_id': '{{ field.related_field_tree_id }}'}"
                    {% if field.states %}states="{{ field.states }}" {% endif %}/>
         {% endif -%}
     {% else -%}
         <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
-        {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.widget %}
+                {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.widget %}
                widget="{{ field.widget }}" {% endif %}{% if field.widget_options %}
                options="{{ field.widget_options }}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}
                {% if field.has_attrs %}attrs="{{ field|fieldattrs }}"{% endif %}
@@ -842,12 +855,12 @@
 {% endmacro %}
 
 {# generate builder.ir.model.access #}
-{% macro builder_ir_model_access(access) -%}
+{% macro builder_ir_model_access(access) %}
     access_{{ access.model_id.module_id.name }}_{{ access.model_id.model|dot2dashed }}_{{ access.group_id.real_xml_id }}
     ,{{ access.name }},{{ access.model_id.module_id.name }}.model_{{ access.model_id.model|dot2dashed }},
     {{ access.group_id.real_xml_id }},{{ access.perm_read|int }},{{ access.perm_write|int }},
     {{ access.perm_create|int }},{{ access.perm_unlink|int }}
-{% endmacro -%}
+{%- endmacro %}
 
 
 {# generate builder.workflow #}

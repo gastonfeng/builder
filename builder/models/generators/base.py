@@ -1,8 +1,8 @@
 import os
 
 from jinja2 import Environment, FileSystemLoader
-from odoo import models, api
 
+from odoo import models, api
 from ..utils.jinja2.utils import groups_attribute, field_options, field_attrs
 from ..utils.zip import ZipFile, ModuleZipFile
 
@@ -13,6 +13,7 @@ class GeneratorBase(models.TransientModel):
     """
     _name = 'builder.generator.base'
     _description = 'GeneratorBase'
+
     @api.model
     def get_generators(self):
         ms = self.env['ir.model'].search([
@@ -34,7 +35,7 @@ class GeneratorBase(models.TransientModel):
         return Environment(
             loader=FileSystemLoader(
                 self.get_template_paths()
-            )
+            ), trim_blocks=True, lstrip_blocks=True
         )
 
     @api.model
