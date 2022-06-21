@@ -1,25 +1,25 @@
 {# generate builder.res.config.setting model #}
 {% macro builder_res_config_settings_model(model) %}
-    {%- set class_name = model.model | replace(".", " ") | replace("_", " ") | title | replace(" ","") -%}
-    class {{ class_name }}(models.TransientModel):
+{%- set class_name = model.model | replace(".", " ") | replace("_", " ") | title | replace(" ","") %}
+class {{ class_name }}(models.TransientModel):
     _name = '{{ model.model }}'
     _inherit = ['res.config.settings']
 
     {% for field in model.field_ids %}
-        {% if field.setting_field_type == 'module' -%}
+        {% if field.setting_field_type == 'module' %}
             {{ field.name }} = fields.Boolean({%- if field.field_description %}string='{{ field.field_description }}',
-        {% endif -%})
-        {% elif field.setting_field_type == 'default' -%}
+        {% endif %})
+        {% elif field.setting_field_type == 'default' %}
             {{ field.name }} = fields.{{ field.ttype.capitalize() }}(
-            {%- if field.field_description %}string='{{ field.field_description }}', {% endif -%}
+            {%- if field.field_description %}string='{{ field.field_description }}', {% endif %}
             default_model='{{ field.default_model }}')
-        {% elif field.setting_field_type == 'group' -%}
+        {% elif field.setting_field_type == 'group' %}
             {{ field.name }} = fields.Boolean(
-            {%- if field.field_description %}string='{{ field.field_description }}', {% endif -%}
+            {%- if field.field_description %}string='{{ field.field_description }}', {% endif %}
             group='{{ field.groups }}', implied_group='{{ field.group_name }}')
-        {% else -%}
+        {% else %}
             {{ builder_ir_model_field(field) }}
-        {% endif -%}
+        {% endif %}
     {% endfor %}
 {% endmacro %}
 
@@ -58,7 +58,7 @@
 {% macro builder_ir_model_demo_data(model, index) %}
     {% set field_generators = model.field_generators %}
     <record id="{{ model.demo_xml_id(index) }}" model="{{ model.model }}">
-        {%- for field in model.field_ids -%}
+        {%- for field in model.field_ids %}
             {%- if field.name in field_generators %}
                 {%- set value = field_generators[field.name].next() %}
                 {%- if value == False %}
@@ -74,7 +74,7 @@
                 {%- else %}
                     <field name="{{ field.name }}">{{ value }}</field>
                 {%- endif %}
-            {%- endif -%}
+            {%- endif %}
         {%- endfor %}
     </record>
 {% endmacro %}
@@ -83,201 +83,193 @@
     {% set field_generators = model.field_generators %}
     -
     !record {model: {{ model.model }}, id: {{ model.demo_xml_id(index) }}}:
-    {%- for field in model.field_ids -%}
+    {%- for field in model.field_ids %}
         {%- if field.name in field_generators %}
             {{ field.name }}: {{ field_generators[field.name].next() }}
-        {%- endif -%}
+        {%- endif %}
     {%- endfor %}
 {% endmacro %}
 
 
 {# generate builder.ir.model #}
-{%- macro builder_ir_model(model) -%}
-    {%- if model.define %}
-        {%- set class_name = model.model | replace(".", " ") | replace("_", " ") | title | replace(" ","") -%}
-        class {{ class_name }}({% if model.transient %}models.TransientModel{% else %}models.Model{% endif %}):
-        _name = '{{ model.model }}'
-        {% if model.rec_name_field_id -%}
-            _rec_name='{{ model.rec_name_field_id.name }}'
-        {% endif -%}
-        {% if model.order_string -%}
-            _order = '{{ model.order_string }}'
-        {% endif -%}
-        {% if model.inherit_model_ids -%}
-            _inherit = [
-            {% for inherit in model.inherit_model_ids -%}
-                {% if inherit.system_model_id.model -%}
-                    '{{ inherit.system_model_id.model }}',
-                {% endif -%}
-                {% if inherit.module_model_id.model -%}
-                    '{{ inherit.module_model_id.model }}',
-                {% endif -%}
-            {% endfor %}
-            ]
-        {% endif -%}
-        {% if model.inherits_model_ids -%}
-            _inherits = {{ '{' }}
-            {% for inherits in model.inherits_model_ids -%}
-                {% if inherits.system_model_id.model -%}
-                    '{{ inherits.system_model_id.model }}' : '{{ inherits.field_name }}',
-                {% endif -%}
-                {% if inherits.module_model_id.model -%}
-                    '{{ inherits.module_model_id.model }}' : '{{ inherits.field_id }}',
-                {% endif -%}
-            {% endfor %}
-            {{ '}' }}
-        {% endif -%}
-        {% if model.name -%}
-            _description = '{{ model.name }}'{% else %}_description = _(_doc_)
-        {% endif %}
-        {% for field in model.field_ids -%}
-            {{ builder_ir_model_field(field) }}
-        {%- endfor %}
-        {% for method_name, fields in model.compute_field_methods.items() -%}
-            {{ builder_ir_model_field_compute(method_name, fields) }}
-        {% endfor -%}
-        {% for method_name, fields in model.inverse_field_methods.items() -%}
-            {{ builder_ir_model_field_inverse(method_name, fields) }}
-        {% endfor -%}
-        {% for method_name, fields in model.search_field_methods.items() -%}
-            {{ builder_ir_model_field_search(method_name, fields) }}
-        {% endfor -%}
-        {% for method_name, fields in model.default_field_methods.items() -%}
-            {{ builder_ir_model_field_default(method_name, fields) }}
-        {% endfor -%}
-        {% for method in model.method_ids -%}
-            {{ builder_ir_model_method(method) }}
-        {% endfor -%}
-        {% if model.rewrite_create_method -%}
-            @api.model
-            @api.returns('self', lambda value: value.id)
-            def create(self, vals):
-            return super({{ class_name }}, self).create(vals)
-        {% endif -%}
-        {% if model.rewrite_write_method -%}
-            @api.multi
-            def write(self, vals):
-            return super({{ class_name }}, self).write(vals)
-        {% endif -%}
-        {% if model.rewrite_unlink_method -%}
-            def unlink(self, cr, uid, ids, context=None):
-            return super({{ class_name }}, self).unlink(self, cr, uid, ids, context=None):
-        {% endif -%}
-        {% for button in model.status_bar_button_ids -%}
-            {{ builder_ir_model_status_bar_button(button) }}
-        {% endfor -%}
-        {% for button in model.button_ids -%}
-            {{ builder_ir_model_button(button) }}
-        {%- endfor %}
+{%- macro builder_ir_model(model) %}
+{%- if model.define %}
+{%- set class_name = model.model | replace(".", " ") | replace("_", " ") | title | replace(" ","") %}
+class {{ class_name }}({% if model.transient %}models.TransientModel{% else %}models.Model{% endif %}):
+    _name = '{{ model.model }}'
+    {% if model.rec_name_field_id %}
+    _rec_name='{{ model.rec_name_field_id.name }}'
+    {% endif %}
+    {% if model.order_string %}
+    _order = '{{ model.order_string }}'
+    {% endif %}
+    {% if model.inherit_model_ids %}
+    _inherit = [
+        {% for inherit in model.inherit_model_ids %}
+            {% if inherit.system_model_id.model %}
+                '{{ inherit.system_model_id.model }}',
+            {% endif %}
+            {% if inherit.module_model_id.model %}
+                '{{ inherit.module_model_id.model }}',
+            {% endif %}
+        {% endfor %}
+        ]
+    {% endif %}
+    {% if model.inherits_model_ids %}
+    _inherits = {{ '{' }}
+        {% for inherits in model.inherits_model_ids %}
+            {% if inherits.system_model_id.model %}
+            '{{ inherits.system_model_id.model }}' : '{{ inherits.field_name }}',
+            {% endif %}
+            {% if inherits.module_model_id.model %}
+            '{{ inherits.module_model_id.model }}' : '{{ inherits.field_id }}',
+            {% endif %}
+        {% endfor %}
+        {{ '}' }}
+    {% endif %}
+    {% if model.name %}
+    _description = '{{ model.name }}'{% else %}_description = _(_doc_)
+    {% endif %}
 
-    {% endif -%}
-{%- endmacro -%}
+    {% for field in model.field_ids %}
+    {{ builder_ir_model_field(field) }}
+    {%- endfor %}
+    {% for method_name, fields in model.compute_field_methods.items() %}
+    {{ builder_ir_model_field_compute(method_name, fields) }}
+    {% endfor %}
+    {% for method_name, fields in model.inverse_field_methods.items() %}
+        {{ builder_ir_model_field_inverse(method_name, fields) }}
+    {% endfor %}
+    {% for method_name, fields in model.search_field_methods.items() %}
+        {{ builder_ir_model_field_search(method_name, fields) }}
+    {% endfor %}
+    {% for method_name, fields in model.default_field_methods.items() %}
+        {{ builder_ir_model_field_default(method_name, fields) }}
+    {% endfor %}
+    {% for method in model.method_ids %}
+    {{ builder_ir_model_method(method) }}
+    {% endfor %}
+    {% if model.rewrite_create_method %}
+    @api.model
+    @api.returns('self', lambda value: value.id)
+    def create(self, vals):
+        return super({{ class_name }}, self).create(vals)
+    {% endif %}
+    {% if model.rewrite_write_method %}
+    @api.multi
+    def write(self, vals):
+        return super({{ class_name }}, self).write(vals)
+    {% endif %}
+    {% if model.rewrite_unlink_method %}
+    def unlink(self, cr, uid, ids, context=None):
+        return super({{ class_name }}, self).unlink(self, cr, uid, ids, context=None):
+    {% endif %}
+    {% for button in model.status_bar_button_ids %}
+        {{ builder_ir_model_status_bar_button(button) }}
+    {% endfor %}
+    {% for button in model.button_ids %}
+        {{ builder_ir_model_button(button) }}
+    {%- endfor %}
+
+{% endif %}
+{%- endmacro %}
 
 {# generate builder.ir.model.method #}
-{% macro builder_ir_model_status_bar_button(button) -%}
+{% macro builder_ir_model_status_bar_button(button) %}
+@api.multi
+def {{ button.method_name }}(self):
+    raise NotImplementedError
+{% endmacro %}
+
+{# generate builder.ir.model.method #}
+{% macro builder_ir_model_button(button) %}
     @api.multi
     def {{ button.method_name }}(self):
     raise NotImplementedError
-{% endmacro -%}
-
-{# generate builder.ir.model.method #}
-{% macro builder_ir_model_button(button) -%}
-    @api.multi
-    def {{ button.method_name }}(self):
-    raise NotImplementedError
-{% endmacro -%}
+{% endmacro %}
 
 
 {# generate builder.ir.model.method #}
-{% macro builder_ir_model_field_compute(method_name, fields) -%}
-    def {{ method_name }}(self):
-    {% for field in fields -%}
+{% macro builder_ir_model_field_compute(method_name, fields) %}
+def {{ method_name }}(self):
+    {% for field in fields %}
         self.{{ field }} = False
-    {% endfor -%}
-{% endmacro -%}
+    {% endfor %}
+{% endmacro %}
 
 {# generate builder.ir.model.method #}
-{% macro builder_ir_model_field_inverse(method_name, fields) -%}
+{% macro builder_ir_model_field_inverse(method_name, fields) %}
     def {{ method_name }}(self):
-    {% for field in fields -%}
+    {% for field in fields %}
         # self. = self.{{ field }}
-    {% endfor -%}
+    {% endfor %}
     pass
-{% endmacro -%}
+{% endmacro %}
 
 {# generate builder.ir.model.method #}
-{% macro builder_ir_model_field_search(method_name, fields) -%}
+{% macro builder_ir_model_field_search(method_name, fields) %}
     def {{ method_name }}(self, operator, value):
     return [
-    {% for field in fields -%}
+    {% for field in fields %}
         ('{{ field }}', operator, value)
-    {% endfor -%}
+    {% endfor %}
     ]
-{% endmacro -%}
+{% endmacro %}
 
 {# generate builder.ir.model.method #}
-{% macro builder_ir_model_field_default(method_name, fields) -%}
+{% macro builder_ir_model_field_default(method_name, fields) %}
     @api.model
     def {{ method_name }}(self):
     return False
-{% endmacro -%}
+{% endmacro %}
 
 {# generate builder.ir.model.method #}
-{% macro builder_ir_model_method(method) -%}
+{% macro builder_ir_model_method(method) %}
     {% if method.type == 'simple_model' %}
-        @api.model
-        def {{ method.name }}(self{% if method.arguments %}, {{ method.arguments }}{% endif %}):
+    @api.model
+    def {{ method.name }}(self{% if method.arguments %}, {{ method.arguments }}{% endif %}):
         raise NotImplementedError
     {% elif method.type == 'simple_instance' %}
-        {% if method.use_cache %}@api.depends({{ ','.join(method.field_names) }}){% endif -%}
-        def {{ method.name }}(self{% if method.arguments %}, {{ method.arguments }}{% endif %}):
+    {% if method.use_cache %}@api.depends({{ ','.join(method.field_names) }}){% endif %}
+    def {{ method.name }}(self{% if method.arguments %}, {{ method.arguments }}{% endif %}):
         raise NotImplementedError
     {% elif method.type == 'onchange' %}
-        @api.onchange({{ ','.join(method.field_names) }})
-        def {{ method.name }}(self):
+    @api.onchange({{ ','.join(method.field_names) }})
+    def {{ method.name }}(self):
         raise NotImplementedError
     {% elif method.type == 'constraint' %}
-        @api.constraints({{ ','.join(method.field_names) }})
-        def {{ method.name }}(self):
+    @api.constraints({{ ','.join(method.field_names) }})
+    def {{ method.name }}(self):
         raise NotImplementedError
     {% endif %}
-{% endmacro -%}
+{% endmacro %}
 
 {# generate builder.ir.model.field #}
-{% macro builder_ir_model_field(field) -%}
-    {%- if field.define -%}
-        {{ field.name }} = fields.{{ field.ttype.capitalize() }}(
-        {%- if field.ttype == 'many2many' -%} '{{ field.relation_model_id.model }}',
-            {% if field.relation_many2many_column1 and field.relation_many2many_column2 %}'
-                {{ field.relation_many2many_column1 }}', '{{ field.relation_many2many_column2 }}',
-            {%- endif %}{%- endif -%}
-        {%- if field.ttype == 'many2one' -%} '{{ field.relation_model_id.model }}', {% if field.on_delete %}ondelete='
-            {{ field.on_delete }}',{% endif %}{% if field.auto_join %}auto_join=True,{% endif %}{% if field.delegate -%}
-            delegate=True,{% endif %}{%- endif -%}
-        {%- if field.ttype == 'one2many' -%} '{{ field.relation_model_id.model }}', '{{ field.relation_field }}',
-        {%- endif -%}
-        {%- if field.ttype == 'char' -%} {%- if field.size %} size={{ field.size }}, {%- endif -%}
-            {% if field.translate %}translate=True,{% endif %}{%- endif -%}
-        {%- if field.ttype == 'text' -%} {% if field.translate %}translate=True, {% endif %}{%- endif -%}
-        {%- if field.ttype == 'float' -%} {% if field.decimal_digits and field.decimal_precision %} digits=(
-            {{ field.decimal_digits }}, {{ field.decimal_precision }}),{% endif %}{%- endif -%}
-        {%- if field.required %} required=True,{%- endif -%}
-        {%- if field.readonly %} readonly=True,{%- endif -%}
-        {%- if field.field_description %} string='{{ field.field_description }}',{% endif -%}
-        {# This should be removed??? #}
-        {%- if field.string %} string='{{ field.string }}',{%- endif -%}
-        {%- if field.help %} help='''{{ field.help }}''',{%- endif -%}
-        {%- if field.index %} index=True,{%- endif -%}
-        {%- if not field.copy %} copy=False,{%- endif -%}
-        {%- if field.related %} related='{{ field.related }}',{%- endif -%}
-        {%- if field.groups %} groups='{{ field.groups }}',{%- endif -%}
-        {%- if field.selection %} selection={{ field.selection }},{%- endif -%}
-        {%- if field.option_ids %} selection={{ field.option_ids|field_options }}{%- endif -%}
-        {%- if field.allow_compute -%} compute='{{ field.compute_method_name }}',{%- endif -%}
-        {%- if field.allow_inverse -%} inverse='{{ field.inverse_method_name }}',{%- endif -%}
-        {%- if field.allow_search -%} search='{{ field.search_method_name }}',{%- endif -%}
-        {%- if field.allow_default -%} default='{{ field.default_method_name }}',{%- endif -%})
-    {% endif -%}
+{% macro builder_ir_model_field(field) %}
+{%- if field.define %}
+{{ field.name }} = fields.{{ field.ttype.capitalize() }}(
+{%- if field.ttype == 'many2many' %} '{{ field.relation_model_id.model }}',{% if field.relation_many2many_column1 and field.relation_many2many_column2 %}'{{ field.relation_many2many_column1 }}', '{{ field.relation_many2many_column2 }}',{%- endif %}{%- endif %}
+{%- if field.ttype == 'many2one' %} '{{ field.relation_model_id.model }}', {% if field.on_delete %}ondelete='{{ field.on_delete }}',{% endif %}{% if field.auto_join %}auto_join=True,{% endif %}{% if field.delegate %}delegate=True,{% endif %}{%- endif %}
+{%- if field.ttype == 'one2many' %} '{{ field.relation_model_id.model }}', '{{ field.relation_field }}',{%- endif %}
+{%- if field.ttype == 'char' %} {%- if field.size %} size={{ field.size }}, {%- endif %}{% if field.translate %}translate=True,{% endif %}{%- endif %}
+{%- if field.ttype == 'text' %} {% if field.translate %}translate=True, {% endif %}{%- endif %}
+{%- if field.ttype == 'float' %} {% if field.decimal_digits and field.decimal_precision %} digits=({{ field.decimal_digits }}, {{ field.decimal_precision }}),{% endif %}{%- endif %}
+{%- if field.required %} required=True,{%- endif %}
+{%- if field.readonly %} readonly=True,{%- endif %}
+{%- if field.field_description %} string='{{ field.field_description }}',{% endif %}
+{%- if field.string %} string='{{ field.string }}',{%- endif %}
+{%- if field.help %} help='''{{ field.help }}''',{%- endif %}
+{%- if field.index %} index=True,{%- endif %}
+{%- if not field.copy %} copy=False,{%- endif %}
+{%- if field.related %} related='{{ field.related }}',{%- endif %}
+{%- if field.groups %} groups='{{ field.groups }}',{%- endif %}
+{%- if field.selection %} selection={{ field.selection }},{%- endif %}
+{%- if field.option_ids %} selection={{ field.option_ids|field_options }}{%- endif %}
+{%- if field.allow_compute %} compute='{{ field.compute_method_name }}',{%- endif %}
+{%- if field.allow_inverse %} inverse='{{ field.inverse_method_name }}',{%- endif %}
+{%- if field.allow_search %} search='{{ field.search_method_name }}',{%- endif %}
+{%- if field.allow_default %} default='{{ field.default_method_name }}',{%- endif %})
+{% endif %}
 {%- endmacro %}
 
 
@@ -287,11 +279,11 @@
         <field name="name">{{ cron.name }}</field>
         <field name="interval_number">{{ cron.interval_number }}</field>
         <field name="interval_type">{{ cron.interval_type }}</field>
-        {%- if cron.numbercall -%}
+        {%- if cron.numbercall %}
             <field name="numbercall">{{ cron.numbercall }}</field>
-        {%- else -%}
+        {%- else %}
             <field name="numbercall">-1</field>
-        {%- endif -%}
+        {%- endif %}
         <field name="doall" eval="{{ cron.doall }}"/>
         <field name="model">{{ cron.model_id.model }}</field>
         <field name="function">{{ cron.model_method_id.name }}</field>
@@ -301,24 +293,24 @@
 {% endmacro %}
 
 {# generate builder.ir.ui.menu #}
-{% macro builder_ir_ui_menu(menu) -%}
+{% macro builder_ir_ui_menu(menu) %}
     <menuitem id="{{ menu.real_xml_id }}" name="{{ menu.name }}"
               {% if menu.sequence %}sequence="{{ menu.sequence }}"{% endif %}
             {%- if menu.parent_type == 'module' %}
               parent="{{ menu.parent_id.real_xml_id }}"
             {%- elif menu.parent_type == 'system' %}
               parent="{{ menu.parent_ref }}"
-            {%- endif -%}
+            {%- endif %}
             {%- if menu.action_type == 'module' %}
               action="{{ menu.action_module.real_xml_id }}"
             {%- elif menu.action_type == 'system' %}
               action="{{ menu.action_system_ref }}"
-            {%- endif -%}
+            {%- endif %}
             {%- if menu.group_ids %}
                 {{ menu.group_ids|groups }}
-            {%- endif -%}
+            {%- endif %}
     />
-{% endmacro -%}
+{% endmacro %}
 
 {# generate builder.ir.ui.view #}
 {% macro builder_ir_ui_view(view) %}
@@ -327,35 +319,35 @@
         <field name="model">{{ view.model_id.model }}</field>
         {% if view.type == 'tree' and view.field_parent_id %}
             <field name="field_parent">{{ view.field_parent_id.name }}</field>
-        {% endif -%}
+        {% endif %}
         {% if view.priority %}
             <field name="priority" eval="{{ view.priority }}"/>{% endif %}
         {% if view.inherit_view %}
             <field name="inherit_id" ref="{{ view.inherit_view_ref }}"/>
         {% endif %}
         <field name="arch" type="xml">
-            {%- if view.inherit_view -%}
+            {%- if view.inherit_view %}
                 {% for change in view.inherit_change_ids %}
                     {{ builder_ir_ui_view_inherit_change(change) }}
                 {% endfor %}
-            {%- else -%}
+            {%- else %}
                 {% set view_gen = view.subclass_model|dot2dashed %}
                 {% set instance = view.get_instance().0 %}
-                {%- if view.type == 'form' -%}
+                {%- if view.type == 'form' %}
                     {{ builder_views_form(instance)|indent(8) }}
-                {%- elif view.type == 'calendar' -%}
+                {%- elif view.type == 'calendar' %}
                     {{ builder_views_calendar(instance)|indent(8) }}
-                {%- elif view.type == 'gantt' -%}
+                {%- elif view.type == 'gantt' %}
                     {{ builder_views_gantt(instance)|indent(8) }}
-                {%- elif view.type == 'graph' -%}
+                {%- elif view.type == 'graph' %}
                     {{ builder_views_graph(instance)|indent(8) }}
-                {%- elif view.type == 'kanban' -%}
+                {%- elif view.type == 'kanban' %}
                     {{ builder_views_kanban(instance)|indent(8) }}
-                {%- elif view.type == 'search' -%}
+                {%- elif view.type == 'search' %}
                     {{ builder_views_search(instance)|indent(8) }}
-                {%- elif view.type == 'tree' -%}
+                {%- elif view.type == 'tree' %}
                     {{ builder_views_tree(instance)|indent(8) }}
-                {% endif -%}
+                {% endif %}
             {% endif %}
         </field>
     </record>
@@ -424,7 +416,7 @@
 {% macro builder_views_search(instance) %}
     <search string="{{ instance.name }}">
         {% for field in instance.ungrouped_fields %}
-            {% if field.type == 'filter' -%}
+            {% if field.type == 'filter' %}
                 <filter {% if field.attr_name %}name="{{ field.attr_name }}" {% endif %}{% if field.attr_string %}
                         string="{{ field.attr_string }}" {% endif %}{% if field.attr_domain %}
                         domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
@@ -432,7 +424,7 @@
                         operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                         help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
                         context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %}/>
-            {%- elif field.type == 'field' -%}
+            {%- elif field.type == 'field' %}
                 <field name="{{ field.field_id.name }}"{% if field.attr_string %}
                        string="{{ field.attr_string }}" {% endif %}{% if field.attr_domain %}
                        domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
@@ -440,14 +432,14 @@
                        operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                        help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
                        context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %} />
-            {%- elif field.type == 'separator' -%}
+            {%- elif field.type == 'separator' %}
                 <separator/>
             {%- endif %}
         {%- endfor %}
         {% for k, fields in instance.groups.items() %}
             <group string="{{ k }}">
                 {%- for field in fields %}
-                    {% if field.type == 'filter' -%}
+                    {% if field.type == 'filter' %}
                         <filter {% if field.attr_name %}name="{{ field.attr_name }}" {% endif %}
                                 {% if field.attr_string %}
                                 string="{{ field.attr_string }}" {% endif %}{% if field.attr_domain %}
@@ -456,7 +448,7 @@
                                 operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                                 help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
                                 context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %}/>
-                    {%- elif field.type == 'field' -%}
+                    {%- elif field.type == 'field' %}
                         <field name="{{ field.field_id.name }}"{% if field.attr_string %}
                                string="{{ field.attr_string }}" {% endif %}{% if field.attr_domain %}
                                domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
@@ -464,7 +456,7 @@
                                operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                                help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
                                context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %} />
-                    {%- elif field.type == 'separator' -%}
+                    {%- elif field.type == 'separator' %}
                         <separator/>
                     {%- endif %}
                 {%- endfor %}
@@ -476,7 +468,7 @@
 
 {# generate builder.views.search.field #}
 {% macro builder_views_search_field(field) %}
-    {% if field.type == 'filter' -%}
+    {% if field.type == 'filter' %}
         <filter {% if field.attr_name %}name="{{ field.attr_name }}" {% endif %}{% if field.attr_string %}
                 string="{{ field.attr_string }}" {% endif %}{% if field.attr_domain %}
                 domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
@@ -484,14 +476,14 @@
                 operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                 help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
                 context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %}/>
-    {%- elif field.type == 'field' -%}
+    {%- elif field.type == 'field' %}
         <field name="{{ field.field_id.name }}"{% if field.attr_string %} string="{{ field.attr_string }}" {% endif %}
                 {% if field.attr_domain %} domain="{{ field.attr_domain }}" {% endif %}{% if field.attr_filter_domain %}
                filter_domain="{{ field.attr_filter_domain }}" {% endif %}{% if field.attr_operator %}
                operator="{{ field.attr_operator }}" {% endif %}{% if field.attr_help %}
                help="{{ field.attr_help }}" {% endif %}{% if field.group_field_id %}
                context="{'group_by':'{{ field.group_field_id.name }}'}" {% endif %} />
-    {%- elif field.type == 'separator' -%}
+    {%- elif field.type == 'separator' %}
         <separator/>
     {%- endif %}
 {% endmacro %}
@@ -621,7 +613,7 @@
 
 
 {# generate builder.views.form.statusbar.button #}
-{% macro builder_views_form_statusbar_button(button) -%}
+{% macro builder_views_form_statusbar_button(button) %}
     {% if button.type == 'object' %}
         <button name="{{ button.method_name }}" string="{{ button.name }}" type="object" {% if button.highlighted %}
                 class="oe_highlight" {% endif %}{% if button.states %} states="{{ button.states }}" {% endif %}/>
@@ -634,7 +626,7 @@
 {% endmacro %}
 
 {# generate builder.views.form.button #}
-{% macro builder_views_form_button(button) -%}
+{% macro builder_views_form_button(button) %}
     {% if button.type == 'object' %}
         <button name="{{ button.method_name }}" {% if not button.field_id %} string="{{ button.name }}" {% endif %}
                 {% if button.icon %} icon="{{ button.icon }}" {% endif %} type="object" class="oe_inline oe_stat_button"
@@ -655,9 +647,9 @@
 
 
 {# generate builder.views.form.field #}
-{% macro builder_views_form_field(field) -%}
-    {% if (field.field_id.ttype in ["many2many", "one2many"]) and (field.related_field_view_type and field.related_field_view_type != 'default') -%}
-        {% if field.related_field_view_type == 'custom' -%}
+{% macro builder_views_form_field(field) %}
+    {% if (field.field_id.ttype in ["many2many", "one2many"]) and (field.related_field_view_type and field.related_field_view_type != 'default') %}
+        {% if field.related_field_view_type == 'custom' %}
             <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
                     {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.context %}
                    context="{{ field.context }}" {% endif %}{% if field.widget %}
@@ -673,7 +665,7 @@
                 {{ builder_ir_model_default_tree(field) }}
                 {{ builder_ir_model_default_form(field) }}
             </field>
-        {% elif field.related_field_view_type == 'defined' -%}
+        {% elif field.related_field_view_type == 'defined' %}
             <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
                     {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.widget %}
                    widget="{{ field.widget }}" {% endif %}{% if field.widget_options %}
@@ -684,15 +676,15 @@
                    readonly="1" {% endif %} {{ field|fieldattrs }}
                    context="{'form_view_id': '{{ field.related_field_form_id }}', 'tree_view_id': '{{ field.related_field_tree_id }}'}"
                    {% if field.states %}states="{{ field.states }}" {% endif %}/>
-        {% endif -%}
-    {% else -%}
+        {% endif %}
+    {% else %}
         <field name="{{ field.field_id.name }}"{% if field.string %} string="{{ field.string }}" {% endif %}
                 {% if field.domain %} domain="{{ field.domain }}" {% endif %}{% if field.widget %}
                widget="{{ field.widget }}" {% endif %}{% if field.widget_options %}
                options="{{ field.widget_options }}" {% endif %}{% if field.nolabel %} nolabel="1" {% endif %}
                {% if field.has_attrs %}attrs="{{ field|fieldattrs }}"{% endif %}
                {% if field.states %}states="{{ field.states }}" {% endif %}/>
-    {%- endif -%}
+    {%- endif %}
 {%- endmacro %}
 
 
@@ -750,57 +742,57 @@
 
 
 {# generate builder.ir.actions.act_window #}
-{% macro builder_ir_actions_act_window(action) -%}
+{% macro builder_ir_actions_act_window(action) %}
     <record model="ir.actions.act_window" id="{{ action.real_xml_id }}">
-        {% if action.name -%}
+        {% if action.name %}
             <field name="name">{{ action.name }}</field>
-        {% endif -%}
-        {% if action.model_id.model -%}
+        {% endif %}
+        {% if action.model_id.model %}
             <field name="res_model">{{ action.model_id.model }}</field>
-        {% endif -%}
-        {% if action.src_model -%}
+        {% endif %}
+        {% if action.src_model %}
             <field name="src_model">{{ action.src_model }}</field>
-        {% endif -%}
-        {% if action.domain -%}
+        {% endif %}
+        {% if action.domain %}
             <field name="domain">{{ action.domain }}</field>
-        {% endif -%}
-        {% if action.context and action.context!='{}' -%}
+        {% endif %}
+        {% if action.context and action.context!='{}' %}
             <field name="context">{{ action.context }}</field>
-        {% endif -%}
-        {% if action.view_id -%}
+        {% endif %}
+        {% if action.view_id %}
             <field name="view_id" ref="{{ action.view_id.real_xml_id }}"/>
-        {% endif -%}
-        {% if action.view_mode -%}
+        {% endif %}
+        {% if action.view_mode %}
             <field name="view_mode">{{ action.view_mode }}</field>
-        {% endif -%}
-        {% if action.usage -%}
+        {% endif %}
+        {% if action.usage %}
             <field name="usage">{{ action.usage }}</field>
-        {% endif -%}
-        {% if action.target and (target != 'current') -%}
+        {% endif %}
+        {% if action.target and (target != 'current') %}
             <field name="target">{{ action.target }}</field>
-        {% endif -%}
-        {% if action.search_view_id -%}
+        {% endif %}
+        {% if action.search_view_id %}
             <field name="search_view" ref="{{ action.search_view_id.real_xml_id }}"/>
-        {% endif -%}
-        {% if action.limit and action.limit != 80 -%}
+        {% endif %}
+        {% if action.limit and action.limit != 80 %}
             <field name="limit">{{ action.limit }}</field>
-        {% endif -%}
-        {% if action.auto_refresh -%}
+        {% endif %}
+        {% if action.auto_refresh %}
             <field name="auto_refresh">{{ action.auto_refresh }}</field>
-        {% endif -%}
-        {% if not action.auto_search -%}
+        {% endif %}
+        {% if not action.auto_search %}
             <field name="auto_search">{{ action.auto_search }}</field>
-        {% endif -%}
-        {% if action.multi -%}
+        {% endif %}
+        {% if action.multi %}
             <field name="multi">{{ action.multi }}</field>
-        {% endif -%}
-        {% if action.show_help -%}
+        {% endif %}
+        {% if action.show_help %}
             <field name="help" type="html">
                 {{ action.help }}
             </field>
         {%- endif %}
     </record>
-{% endmacro -%}
+{% endmacro %}
 
 {# generate builder.ir.module.category #}
 {% macro builder_ir_module_category(module) %}
@@ -820,11 +812,11 @@
         <field name="perm_write" eval="{{ rule.perm_write }}"/>
         <field name="perm_create" eval="{{ rule.perm_create }}"/>
         <field name="perm_unlink" eval="{{ rule.perm_unlink }}"/>
-        {% if not rule.groups -%}
+        {% if not rule.groups %}
             <field name="global" eval="True"/>
         {% else %}
             <field name="groups"
-                   eval="[{%- for group in rule.groups -%}(4, ref('{{ group.real_xml_id }}')),{%- endfor -%}]"/>
+                   eval="[{%- for group in rule.groups %}(4, ref('{{ group.real_xml_id }}')),{%- endfor %}]"/>
         {% endif %}
         <field name="domain_force">{{ rule.domain }}</field>
     </record>
@@ -833,18 +825,18 @@
 
 {# generate builder.res.groups #}
 {% macro builder_res_groups(group) %}
-    {% if not group.inherited -%}
+    {% if not group.inherited %}
         <record id="{{ group.real_xml_id }}" model="res.groups">
             <field name="name">{{ group.name }}</field>
             <field name="category_id" ref="module_category_{{ group.module_id.name }}"/>
-            {% if group.category_type == 'custom' -%}
+            {% if group.category_type == 'custom' %}
                 <field name="category_id" ref="module_category_connector"/>
-            {%- elif group.category_type == 'system' -%}
+            {%- elif group.category_type == 'system' %}
                 <field name="category_id" ref="{{ group.category_ref }}"/>
-            {%- elif group.category_type == 'module' -%}
+            {%- elif group.category_type == 'module' %}
                 <field name="category_id" ref="module_category_{{ module.name }}"/>
             {%- endif %}
-            {% if group.implied_ids -%}
+            {% if group.implied_ids %}
                 <field name="implied_ids"
                        eval="[{% for g in group.implied_ids %}(4, ref('{{ g.real_xml_id }}')), {% endfor %}]"/>
             {% endif %}
@@ -921,9 +913,9 @@
             {% if asset.type == 'website.theme' %} {% if not asset.attr_active %}active="False"{% endif %}
               customize_show="{{ asset.attr_customize_show }}" {% endif %}>
         <xpath expr="." position="inside">
-            {% for item in asset.item_ids -%}
+            {% for item in asset.item_ids %}
                 {{ builder_website_asset_item(item, asset.module_id) }}
-            {% endfor -%}
+            {% endfor %}
         </xpath>
     </template>
 {% endmacro %}
@@ -934,9 +926,9 @@
               inherit_id="website.assets_frontend" {% if not asset.attr_active %}active="False"{% endif %}
               customize_show="{{ asset.attr_customize_show }}">
         <xpath expr="." position="inside">
-            {% for item in asset.item_ids -%}
+            {% for item in asset.item_ids %}
                 {{ builder_website_asset_item(item, asset.module_id)|indent(8) }}
-            {% endfor -%}
+            {% endfor %}
         </xpath>
     </template>
 {% endmacro %}
@@ -944,15 +936,15 @@
 
 {# generate builder.website.asset.item #}
 {% macro builder_website_asset_item(item, module) %}
-    {% if item.file_id.extension == '.css' -%}
+    {% if item.file_id.extension == '.css' %}
         <link rel="stylesheet" href="/{{ module.name }}{{ item.file_id.path }}" t-ignore="true"/>
-    {% elif item.file_id.extension == '.less' -%}
+    {% elif item.file_id.extension == '.less' %}
         <link rel="stylesheet" href="/{{ module.name }}{{ item.file_id.path }}" type="text/less" t-ignore="true"/>
-    {% elif item.file_id.extension == '.sass' -%}
+    {% elif item.file_id.extension == '.sass' %}
         <link rel="stylesheet" href="/{{ module.name }}{{ item.file_id.path }}" type="text/sass" t-ignore="true"/>
-    {% elif item.file_id.extension == '.js' -%}
+    {% elif item.file_id.extension == '.js' %}
         <script type="text/javascript" src="/{{ module.name }}{{ item.file_id.path }}" t-ignore="true"/>
-    {% endif -%}
+    {% endif %}
 {% endmacro %}
 
 
@@ -1008,7 +1000,7 @@
     <template id="{{ theme.module_id.name }}.{{ theme.attr_id }}" name="{{ theme.attr_name }}"
               inherit_id="website.theme" active="False" customize_show="True">
         <xpath expr="//link[@id='bootstrap_css']" position="after">
-            {% for item in theme.item_ids -%}
+            {% for item in theme.item_ids %}
                 {{ builder_website_asset_item(item, theme.module_id)|indent(8) }}
             {%- endfor %}
         </xpath>
