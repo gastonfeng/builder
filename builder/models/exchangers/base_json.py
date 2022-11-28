@@ -94,7 +94,7 @@ class OdooBuilderLoader(object):
                 model_str, id_str = obj_key
                 model = self.env[model_str]
                 data = objects[obj_key]
-                if model_str == 'builder.ir.model':
+                if model_str == 'builder.ir.model' and 'special_active_field_id' in data:
                     data.pop('special_active_field_id')
                 missing = [
                     key for key, value in data.items() if

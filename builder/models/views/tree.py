@@ -60,7 +60,7 @@ class TreeView(models.Model):
                 field_list.append({'field_id': field.id, 'field_ttype': field.ttype, 'model_id': model_id.id,
                                    'special_states_field_id': model_id.special_states_field_id.id})
 
-            self.field_ids = field_list
+            # self.field_ids = field_list
 
 
 class TreeField(models.Model):

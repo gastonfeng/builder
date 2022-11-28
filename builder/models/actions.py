@@ -1,5 +1,7 @@
 __author__ = 'one'
 
+import logging
+
 from odoo import SUPERUSER_ID
 from odoo import api
 # from odoo import models, api, fields, _
@@ -11,15 +13,17 @@ class actions(models.Model):
     _description = 'actions'
     _table = 'builder_ir_actions'
     _order = 'name'
-    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade')
+    module_id = fields.Many2one('builder.ir.module.module', 'Module', ondelete='cascade', required=True,
+                                default=lambda self: self.env.context.get('default_module_id'))
     xml_id = fields.Char('XML ID', required=True)
     name = fields.Char('Name', required=True)
     type = fields.Char('Action Type', required=True)
-    usage = fields.Char('Action Usage',default=lambda *a: False)
+    usage = fields.Char('Action Usage', default=lambda *a: False)
 
     help = fields.Text('Action description',
                        help='Optional help text for the users with a description of the target view, such as its usage and purpose.',
                        translate=True)
+
     # _defaults = {
     #     'usage': lambda *a: False,
     # }
@@ -38,12 +42,12 @@ class ir_actions_act_url(models.Model):
     _sequence = 'builder_ir_actions_id_seq'
     _order = 'name'
     name = fields.Char('Action Name', translate=True)
-    type = fields.Char('Action Type', required=True,default='builder.ir.actions.act_url')
+    type = fields.Char('Action Type', required=True, default='builder.ir.actions.act_url')
     url = fields.Text('Action URL', required=True)
     target = fields.Selection((
         ('new', 'New Window'),
         ('self', 'This Window')),
-        'Action Target', required=True,default='new'
+        'Action Target', required=True, default='new'
     )
 
     # _defaults = {
@@ -69,7 +73,7 @@ class ir_actions_act_window(models.Model):
                 return False
         return True
 
-    #@api.multi
+    # @api.multi
     def _views_get_fnc(self, name, arg):
         """Returns an ordered list of the specific view modes that should be
            enabled when displaying the result of this action, along with the
@@ -99,7 +103,7 @@ class ir_actions_act_window(models.Model):
                 res[act.id].extend([(False, mode) for mode in missing_modes])
         return res
 
-    #@api.multi
+    # @api.multi
     def _search_view(self, name, arg):
         res = {}
         for act in self:
@@ -109,12 +113,17 @@ class ir_actions_act_window(models.Model):
             res[act.id] = str(field_get)
         return res
 
+    def _get_default_module_id(self):
+        logging.warning(self.env.context)
+        Id = self.env.context.get('default_module_id', 1)
+        return Id
+
     name = fields.Char('Action Name', translate=True)
     view_id = fields.Many2one('builder.ir.ui.view', 'View Ref.', ondelete='set null')
     domain = fields.Char('Domain Value',
                          help="Optional domain filtering of the destination data, as a Python expression")
     context = fields.Char('Context Value', required=True,
-                          help="Context dictionary as Python expression, empty by default (Default: {})",default='{}')
+                          help="Context dictionary as Python expression, empty by default (Default: {})", default='{}')
     res_id = fields.Integer('Record ID',
                             help="Database ID of record to open in form view, when ``view_mode`` is set to 'form' only")
     model_id = fields.Many2one('builder.ir.model', 'Destination Model', required=True, ondelete='cascade',
@@ -122,11 +131,13 @@ class ir_actions_act_window(models.Model):
     src_model = fields.Char('Source Model',
                             help="Optional model name of the objects on which this action should be visible")
     target = fields.Selection([('current', 'Current Window'), ('new', 'New Window'), ('inline', 'Inline Edit'),
-                               ('inlineview', 'Inline View')], 'Target Window',default='current')
+                               ('inlineview', 'Inline View')], 'Target Window', default='current')
     view_mode = fields.Char('View Mode', required=True,
-                            help="Comma-separated list of allowed view modes, such as 'form', 'tree', 'calendar', etc. (Default: tree,form)",default='tree,form')
+                            help="Comma-separated list of allowed view modes, such as 'form', 'tree', 'calendar', etc. (Default: tree,form)",
+                            default='tree,form')
     view_type = fields.Selection((('tree', 'Tree'), ('form', 'Form')), string='View Type', required=True,
-                                 help="View type: Tree type to use for the tree view, set to 'tree' for a hierarchical tree view, or 'form' for a regular list view",default= 'form')
+                                 help="View type: Tree type to use for the tree view, set to 'tree' for a hierarchical tree view, or 'form' for a regular list view",
+                                 default='form')
     usage = fields.Char('Action Usage',
                         help="Used to filter menu and home actions from the user form.")
     view_ids = fields.One2many('ir.actions.act_window.view', 'act_window_id', 'View ids', copy=True)
@@ -134,45 +145,46 @@ class ir_actions_act_window(models.Model):
                           help="This function field computes the ordered list of views that should be enabled " \
                                "when displaying the result of an action, federating view mode, views and " \
                                "reference view. The result is returned as an ordered list of pairs (view_id,view_mode).")
-    limit = fields.Integer('Limit', help='Default limit for the list view',default=80)
-    auto_refresh = fields.Integer('Auto-Refresh', help='Add an auto-refresh on the view',default=0)
+    limit = fields.Integer('Limit', help='Default limit for the list view', default=80)
+    auto_refresh = fields.Integer('Auto-Refresh', help='Add an auto-refresh on the view', default=0)
     # 'groups_id=fields.Many2many('res.groups', 'ir_act_window_group_rel', 'act_id', 'gid', 'Groups'),
     groups_id = fields.Many2many('builder.res.groups', 'builder_ir_act_window_group_rel',
                                  'act_id', 'gid', 'Groups')
     search_view_id = fields.Many2one('builder.ir.ui.view', 'Search View Ref.')
     filter = fields.Boolean('Filter')
-    auto_search = fields.Boolean('Auto Search',default=True)
+    auto_search = fields.Boolean('Auto Search', default=True)
     # 'search_view' : fields.function(_search_view, type='text', string='Search View'),
     multi = fields.Boolean('Restrict to lists',
-                           help="If checked and the action is bound to a model, it will only appear in the More menu on list views",default=False)
+                           help="If checked and the action is bound to a model, it will only appear in the More menu on list views",
+                           default=False)
     show_help = fields.Boolean('Display Help')
-    help = fields.Html('Help',default= """
+    help = fields.Html('Help', default="""
           <p class="oe_view_nocontent_create">
             Click to create a new model.
           </p><p>
             This is an example of help content.
           </p>
         """)
-    type = fields.Char('Action Type', required=True,default='builder.ir.actions.act_window')
+    type = fields.Char('Action Type', required=True, default='builder.ir.actions.act_window')
 
     #     _defaults = {
-#        'type': 'builder.ir.actions.act_window',
-#        'view_type': 'form',
-#        'view_mode': 'tree,form',
-#        'context': '{}',
-#        'limit': 80,
-#        'target': 'current',
-#        'auto_refresh': 0,
-#        'auto_search': True,
-#        'multi': False,
-#        'help': """
-#          <p class="oe_view_nocontent_create">
-#            Click to create a new model.
-#          </p><p>
-#            This is an example of help content.
-#          </p>
-#        """
-#    }
+    #        'type': 'builder.ir.actions.act_window',
+    #        'view_type': 'form',
+    #        'view_mode': 'tree,form',
+    #        'context': '{}',
+    #        'limit': 80,
+    #        'target': 'current',
+    #        'auto_refresh': 0,
+    #        'auto_search': True,
+    #        'multi': False,
+    #        'help': """
+    #          <p class="oe_view_nocontent_create">
+    #            Click to create a new model.
+    #          </p><p>
+    #            This is an example of help content.
+    #          </p>
+    #        """
+    #    }
 
     @api.onchange('model_id')
     def onchange_model_id(self):

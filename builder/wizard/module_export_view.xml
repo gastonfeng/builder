@@ -2,12 +2,12 @@
 <odoo>
     <data>
 
-        <act_window id="act_builder_ir_module_export_wizard"
-                    name="Export Modules"
-                    binding_model="builder.ir.module.module"
-                    res_model="builder.ir.module.export.wizard"
-                    view_mode="form"
-                    target="new"/>
+        <record id="act_builder_ir_module_export_wizard" model="ir.actions.act_window">
+            <field name='name'>Export Modules</field>
+            <field name="binding_model_id" ref="model_builder_ir_module_module"/>
+            <field name="res_model">builder.ir.module.export.wizard</field>
+            <field name="target">new</field>
+        </record>
 
 
         <record model="ir.ui.view" id="builder_ir_module_export_wizard_form_view">

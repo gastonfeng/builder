@@ -19,6 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import json
 
 from odoo import fields, api, _
 from odoo import models
@@ -41,7 +42,7 @@ class IrUiMenu(models.Model):
         menu_domain = [('parent_id', '=', False), ('parent_ref', '=', False)]
         return self.search(menu_domain)
 
-    #@api.multi
+    # @api.multi
     def load_menus_root(self):
         menu_roots = self.get_user_roots()
         return {
@@ -53,10 +54,8 @@ class IrUiMenu(models.Model):
         }
 
     def _get_full_name(self, name=None, args=None):
-        if context is None:
-            context = {}
         res = {}
-        for elmt in self.browse(ids):
+        for elmt in self.browse(self.ids):
             res[elmt.id] = self._get_one_full_name(elmt)
         return res
 
@@ -93,7 +92,7 @@ class IrUiMenu(models.Model):
     xml_id = fields.Char('XML ID', required=True)
     complete_name = fields.Char('Complete Name', compute='_compute_complete_name')
     morder = fields.Integer('Order')
-    sequence = fields.Integer('Sequence',default=10)
+    sequence = fields.Integer('Sequence', default=10)
     child_ids = fields.One2many('builder.ir.ui.menu', 'parent_id', 'Child Ids', copy=True)
     # group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_menu_group_rel', 'menu_id', 'gid', 'Groups', help="If you have groups, the visibility of this menu will be based on these groups. "\
     #             "If this field is empty, Odoo will compute visibility based on the related object's read access.")
@@ -118,11 +117,17 @@ class IrUiMenu(models.Model):
     action_module = fields.Reference([
         ('builder.ir.actions.act_window', 'Window'),
         # ('builder.ir.actions.act_url', 'URL'),
-    ], 'Module Action')
+    ], 'Module Action', )
 
     group_ids = fields.Many2many('builder.res.groups', 'builder_ir_ui_menu_group_rel', 'menu_id', 'gid',
                                  string='Groups',
                                  help="If this field is empty, the menu applies to all users. Otherwise, the view applies to the users of those groups only.")
+    module_id_domain = fields.Char(compute="_compute_module_id_domain", readonly=True, store=False, )
+
+    @api.depends('action_module')
+    def _compute_module_id_domain(self):
+        for rec in self:
+            rec.module_id_domain = json.dumps([('module_id', '=', rec.module_id.id)])
 
     @api.onchange('action_system')
     def onchange_action_system(self):
@@ -139,6 +144,7 @@ class IrUiMenu(models.Model):
         if self.action_module:
             self.name = self.action_module.name
             self.xml_id = "menu_{action}".format(action=self.action_module.xml_id)
+        # return {'domain': {'action_module': [('module_id', '=', self.module_id.id)]}}
 
     @api.model
     @api.returns('self', lambda value: value.id)
@@ -150,7 +156,7 @@ class IrUiMenu(models.Model):
 
         return super(IrUiMenu, self).create(vals)
 
-    #@api.multi
+    # @api.multi
     def write(self, vals):
         if not vals.get('parent_type', self.parent_type):
             vals['parent_id'] = False
@@ -159,12 +165,12 @@ class IrUiMenu(models.Model):
 
         return super(IrUiMenu, self).write(vals)
 
-    #@api.one
+    # @api.one
     def _compute_complete_name(self):
         for r in self:
             r.complete_name = r._get_full_name_one()
 
-    #@api.multi
+    # @api.multi
     def _get_full_name_one(self, level=6):
         if level <= 0:
             return '...'
@@ -179,9 +185,12 @@ class IrUiMenu(models.Model):
 
         return (parent_path + self.name) if self.name else False
 
-    #@api.one
+    # @api.one
     def name_get(self):
-        return self.id, self._get_full_name_one()
+        res=[]
+        for SELF in self:
+            res+= [(SELF.id, SELF._get_full_name_one())]
+        return res
 
     def _rec_message(self):
         return _('Error ! You can not create recursive Menu.')

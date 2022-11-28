@@ -848,10 +848,7 @@ def {{ method_name }}(self):
 
 {# generate builder.ir.model.access #}
 {% macro builder_ir_model_access(access) %}
-    access_{{ access.model_id.module_id.name }}_{{ access.model_id.model|dot2dashed }}_{{ access.group_id.real_xml_id }}
-    ,{{ access.name }},{{ access.model_id.module_id.name }}.model_{{ access.model_id.model|dot2dashed }},
-    {{ access.group_id.real_xml_id }},{{ access.perm_read|int }},{{ access.perm_write|int }},
-    {{ access.perm_create|int }},{{ access.perm_unlink|int }}
+access_{{ access.model_id.module_id.name }}_{{ access.model_id.model|dot2dashed }}_{{ access.group_id.real_xml_id }},{{ access.name }},{{ access.model_id.module_id.name }}.model_{{ access.model_id.model|dot2dashed }},{{ access.group_id.real_xml_id }},{{ access.perm_read|int }},{{ access.perm_write|int }},{{ access.perm_create|int }},{{ access.perm_unlink|int }}
 {%- endmacro %}
 
 

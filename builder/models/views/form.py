@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
-
 from .base import FIELD_WIDGETS_ALL
 from ..fields import snake_case
 
@@ -85,7 +84,7 @@ class FormView(models.Model):
                                    'field_ttype': field.ttype, 'model_id': self.model_id.id,
                                    'special_states_field_id': self.model_id.special_states_field_id.id})
 
-            self.field_ids = field_list
+            # self.field_ids = field_list
 
     @api.model
     def create_instance(self, id):

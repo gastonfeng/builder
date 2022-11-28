@@ -219,6 +219,7 @@
                                     <page string="Actions">
                                         <field name="action_window_ids" nolabel="1" context="{'default_module_id': active_id}">
                                             <tree string="Actions">
+                                                <field name="module_id"/>
                                                 <field name="name"/>
                                                 <field name="model_id"/>
                                                 <field name="view_mode"/>

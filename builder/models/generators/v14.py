@@ -237,7 +237,7 @@ class Generatorv14(models.TransientModel):
         # this must be last to include all resources
         zip_file.write_template(
             '__manifest__.py',
-            '__openerp__.py.jinja2',
+            '__manifest__.py.jinja2',
             {
                 'module': module,
                 'data': module_data,

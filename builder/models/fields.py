@@ -53,7 +53,7 @@ class IrFields(models.Model):
     relation = fields.Char('Object Relation',
                            help="For relationship fields, the technical name of the target model")
 
-    relation_model_id = fields.Many2one('builder.ir.model', 'Model', ondelete='set null')
+    relation_model_id = fields.Many2one('builder.ir.model', 'relation Model', ondelete='set null')
 
     relation_many2many_comodel_name = fields.Char('Comodel Name')
     relation_many2many_relation = fields.Char('Relation Name')
@@ -72,7 +72,7 @@ class IrFields(models.Model):
     related = fields.Char('Related')
     ttype = fields.Selection(get_field_types, 'Field Type', required=True, default=_get_default_ttype)
     relation_ttype = fields.Selection([('many2one', 'many2one'), ('one2many', 'one2many'), ('many2many', 'many2many')],
-                                      'Field Type', compute='_compute_relation_ttype',
+                                      'relation Type', compute='_compute_relation_ttype',
                                       store=False, search=True,
                                       default=_get_default_ttype)
     selection = fields.Char('Selection Options', help="List of options for a selection field, "

@@ -6,7 +6,6 @@ from string import Template
 from types import MethodType
 
 from odoo import models, fields, api, _, tools
-
 from .utils import simple_selection
 from .utils.formats import json
 
@@ -234,7 +233,7 @@ javascript:(function(){
 
     #@api.multi
     def action_backend_actions(self):
-
+        print(self.id)
         return {
             'name': _('Actions'),
             'type': 'ir.actions.act_window',
